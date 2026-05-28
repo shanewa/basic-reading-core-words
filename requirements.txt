@@ -1,0 +1,2 @@
+# scripts/generate_vocab_pdf.py
+reportlab>=4.0,<5

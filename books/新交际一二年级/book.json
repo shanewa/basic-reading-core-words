@@ -1,0 +1,22 @@
+{
+  "name": "新交际一二年级 + 基础阅读400",
+  "output": "词汇表（打印版）.pdf",
+  "seed": 42,
+  "sources": [
+    {
+      "path": "一年级词汇.md",
+      "parser": "grade_table",
+      "label": "一年级"
+    },
+    {
+      "path": "二年级词汇.md",
+      "parser": "grade_table",
+      "label": "二年级"
+    },
+    {
+      "path": "基础阅读400词汇.md",
+      "parser": "word_list",
+      "label": "基础阅读400"
+    }
+  ]
+}

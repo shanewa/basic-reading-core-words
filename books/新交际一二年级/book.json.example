@@ -1,0 +1,12 @@
+{
+  "name": "示例词汇本",
+  "output": "词汇表（打印版）.pdf",
+  "seed": 42,
+  "sources": [
+    {
+      "path": "词汇.md",
+      "parser": "word_list",
+      "label": "我的词表"
+    }
+  ]
+}
