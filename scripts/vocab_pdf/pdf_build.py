@@ -22,6 +22,17 @@ def find_cjk_font() -> str:
     return ""
 
 
+def find_cjk_bold_font() -> str:
+    candidates = [
+        "/mnt/c/Windows/Fonts/msyhbd.ttc",
+        "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",
+    ]
+    for p in candidates:
+        if Path(p).exists():
+            return p
+    return ""
+
+
 def find_ipa_font() -> str:
     candidates = [
         "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
@@ -41,7 +52,7 @@ def build_pdf(
     include_ipa: bool = False,
 ) -> None:
     from reportlab.lib import colors
-    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib.pagesizes import A4
     from reportlab.lib.styles import ParagraphStyle
     from reportlab.lib.units import mm
     from reportlab.pdfbase import pdfmetrics
@@ -58,6 +69,13 @@ def build_pdf(
 
     pdfmetrics.registerFont(TTFont("CJK", font_path, subfontIndex=0))
 
+    bold_font_path = find_cjk_bold_font()
+    if bold_font_path:
+        pdfmetrics.registerFont(TTFont("CJKBold", bold_font_path, subfontIndex=0))
+        bold_font_name = "CJKBold"
+    else:
+        bold_font_name = "CJK"
+
     ipa_font_path = find_ipa_font()
     if ipa_font_path:
         pdfmetrics.registerFont(TTFont("IPA", ipa_font_path))
@@ -67,15 +85,15 @@ def build_pdf(
 
     doc = SimpleDocTemplate(
         str(out_path),
-        pagesize=landscape(A4),
+        pagesize=A4,
         leftMargin=6 * mm,
         rightMargin=6 * mm,
         topMargin=8 * mm,
         bottomMargin=8 * mm,
     )
 
-    base_font_size = 7
-    header_font_size = 8
+    base_font_size = 8
+    header_font_size = 9
 
     # -- build raw text rows for measurement (before creating Paragraphs) --
     raw_header = ["英文", "音标（自然拼读）", "中文", "例句", "出处"]
@@ -90,11 +108,12 @@ def build_pdf(
         ])
 
     # -- measure max rendered string-width per column (points) --
-    col_fonts = ["CJK", ipa_font_name, "CJK", "CJK", "CJK"]
+    col_fonts = [bold_font_name, ipa_font_name, "CJK", "CJK", "CJK"]
+    col_fs_delta = [0.5, 0, 0, 0, 0]  # extra pts per column on top of base
 
     def _measure_maxes(data_fs: float) -> list[float]:
         maxes = [0.0] * 5
-        # header row at its own font size
+        # header row at its own font size (col 0 is bold)
         for ci, text in enumerate(raw_header):
             w = pdfmetrics.stringWidth(text, col_fonts[ci], header_font_size)
             maxes[ci] = max(maxes[ci], w)
@@ -102,19 +121,20 @@ def build_pdf(
         for row in raw_rows:
             for ci, cell in enumerate(row):
                 font = col_fonts[ci]
+                fs = data_fs + col_fs_delta[ci]
                 if ci == 4:  # source column: list of strings, measure longest line
                     for src in cell:
-                        w = pdfmetrics.stringWidth(src, font, data_fs)
+                        w = pdfmetrics.stringWidth(src, font, fs)
                         maxes[ci] = max(maxes[ci], w)
                 else:
-                    w = pdfmetrics.stringWidth(str(cell), font, data_fs)
+                    w = pdfmetrics.stringWidth(str(cell), font, fs)
                     maxes[ci] = max(maxes[ci], w)
         return maxes
 
     col_max_pts = _measure_maxes(base_font_size)
 
     # page geometry
-    page_width_mm = 297  # A4 landscape
+    page_width_mm = 210  # A4 portrait
     margin_mm = 6 * 2    # left + right
     available_mm = page_width_mm - margin_mm
     pad_per_cell_pts = 2 + 2  # LEFTPADDING + RIGHTPADDING
@@ -125,24 +145,21 @@ def build_pdf(
     col_widths_mm = _maxes_to_widths(col_max_pts)
     total_mm = sum(col_widths_mm)
 
-    # scale font down proportionally if columns don't fit
     data_font_size = base_font_size
     if total_mm > available_mm:
+        # scale column widths down to fit; text wraps where needed
         scale = available_mm / total_mm
-        data_font_size = max(5.0, base_font_size * scale)
-        if data_font_size < base_font_size:
-            col_max_pts = _measure_maxes(data_font_size)
-            col_widths_mm = _maxes_to_widths(col_max_pts)
-            total_mm = sum(col_widths_mm)
-
-    # distribute remaining slack proportionally
-    slack = available_mm - total_mm
-    if slack > 0 and sum(col_max_pts) > 0:
         for i in range(len(col_widths_mm)):
-            col_widths_mm[i] += slack * (col_max_pts[i] / sum(col_max_pts))
+            col_widths_mm[i] *= scale
+    else:
+        # distribute remaining slack proportionally
+        slack = available_mm - total_mm
+        if slack > 0 and sum(col_max_pts) > 0:
+            for i in range(len(col_widths_mm)):
+                col_widths_mm[i] += slack * (col_max_pts[i] / sum(col_max_pts))
 
     log(
-        "[pdf] measured columns: font=%.1fpt  widths=[%s]mm"
+        "[pdf] measured columns: font=%dpt  widths=[%s]mm"
         % (data_font_size, ", ".join("%.1f" % w for w in col_widths_mm))
     )
 
@@ -162,6 +179,12 @@ def build_pdf(
     header_style = ParagraphStyle(
         "hdr", fontName="CJK", fontSize=header_font_size,
         leading=header_font_size + 2, textColor=colors.white,
+    )
+
+    english_fs = data_font_size + 0.5
+    english_style = ParagraphStyle(
+        "english", fontName=bold_font_name, fontSize=english_fs,
+        leading=english_fs + 1.5, wordWrap="CJK",
     )
 
     def escape_xml(text: str) -> str:
@@ -184,7 +207,7 @@ def build_pdf(
         src_html = "<br/>".join(escape_xml(s) for s in e.sources)
         data.append(
             [
-                P(e.english),
+                P(e.english, english_style),
                 P(phonics_column(e.english, include_ipa=include_ipa, allow_network=False), phonics_style),
                 P(e.chinese),
                 P(example_sentence(e.english, e.chinese), example_style),
