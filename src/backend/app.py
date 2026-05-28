@@ -45,6 +45,8 @@ def _ensure_default_settings() -> dict:
         settings = STORAGE.upsert_settings({"daily_target": CFG.daily_target_default})
     if not CFG.image_mode_enabled and settings.get("mode_image"):
         settings = STORAGE.upsert_settings({"mode_image": False})
+    if settings.get("typing_mode") not in {"full", "missing_vowels"}:
+        settings = STORAGE.upsert_settings({"typing_mode": "full"})
     return settings
 
 
@@ -80,7 +82,7 @@ def _build_question(word: dict, all_words: list[dict], settings: dict) -> dict:
     if mode == "meaning":
         q = build_meaning_question(word, all_words, rng)
     elif mode == "typing":
-        q = build_typing_question(word)
+        q = build_typing_question(word, typing_mode=settings.get("typing_mode", "full"))
     else:
         q = build_image_question(word, all_words, rng, provider=CFG.image_provider)
 
@@ -134,11 +136,14 @@ def api_update_settings():
         "mode_meaning",
         "mode_image",
         "mode_typing",
+        "typing_mode",
         "ui_language",
     }
     patch = {k: v for k, v in payload.items() if k in allowed}
     if "daily_target" in patch:
         patch["daily_target"] = max(1, int(patch["daily_target"]))
+    if "typing_mode" in patch and patch["typing_mode"] not in {"full", "missing_vowels"}:
+        patch["typing_mode"] = "full"
     settings = STORAGE.upsert_settings(patch)
     return jsonify({"ok": True, "settings": settings})
 

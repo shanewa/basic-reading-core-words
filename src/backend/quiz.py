@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import random
 import re
-from dataclasses import dataclass
+
+
+VOWELS = set("aeiou")
 
 
 def _slug(text: str) -> str:
@@ -16,6 +18,25 @@ def normalize_typing(text: str) -> str:
     text = re.sub(r"[\.,!?;:'\"\(\)\[\]\{\}]", " ", text)
     text = re.sub(r"\s+", " ", text)
     return text
+
+
+def _letters_only(text: str) -> str:
+    return re.sub(r"[^a-z]", "", text.lower())
+
+
+def _mask_vowels(text: str) -> str:
+    chars: list[str] = []
+    for ch in text:
+        if ch.lower() in VOWELS and ch.isalpha():
+            chars.append("_")
+        else:
+            chars.append(ch)
+    return "".join(chars)
+
+
+def _missing_vowels(text: str) -> str:
+    letters = _letters_only(text)
+    return "".join(ch for ch in letters if ch in VOWELS)
 
 
 def pick_modes(settings: dict) -> list[str]:
@@ -72,12 +93,41 @@ def build_meaning_question(word: dict, all_words: list[dict], rng: random.Random
     }
 
 
-def build_typing_question(word: dict) -> dict:
+def build_typing_question(word: dict, typing_mode: str = "full") -> dict:
+    headword = word["headword"]
+    mode = (typing_mode or "full").strip().lower()
+    if mode not in {"full", "missing_vowels"}:
+        mode = "full"
+
+    if mode == "missing_vowels":
+        missing = _missing_vowels(headword)
+        # If there are no vowels to hide, fallback to full dictation.
+        if not missing:
+            mode = "full"
+        else:
+            return {
+                "type": "typing",
+                "typingMode": "missing_vowels",
+                "prompt": word["translation"].get("zhHans") or headword,
+                "subPrompt": _mask_vowels(headword),
+                "inputHint": "Type only the missing vowels in order",
+                "answer": {
+                    "style": "missing_vowels",
+                    "full": headword,
+                    "missing": missing,
+                },
+            }
+
     return {
         "type": "typing",
-        "prompt": word["translation"].get("zhHans") or word["headword"],
-        "subPrompt": word["headword"],
-        "answer": word["headword"],
+        "typingMode": "full",
+        "prompt": word["translation"].get("zhHans") or headword,
+        "subPrompt": headword,
+        "inputHint": "Type the full English word/phrase",
+        "answer": {
+            "style": "full",
+            "full": headword,
+        },
     }
 
 
@@ -124,7 +174,20 @@ def evaluate_answer(mode: str, expected, user_answer) -> tuple[bool, int]:
         ok = str(user_answer or "") == str(expected)
         return ok, 4 if ok else 1
     if mode == "typing":
-        ok = normalize_typing(str(user_answer or "")) == normalize_typing(str(expected or ""))
+        user_text = str(user_answer or "")
+        if isinstance(expected, dict):
+            style = expected.get("style", "full")
+            full = str(expected.get("full", ""))
+            if style == "missing_vowels":
+                missing = str(expected.get("missing", ""))
+                ok = (
+                    _letters_only(user_text) == missing
+                    or normalize_typing(user_text) == normalize_typing(full)
+                )
+            else:
+                ok = normalize_typing(user_text) == normalize_typing(full)
+        else:
+            ok = normalize_typing(user_text) == normalize_typing(str(expected or ""))
         return ok, 5 if ok else 2
     if mode == "image":
         got = sorted(list(user_answer or []))

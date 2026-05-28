@@ -4,6 +4,7 @@ const state = {
   question: null,
   selected: null,
   selectedImages: new Set(),
+  questionLocked: false,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -26,6 +27,45 @@ function setFeedback(text, ok = null) {
   if (ok === true) el.style.color = "#147a41";
   else if (ok === false) el.style.color = "#a62323";
   else el.style.color = "";
+}
+
+function shakeQuestionBox() {
+  const box = $("questionBox");
+  box.classList.remove("shake");
+  void box.offsetWidth;
+  box.classList.add("shake");
+}
+
+async function submitAndHandle(answer, onWrong, onCorrect) {
+  if (!state.question || state.questionLocked) return;
+  state.questionLocked = true;
+  try {
+    const data = await api("/api/answer", {
+      method: "POST",
+      body: JSON.stringify({ questionId: state.question.questionId, answer }),
+    });
+
+    if (data.isCorrect) {
+      if (onCorrect) onCorrect();
+      setFeedback("回答正确！", true);
+      setTimeout(() => {
+        loadSession();
+      }, 420);
+      return;
+    }
+
+    if (onWrong) onWrong();
+    shakeQuestionBox();
+    setFeedback("回答错误，请点击下一题继续", false);
+  } catch (err) {
+    setFeedback(err.message, false);
+  } finally {
+    // Wrong answer should stop auto-resubmission on the same consumed question.
+    // Correct answer path will load next question shortly.
+    if (state.question) {
+      state.questionLocked = false;
+    }
+  }
 }
 
 function renderProgress(progress, dailyTarget = 20) {
@@ -60,23 +100,42 @@ function renderMeaningQuestion(q) {
   `;
 
   state.selected = null;
+  state.questionLocked = false;
   for (const btn of box.querySelectorAll(".option-btn")) {
     btn.addEventListener("click", () => {
+      if (state.questionLocked) return;
       state.selected = btn.dataset.value;
       for (const b of box.querySelectorAll(".option-btn")) b.classList.remove("selected");
       btn.classList.add("selected");
+
+      submitAndHandle(
+        state.selected,
+        () => {
+          btn.classList.add("wrong");
+        },
+        () => {
+          btn.classList.add("correct");
+        }
+      );
     });
   }
 }
 
 function renderTypingQuestion(q) {
   const box = $("questionBox");
+  const isMissingVowels = q.typingMode === "missing_vowels";
+  const title = isMissingVowels
+    ? "Fill in missing letters (vowels)"
+    : "Type the full English word/phrase";
+  const placeholder = isMissingVowels ? "Type missing vowels..." : "Type full answer...";
   box.innerHTML = `
-    <p class="q-sub">Type the English word/phrase</p>
+    <p class="q-sub">${title}</p>
     <p class="q-prompt">${q.prompt}</p>
-    <input id="typingInput" type="text" placeholder="Type answer..." />
+    <p class="q-sub">${q.subPrompt || ""}</p>
+    <input id="typingInput" type="text" placeholder="${placeholder}" />
   `;
   state.selected = null;
+  state.questionLocked = false;
 }
 
 function renderImageQuestion(q) {
@@ -98,6 +157,7 @@ function renderImageQuestion(q) {
   `;
 
   state.selectedImages.clear();
+  state.questionLocked = false;
   for (const img of box.querySelectorAll("img")) {
     img.addEventListener("error", () => {
       const seed = encodeURIComponent(`${q.prompt}-${Math.random().toString(36).slice(2, 8)}`);
@@ -106,6 +166,7 @@ function renderImageQuestion(q) {
   }
   for (const item of box.querySelectorAll(".img-option")) {
     item.addEventListener("click", () => {
+      if (state.questionLocked) return;
       const id = item.dataset.id;
       if (state.selectedImages.has(id)) {
         state.selectedImages.delete(id);
@@ -114,6 +175,23 @@ function renderImageQuestion(q) {
         if (state.selectedImages.size >= 2) return;
         state.selectedImages.add(id);
         item.classList.add("selected");
+      }
+
+      if (state.selectedImages.size === 2) {
+        const answer = Array.from(state.selectedImages.values());
+        submitAndHandle(
+          answer,
+          () => {
+            for (const card of box.querySelectorAll(".img-option.selected")) {
+              card.classList.add("wrong");
+            }
+          },
+          () => {
+            for (const card of box.querySelectorAll(".img-option.selected")) {
+              card.classList.add("correct");
+            }
+          }
+        );
       }
     });
   }
@@ -154,21 +232,10 @@ function currentAnswer() {
 
 async function submitAnswer() {
   if (!state.question) return;
+  if (state.question.type !== "typing") return;
   const answer = currentAnswer();
-  if (state.question.type === "meaning" && !answer) return setFeedback("请选择一个答案", false);
-  if (state.question.type === "image" && (!answer || answer.length !== 2)) return setFeedback("请选择两张图片", false);
   if (state.question.type === "typing" && !String(answer).trim()) return setFeedback("请输入答案", false);
-
-  try {
-    const data = await api("/api/answer", {
-      method: "POST",
-      body: JSON.stringify({ questionId: state.question.questionId, answer }),
-    });
-    setFeedback(data.isCorrect ? "回答正确！" : "再想想，下次会更好", data.isCorrect);
-    await loadSession();
-  } catch (err) {
-    setFeedback(err.message, false);
-  }
+  await submitAndHandle(answer, null, null);
 }
 
 function fillSettingsForm() {
@@ -177,6 +244,7 @@ function fillSettingsForm() {
   $("modeMeaning").checked = !!s.mode_meaning;
   $("modeImage").checked = !!s.mode_image;
   $("modeTyping").checked = !!s.mode_typing;
+  $("typingMode").value = s.typing_mode || "full";
 
   const select = $("bookSelect");
   select.innerHTML = "";
@@ -197,6 +265,7 @@ async function saveSettings() {
       mode_meaning: $("modeMeaning").checked,
       mode_image: $("modeImage").checked,
       mode_typing: $("modeTyping").checked,
+      typing_mode: $("typingMode").value,
     };
     const data = await api("/api/settings", {
       method: "POST",

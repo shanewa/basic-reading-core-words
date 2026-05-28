@@ -11,8 +11,9 @@ DEFAULT_SETTINGS = {
     "book_dir": "",
     "daily_target": 20,
     "mode_meaning": True,
-    "mode_image": True,
+    "mode_image": False,
     "mode_typing": True,
+    "typing_mode": "full",
     "ui_language": "zh",
 }
 
