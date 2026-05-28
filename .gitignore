@@ -2,3 +2,4 @@
 .venv/*
 books/*/*.pdf
 books/*/.cache/
+.claude/
