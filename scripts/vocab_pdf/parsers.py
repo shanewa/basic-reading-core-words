@@ -17,7 +17,7 @@ def parse_grade_table(path: Path, label: str) -> list[WordEntry]:
             continue
         m_unit = re.match(r"^### Unit (\d+)", line)
         if m_unit:
-            unit = f"Unit {m_unit.group(1)}"
+            unit = f"U{m_unit.group(1)}"
             continue
         m_row = re.match(r"^\| ([^|]+) \| ([^|]+) \|$", line.strip())
         if not m_row or m_row.group(1) in ("英文", "------"):
