@@ -2,8 +2,9 @@ import json
 import re
 import urllib.error
 import urllib.parse
-import urllib.request
+from pathlib import Path
 
+from .net import urlopen
 from .util import clean_headword
 
 VOWEL_TEAMS = sorted(
@@ -31,6 +32,27 @@ MANUAL_IPA: dict[str, str] = {
 }
 
 _IPA_CACHE: dict[str, str] = {}
+
+
+def load_ipa_cache(book_dir: Path) -> None:
+    for rel in ("ipa.json", ".cache/ipa.json"):
+        path = book_dir / rel
+        if not path.is_file():
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for k, v in data.items():
+            if v:
+                _IPA_CACHE[k.lower()] = v
+
+
+def save_ipa_cache(book_dir: Path) -> None:
+    cache_dir = book_dir / ".cache"
+    cache_dir.mkdir(exist_ok=True)
+    path = cache_dir / "ipa.json"
+    path.write_text(
+        json.dumps(_IPA_CACHE, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def segment_graphemes(word: str) -> list[str]:
@@ -76,29 +98,66 @@ def phonics_display(english: str) -> str:
     return " ".join(tokens)
 
 
-def lookup_ipa_word(word: str) -> str:
+def _format_ipa(raw: str) -> str:
+    raw = raw.strip()
+    if not raw:
+        return ""
+    if not raw.startswith("/"):
+        raw = f"/{raw}/"
+    return raw
+
+
+_ENG_TO_IPA_WARNED = False
+
+
+def ipa_from_eng_to_ipa(word: str) -> str:
+    global _ENG_TO_IPA_WARNED
+    try:
+        import eng_to_ipa as eta
+    except ImportError:
+        if not _ENG_TO_IPA_WARNED:
+            from .log import log
+
+            log("[ipa] eng-to-ipa not installed; run: pip install eng-to-ipa")
+            _ENG_TO_IPA_WARNED = True
+        return ""
+    try:
+        converted = eta.convert(word)
+        if converted and converted.lower() != word.lower():
+            return _format_ipa(converted)
+    except Exception:
+        pass
+    return ""
+
+
+def lookup_ipa_word(word: str, *, allow_network: bool = False) -> str:
     w = word.lower().replace("'", "'")
     if word in MANUAL_IPA:
         return MANUAL_IPA[word]
-    if w in _IPA_CACHE:
+    if w in _IPA_CACHE and _IPA_CACHE[w]:
         return _IPA_CACHE[w]
+
+    ipa = ipa_from_eng_to_ipa(word)
+    if ipa:
+        _IPA_CACHE[w] = ipa
+        return ipa
+
+    if not allow_network:
+        _IPA_CACHE[w] = ""
+        return ""
 
     url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{urllib.parse.quote(w, safe='')}"
     try:
-        with urllib.request.urlopen(url, timeout=8) as resp:
+        with urlopen(url, timeout=8) as resp:
             data = json.loads(resp.read().decode())
         for entry in data:
             if entry.get("phonetic"):
-                ipa = entry["phonetic"].strip()
-                if not ipa.startswith("/"):
-                    ipa = f"/{ipa}/"
+                ipa = _format_ipa(entry["phonetic"])
                 _IPA_CACHE[w] = ipa
                 return ipa
             for phon in entry.get("phonetics", []):
                 if phon.get("text"):
-                    ipa = phon["text"].strip()
-                    if not ipa.startswith("/"):
-                        ipa = f"/{ipa}/"
+                    ipa = _format_ipa(phon["text"])
                     _IPA_CACHE[w] = ipa
                     return ipa
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, KeyError):
@@ -107,30 +166,35 @@ def lookup_ipa_word(word: str) -> str:
     return ""
 
 
-def to_ipa(english: str) -> str:
+def to_ipa(english: str, *, allow_network: bool = False) -> str:
     head = clean_headword(english)
     if not head or not re.search(r"[a-zA-Z]", head):
         return ""
     ipas = []
     for piece in head.split():
-        ipa = lookup_ipa_word(piece)
+        ipa = lookup_ipa_word(piece, allow_network=allow_network)
         if ipa:
             ipas.append(ipa)
     return " ".join(ipas)
 
 
-def phonics_column(english: str) -> str:
+def phonics_column(english: str, *, include_ipa: bool = True, allow_network: bool = False) -> str:
+    """e.g. beef -> b-ee-f  /biːf/"""
     seg = phonics_display(english)
-    ipa = to_ipa(english)
+    if not include_ipa:
+        return seg
+    ipa = to_ipa(english, allow_network=allow_network)
     if ipa:
         return f"{seg}  {ipa}"
     return seg
 
 
-def prefetch_ipa(entries) -> None:
+def prefetch_ipa(entries, book_dir: Path, *, use_network: bool = False) -> None:
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
     from .log import log
+
+    load_ipa_cache(book_dir)
 
     words: set[str] = set()
     for e in entries:
@@ -140,13 +204,21 @@ def prefetch_ipa(entries) -> None:
                 words.add(piece)
 
     total = len(words)
-    log(f"[ipa] start: fetching phonetics for {total} headwords (network)...")
-    with ThreadPoolExecutor(max_workers=12) as pool:
-        futures = {pool.submit(lookup_ipa_word, w): w for w in sorted(words)}
+    mode = "offline + cache" if not use_network else "offline, cache, then online"
+    log(f"[ipa] start: building IPA for {total} headwords ({mode})...")
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        futures = {
+            pool.submit(lookup_ipa_word, w, allow_network=use_network): w
+            for w in sorted(words)
+        }
         done = 0
         for fut in as_completed(futures):
             fut.result()
             done += 1
             if done % 50 == 0 or done == total:
                 log(f"[ipa] progress: {done}/{total}")
-    log(f"[ipa] finished: {total} headwords")
+    save_ipa_cache(book_dir)
+    filled = sum(1 for w in words if _IPA_CACHE.get(w.lower(), ""))
+    log(f"[ipa] finished: {filled}/{total} with IPA")
+    if filled < total:
+        log("[ipa] tip: pip install -r requirements.txt (needs eng-to-ipa for offline IPA)")

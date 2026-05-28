@@ -21,6 +21,11 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Path to book.json (default: <book-dir>/book.json)",
     )
+    parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="Do not call translation or IPA APIs (use translations.json only)",
+    )
     args = parser.parse_args(argv)
 
     book_dir = args.book_dir.resolve()
@@ -33,5 +38,5 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Missing config: {config_path}", file=sys.stderr)
         return 1
 
-    build_book(book_dir, config_path)
+    build_book(book_dir, config_path, offline=args.offline)
     return 0
