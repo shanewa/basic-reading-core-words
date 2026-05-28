@@ -22,7 +22,24 @@ def find_cjk_font() -> str:
     return ""
 
 
-def build_pdf(entries: list[WordEntry], out_path: Path, seed: int = 42) -> None:
+def find_ipa_font() -> str:
+    candidates = [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+    ]
+    for p in candidates:
+        if Path(p).exists():
+            return p
+    return ""
+
+
+def build_pdf(
+    entries: list[WordEntry],
+    out_path: Path,
+    seed: int = 42,
+    *,
+    include_ipa: bool = False,
+) -> None:
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import A4, landscape
     from reportlab.lib.styles import ParagraphStyle
@@ -41,6 +58,13 @@ def build_pdf(entries: list[WordEntry], out_path: Path, seed: int = 42) -> None:
 
     pdfmetrics.registerFont(TTFont("CJK", font_path, subfontIndex=0))
 
+    ipa_font_path = find_ipa_font()
+    if ipa_font_path:
+        pdfmetrics.registerFont(TTFont("IPA", ipa_font_path))
+        ipa_font_name = "IPA"
+    else:
+        ipa_font_name = "CJK"
+
     doc = SimpleDocTemplate(
         str(out_path),
         pagesize=landscape(A4),
@@ -52,6 +76,12 @@ def build_pdf(entries: list[WordEntry], out_path: Path, seed: int = 42) -> None:
 
     cell_style = ParagraphStyle(
         "cell", fontName="CJK", fontSize=7, leading=9, wordWrap="CJK"
+    )
+    phonics_style = ParagraphStyle(
+        "phonics", fontName=ipa_font_name, fontSize=7, leading=9, wordWrap="CJK"
+    )
+    example_style = ParagraphStyle(
+        "example", fontName="CJK", fontSize=7, leading=10, wordWrap="CJK"
     )
     header_style = ParagraphStyle(
         "hdr", fontName="CJK", fontSize=8, leading=10, textColor=colors.white
@@ -79,16 +109,17 @@ def build_pdf(entries: list[WordEntry], out_path: Path, seed: int = 42) -> None:
         data.append(
             [
                 P(e.english),
-                P(phonics_column(e.english)),
+                P(phonics_column(e.english, include_ipa=include_ipa, allow_network=False), phonics_style),
                 P(e.chinese),
-                P(example_sentence(e.english, e.chinese)),
+                P(example_sentence(e.english, e.chinese), example_style),
                 P("；".join(e.sources)),
             ]
         )
 
+    # landscape A4 usable width ~281mm: 英文 | 拼读+音标 | 中文 | 例句 | 出处
     table = Table(
         data,
-        colWidths=[32 * mm, 52 * mm, 38 * mm, 58 * mm, 95 * mm],
+        colWidths=[26 * mm, 50 * mm, 30 * mm, 88 * mm, 42 * mm],
         repeatRows=1,
     )
     table.setStyle(

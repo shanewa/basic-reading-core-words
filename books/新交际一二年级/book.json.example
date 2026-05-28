@@ -1,6 +1,6 @@
 {
   "name": "示例词汇本",
-  "output": "词汇表（打印版）.pdf",
+  "output": "auto",
   "seed": 42,
   "sources": [
     {

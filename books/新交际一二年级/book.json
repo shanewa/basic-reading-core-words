@@ -1,7 +1,9 @@
 {
   "name": "新交际一二年级 + 基础阅读400",
-  "output": "词汇表（打印版）.pdf",
+  "output": "auto",
   "seed": 42,
+  "translate_missing": false,
+  "fetch_ipa": false,
   "sources": [
     {
       "path": "一年级词汇.md",

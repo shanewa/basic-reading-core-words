@@ -1,2 +1,3 @@
 # scripts/generate_vocab_pdf.py
 reportlab>=4.0,<5
+eng-to-ipa>=0.0.2
