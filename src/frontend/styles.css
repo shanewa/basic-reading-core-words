@@ -59,9 +59,9 @@ body {
 }
 
 .topbar {
-  max-width: 1160px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 18px 20px;
+  padding: 14px 14px 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -80,16 +80,31 @@ body {
 }
 
 .layout {
-  max-width: 1160px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 8px 20px 28px;
+  padding: 4px 14px 18px;
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 16px;
+  grid-template-columns: 2.35fr 1fr;
+  grid-template-areas:
+    "learn settings"
+    "learn progress";
+  grid-template-rows: auto 1fr;
+  gap: 12px;
+}
+
+#learnCard {
+  grid-area: learn;
+  min-height: calc(100vh - 128px);
+  display: flex;
+  flex-direction: column;
+}
+
+#settingsCard {
+  grid-area: settings;
 }
 
 #progressCard {
-  grid-column: span 2;
+  grid-area: progress;
 }
 
 .card {
@@ -97,7 +112,7 @@ body {
   border: 1px solid var(--line);
   backdrop-filter: blur(6px);
   border-radius: 18px;
-  padding: 16px;
+  padding: 20px;
   box-shadow: 0 10px 28px rgba(23, 48, 66, 0.08);
   animation: reveal 0.45s ease;
 }
@@ -122,7 +137,7 @@ body {
 
 h2 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.38rem;
 }
 
 .badge {
@@ -135,21 +150,24 @@ h2 {
 }
 
 .question-box {
-  min-height: 220px;
+  min-height: 52vh;
+  flex: 1;
   border: 1px dashed #aac3cf;
   border-radius: 14px;
   background: #fcfeff;
-  padding: 12px;
+  padding: 16px;
 }
 
 .q-prompt {
-  font-size: 1.5rem;
+  font-size: clamp(2.8rem, 6vw, 6rem);
+  line-height: 1.1;
   font-weight: 700;
-  margin: 4px 0 12px;
+  margin: 6px 0 14px;
 }
 
 .q-sub {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
+  font-size: clamp(1.05rem, 1.35vw, 1.35rem);
   color: var(--muted);
 }
 
@@ -161,7 +179,10 @@ h2 {
 .option-btn {
   border: 1px solid #cfe2eb;
   border-radius: 10px;
-  padding: 10px 12px;
+  padding: 16px 18px;
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  font-weight: 600;
+  line-height: 1.3;
   text-align: left;
   background: #ffffff;
   cursor: pointer;
@@ -170,6 +191,16 @@ h2 {
 .option-btn.selected {
   border-color: var(--accent-2);
   background: #ecfffd;
+}
+
+.option-btn.wrong {
+  border-color: #d64545;
+  background: #ffe8e8;
+}
+
+.option-btn.correct {
+  border-color: #1d9b57;
+  background: #e9ffef;
 }
 
 .img-grid {
@@ -189,12 +220,42 @@ h2 {
 .img-option img {
   display: block;
   width: 100%;
-  height: 120px;
+  height: 180px;
   object-fit: cover;
 }
 
 .img-option.selected {
   border-color: var(--accent);
+}
+
+.img-option.wrong {
+  border-color: #d64545;
+}
+
+.img-option.correct {
+  border-color: #1d9b57;
+}
+
+.question-box.shake {
+  animation: box-shake 0.33s linear;
+}
+
+@keyframes box-shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  50% {
+    transform: translateX(8px);
+  }
+  75% {
+    transform: translateX(-6px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 input[type="text"],
@@ -203,15 +264,15 @@ select {
   width: 100%;
   border: 1px solid #c7d9e2;
   border-radius: 10px;
-  padding: 9px 10px;
-  font-size: 1rem;
+  padding: 12px 12px;
+  font-size: 1.15rem;
   background: #fff;
 }
 
 label {
   display: block;
-  margin-bottom: 12px;
-  font-size: 0.95rem;
+  margin-bottom: 14px;
+  font-size: 1.02rem;
 }
 
 .mode-grid {
@@ -234,8 +295,8 @@ label {
 button {
   border: 0;
   border-radius: 12px;
-  padding: 10px 14px;
-  font-size: 0.95rem;
+  padding: 12px 16px;
+  font-size: 1.05rem;
   cursor: pointer;
 }
 
@@ -258,6 +319,7 @@ button {
 
 .feedback {
   min-height: 24px;
+  font-size: 1.1rem;
   font-weight: 600;
 }
 
@@ -278,20 +340,43 @@ button {
   border: 1px solid #d4e5ed;
   border-radius: 12px;
   background: #fcfeff;
-  padding: 10px;
+  padding: 12px;
+  font-size: 1.02rem;
 }
 
 @media (max-width: 920px) {
   .layout {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "learn"
+      "settings"
+      "progress";
+    grid-template-rows: auto;
   }
 
-  #progressCard {
-    grid-column: span 1;
+  #learnCard {
+    min-height: auto;
   }
 
   .img-grid {
     grid-template-columns: 1fr;
+  }
+
+  .question-box {
+    min-height: 220px;
+  }
+
+  .q-prompt {
+    font-size: clamp(2.2rem, 9vw, 3.2rem);
+  }
+
+  .q-sub {
+    font-size: 1rem;
+  }
+
+  .option-btn {
+    font-size: 1.08rem;
+    padding: 13px 12px;
   }
 
   .img-option img {
