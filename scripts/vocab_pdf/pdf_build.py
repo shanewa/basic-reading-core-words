@@ -41,7 +41,7 @@ def build_pdf(
     include_ipa: bool = False,
 ) -> None:
     from reportlab.lib import colors
-    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib.pagesizes import A4
     from reportlab.lib.styles import ParagraphStyle
     from reportlab.lib.units import mm
     from reportlab.pdfbase import pdfmetrics
@@ -67,34 +67,31 @@ def build_pdf(
 
     doc = SimpleDocTemplate(
         str(out_path),
-        pagesize=landscape(A4),
-        leftMargin=8 * mm,
-        rightMargin=8 * mm,
-        topMargin=10 * mm,
-        bottomMargin=10 * mm,
+        pagesize=A4,
+        leftMargin=6 * mm,
+        rightMargin=6 * mm,
+        topMargin=8 * mm,
+        bottomMargin=8 * mm,
     )
 
     cell_style = ParagraphStyle(
-        "cell", fontName="CJK", fontSize=7, leading=9, wordWrap="CJK"
+        "cell", fontName="CJK", fontSize=6, leading=7.5, wordWrap="CJK"
     )
     phonics_style = ParagraphStyle(
-        "phonics", fontName=ipa_font_name, fontSize=7, leading=9, wordWrap="CJK"
+        "phonics", fontName=ipa_font_name, fontSize=6, leading=7.5, wordWrap="CJK"
     )
     example_style = ParagraphStyle(
-        "example", fontName="CJK", fontSize=7, leading=10, wordWrap="CJK"
+        "example", fontName="CJK", fontSize=6, leading=7.5, wordWrap="CJK"
     )
     header_style = ParagraphStyle(
-        "hdr", fontName="CJK", fontSize=8, leading=10, textColor=colors.white
+        "hdr", fontName="CJK", fontSize=7, leading=9, textColor=colors.white
     )
 
+    def escape_xml(text: str) -> str:
+        return str(text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
     def P(text: str, style=cell_style) -> Paragraph:
-        safe = (
-            str(text)
-            .replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-        )
-        return Paragraph(safe, style)
+        return Paragraph(escape_xml(text), style)
 
     data = [
         [
@@ -106,20 +103,21 @@ def build_pdf(
         ]
     ]
     for e in shuffled:
+        src_html = "<br/>".join(escape_xml(s) for s in e.sources)
         data.append(
             [
                 P(e.english),
                 P(phonics_column(e.english, include_ipa=include_ipa, allow_network=False), phonics_style),
                 P(e.chinese),
                 P(example_sentence(e.english, e.chinese), example_style),
-                P("；".join(e.sources)),
+                Paragraph(src_html, cell_style),
             ]
         )
 
-    # landscape A4 usable width ~281mm: 英文 | 拼读+音标 | 中文 | 例句 | 出处
+    # portrait A4 usable width ~198mm: 英文 | 拼读+音标 | 中文 | 例句 | 出处
     table = Table(
         data,
-        colWidths=[26 * mm, 50 * mm, 30 * mm, 88 * mm, 42 * mm],
+        colWidths=[22 * mm, 48 * mm, 32 * mm, 68 * mm, 28 * mm],
         repeatRows=1,
     )
     table.setStyle(
@@ -128,14 +126,14 @@ def build_pdf(
                 ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2c5282")),
                 ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
                 ("FONTNAME", (0, 0), (-1, -1), "CJK"),
-                ("FONTSIZE", (0, 0), (-1, -1), 7),
+                ("FONTSIZE", (0, 0), (-1, -1), 6),
                 ("GRID", (0, 0), (-1, -1), 0.25, colors.grey),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f7fafc")]),
-                ("LEFTPADDING", (0, 0), (-1, -1), 3),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 3),
-                ("TOPPADDING", (0, 0), (-1, -1), 2),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+                ("LEFTPADDING", (0, 0), (-1, -1), 2),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 2),
+                ("TOPPADDING", (0, 0), (-1, -1), 1),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
             ]
         )
     )
