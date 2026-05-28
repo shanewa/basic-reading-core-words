@@ -41,7 +41,7 @@ def build_pdf(
     include_ipa: bool = False,
 ) -> None:
     from reportlab.lib import colors
-    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.pagesizes import A4, landscape
     from reportlab.lib.styles import ParagraphStyle
     from reportlab.lib.units import mm
     from reportlab.pdfbase import pdfmetrics
@@ -67,15 +67,15 @@ def build_pdf(
 
     doc = SimpleDocTemplate(
         str(out_path),
-        pagesize=A4,
+        pagesize=landscape(A4),
         leftMargin=6 * mm,
         rightMargin=6 * mm,
         topMargin=8 * mm,
         bottomMargin=8 * mm,
     )
 
-    base_font_size = 6
-    header_font_size = 7
+    base_font_size = 7
+    header_font_size = 8
 
     # -- build raw text rows for measurement (before creating Paragraphs) --
     raw_header = ["英文", "音标（自然拼读）", "中文", "例句", "出处"]
@@ -114,7 +114,7 @@ def build_pdf(
     col_max_pts = _measure_maxes(base_font_size)
 
     # page geometry
-    page_width_mm = 210  # A4 portrait
+    page_width_mm = 297  # A4 landscape
     margin_mm = 6 * 2    # left + right
     available_mm = page_width_mm - margin_mm
     pad_per_cell_pts = 2 + 2  # LEFTPADDING + RIGHTPADDING
