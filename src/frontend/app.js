@@ -412,13 +412,6 @@ function renderQuestion(payload) {
   else renderImageQuestion(q);
 }
 
-function showLoadingNext() {
-  const box = $("questionBox");
-  if (!box) return;
-  // Keep it lightweight so it never visually blocks the next render.
-  box.innerHTML = '<p class="q-prompt muted" style="text-align:center">加载下一题... Loading…</p>';
-}
-
 async function loadSession(opts = {}) {
   if (state.loadInFlight) {
     console.warn("[wg] loadSession already in flight; ignoring duplicate call");
@@ -431,7 +424,6 @@ async function loadSession(opts = {}) {
       clearTimeout(state.pendingNextTimer);
       state.pendingNextTimer = null;
     }
-    showLoadingNext();
     const params = new URLSearchParams();
     if (opts.wordId) {
       params.set("wordId", opts.wordId);
