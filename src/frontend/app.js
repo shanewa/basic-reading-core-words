@@ -161,6 +161,64 @@ function renderIpaLine(q) {
   return `<p class="ipa-line">音标 IPA: ${q.ipaText}</p>`;
 }
 
+// --- Speech (TTS) ---------------------------------------------------------
+
+function escapeHtml(s) {
+  return String(s || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function speakerButtonHtml(text) {
+  if (!text) return "";
+  const safe = escapeHtml(text);
+  return (
+    '<button type="button" class="icon-btn speaker-btn" ' +
+    `data-speak="${safe}" title="朗读 Speak" aria-label="朗读 Speak">` +
+    '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">' +
+    '<path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/>' +
+    '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor"/>' +
+    '<path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"/>' +
+    "</svg>" +
+    "</button>"
+  );
+}
+
+function speakText(text) {
+  if (!text) return;
+  if (!("speechSynthesis" in window)) {
+    setFeedback("浏览器不支持朗读 Speech not supported", false);
+    return;
+  }
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    u.rate = 0.9;
+    u.pitch = 1.0;
+    const voices = window.speechSynthesis.getVoices();
+    const preferred =
+      voices.find((v) => /en[-_]?US/i.test(v.lang) && /female|samantha|zira|google/i.test(v.name)) ||
+      voices.find((v) => /^en/i.test(v.lang));
+    if (preferred) u.voice = preferred;
+    window.speechSynthesis.speak(u);
+  } catch (err) {
+    console.warn("[wg] speak failed", err);
+  }
+}
+
+// Single delegated handler for any .speaker-btn inside the question box.
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest && e.target.closest(".speaker-btn");
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  speakText(btn.getAttribute("data-speak"));
+});
+
 function renderMeaningQuestion(q) {
   const box = $("questionBox");
   const opts = q.options
@@ -168,7 +226,7 @@ function renderMeaningQuestion(q) {
     .join("");
   box.innerHTML = `
     <p class="q-sub">Choose meaning</p>
-    <p class="q-prompt">${q.prompt}</p>
+    <p class="q-prompt with-speaker">${q.prompt}${speakerButtonHtml(q.headword || q.prompt)}</p>
     ${renderIpaLine(q)}
     ${renderSourceLine(q)}
     <div class="options">${opts}</div>
@@ -233,7 +291,7 @@ function renderTypingQuestion(q) {
 
   box.innerHTML = `
     <p class="q-sub">根据中文补全单词（不显示完整英文）</p>
-    <p class="q-prompt">${q.prompt}</p>
+    <p class="q-prompt with-speaker">${q.prompt}${speakerButtonHtml(q.headword)}</p>
     ${renderIpaLine(q)}
     ${renderSourceLine(q)}
     <div class="completion-board" id="completionBoard">${tokens}</div>
@@ -306,7 +364,7 @@ function renderImageQuestion(q) {
 
   box.innerHTML = `
     <p class="q-sub">Select two related images</p>
-    <p class="q-prompt">${q.prompt}</p>
+    <p class="q-prompt with-speaker">${q.prompt}${speakerButtonHtml(q.headword || q.prompt)}</p>
     ${renderIpaLine(q)}
     ${renderSourceLine(q)}
     <div class="img-grid">${cards}</div>

@@ -121,6 +121,7 @@ def _build_question(word: dict, all_words: list[dict], settings: dict) -> dict:
     }
     q["questionId"] = qid
     q["wordId"] = word["id"]
+    q["headword"] = word.get("headword") or word.get("display") or word["id"]
     q["sourceText"] = source_text
     q["ipaText"] = ipa_text
     q.pop("answer", None)
