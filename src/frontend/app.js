@@ -70,22 +70,16 @@ async function submitAndHandle(answer, onWrong, onCorrect) {
 
 function renderProgress(progress, dailyTarget = 20) {
   $("progressBadge").textContent = `${progress.todayReviewed} / ${dailyTarget}`;
-  const list = $("progressList");
-  list.innerHTML = "";
-  const items = [
-    ["Total Words", progress.totalWords],
-    ["Learned", progress.learnedWords],
-    ["New", progress.newWords],
-    ["Due", progress.dueWords],
-    ["Today Reviewed", progress.todayReviewed],
-    ["Today Correct", progress.todayCorrect],
-    ["Accuracy", `${Math.round(progress.todayAccuracy * 100)}%`],
-  ];
-  for (const [k, v] of items) {
-    const li = document.createElement("li");
-    li.innerHTML = `<strong>${k}</strong><br>${v}`;
-    list.appendChild(li);
-  }
+  $("pmReviewed").textContent = String(progress.todayReviewed || 0);
+  $("pmDue").textContent = String(progress.dueWords || 0);
+  $("pmAcc").textContent = `${Math.round((progress.todayAccuracy || 0) * 100)}%`;
+}
+
+function toggleSettingsPanel(forceOpen = null) {
+  const panel = $("settingsPanel");
+  const willOpen = forceOpen === null ? panel.classList.contains("hidden") : !!forceOpen;
+  panel.classList.toggle("hidden", !willOpen);
+  panel.setAttribute("aria-hidden", willOpen ? "false" : "true");
 }
 
 function renderMeaningQuestion(q) {
@@ -314,6 +308,8 @@ async function init() {
     $("saveSettingsBtn").addEventListener("click", saveSettings);
     $("rebuildBtn").addEventListener("click", rebuildWordbank);
     $("resetProgressBtn").addEventListener("click", resetProgress);
+    $("settingsToggleBtn").addEventListener("click", () => toggleSettingsPanel());
+    $("settingsCloseBtn").addEventListener("click", () => toggleSettingsPanel(false));
 
     $("langBtn").addEventListener("click", async () => {
       const next = state.settings.ui_language === "zh" ? "en" : "zh";
