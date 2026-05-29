@@ -55,9 +55,9 @@ def _ensure_default_settings() -> dict:
         typing_mode = settings.get("typing_mode", "")
     if typing_mode not in {"all_missing", "missing_one_vowel", "missing_multi_vowels"}:
         settings = STORAGE.upsert_settings({"typing_mode": "missing_multi_vowels"})
-    delay = int(settings.get("answer_delay_ms", 600) or 600)
+    delay = int(settings.get("answer_delay_ms", 300) or 300)
     if delay < 100 or delay > 3000:
-        settings = STORAGE.upsert_settings({"answer_delay_ms": 600})
+        settings = STORAGE.upsert_settings({"answer_delay_ms": 300})
     return settings
 
 

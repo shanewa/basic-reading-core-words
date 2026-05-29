@@ -39,6 +39,7 @@ function renderInitialLoading() {
 async function api(url, opts = {}) {
   const res = await fetch(url, {
     headers: { "Content-Type": "application/json" },
+    cache: "no-store",
     ...opts,
   });
   const data = await res.json();
@@ -66,7 +67,7 @@ function shakeQuestionBox() {
 async function submitAndHandle(answer, onWrong, onCorrect) {
   if (!state.question || state.questionLocked) return;
   state.questionLocked = true;
-  const delayMs = Math.max(100, Math.min(3000, Number(state.settings?.answer_delay_ms || 600)));
+  const delayMs = Math.max(100, Math.min(3000, Number(state.settings?.answer_delay_ms || 300)));
   const scheduleNext = () => {
     if (state.pendingNextTimer) {
       clearTimeout(state.pendingNextTimer);
@@ -349,6 +350,15 @@ async function loadSession() {
   }
 }
 
+async function forceLoadNextSession() {
+  if (state.pendingNextTimer) {
+    clearTimeout(state.pendingNextTimer);
+    state.pendingNextTimer = null;
+  }
+  state.questionLocked = false;
+  await loadSession();
+}
+
 function currentAnswer() {
   if (!state.question) return null;
   if (state.question.type === "meaning") return state.selected;
@@ -368,7 +378,7 @@ async function submitAnswer() {
 function fillSettingsForm() {
   const s = state.settings;
   $("dailyTarget").value = s.daily_target;
-  $("answerDelayMs").value = s.answer_delay_ms || 600;
+  $("answerDelayMs").value = s.answer_delay_ms || 300;
   $("modeMeaning").checked = !!s.mode_meaning;
   $("modeImage").checked = !!s.mode_image;
   $("modeTyping").checked = !!s.mode_typing;
@@ -400,7 +410,7 @@ async function saveSettings() {
     const patch = {
       book_dir: $("bookSelect").value,
       daily_target: Number($("dailyTarget").value || 20),
-      answer_delay_ms: Number($("answerDelayMs").value || 600),
+      answer_delay_ms: Number($("answerDelayMs").value || 300),
       mode_meaning: $("modeMeaning").checked,
       mode_image: $("modeImage").checked,
       mode_typing: $("modeTyping").checked,
@@ -451,14 +461,7 @@ async function init() {
     fillSettingsForm();
 
     $("submitBtn").addEventListener("click", submitAnswer);
-    $("nextBtn").addEventListener("click", () => {
-      if (state.pendingNextTimer) {
-        clearTimeout(state.pendingNextTimer);
-        state.pendingNextTimer = null;
-      }
-      state.questionLocked = false;
-      loadSession();
-    });
+    $("nextBtn").addEventListener("click", forceLoadNextSession);
     $("saveSettingsBtn").addEventListener("click", saveSettings);
     $("rebuildBtn").addEventListener("click", rebuildWordbank);
     $("resetProgressBtn").addEventListener("click", resetProgress);
