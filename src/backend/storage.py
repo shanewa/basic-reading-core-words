@@ -223,16 +223,26 @@ class StudyStorage:
                 """,
                 (book_dir, today),
             ).fetchone()
+            completed = conn.execute(
+                """
+                SELECT COUNT(DISTINCT word_id) AS completed_words
+                FROM review_log
+                WHERE book_dir=? AND study_date=? AND is_correct=1
+                """,
+                (book_dir, today),
+            ).fetchone()
         learned = int(row["learned"] or 0)
         due = int(row["due"] or 0)
         today_count = int(stats["c"] or 0)
         today_ok = int(stats["ok"] or 0)
+        today_completed_words = int(completed["completed_words"] or 0)
         return {
             "totalWords": total_words,
             "learnedWords": learned,
             "newWords": max(0, total_words - learned),
             "dueWords": due,
-            "todayReviewed": today_count,
+            # Use completed word count so retries do not exhaust daily quota.
+            "todayReviewed": today_completed_words,
             "todayCorrect": today_ok,
             "todayAccuracy": (today_ok / today_count) if today_count else 0.0,
         }
