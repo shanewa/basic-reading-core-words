@@ -1,0 +1,215 @@
+# Basic Reading Core 400 Words
+
+A local-first English vocabulary learning project for children, with adaptive review and lightweight content tooling.
+
+This repository combines two workflows:
+
+- A web learning application (Flask + vanilla frontend + SQLite)
+- A vocabulary pipeline that builds word banks and printable PDF materials
+
+## Demo
+
+![Word Garden demo](assets/word_garden_demo.gif)
+
+## Highlights
+
+- Book-based vocabulary learning
+- Daily study target (default: 20 words)
+- SM-2 spaced-repetition scheduling (Ebbinghaus-inspired)
+- Three quiz modes:
+  - Meaning choice (EN -> ZH)
+  - Image choice (pick 2 out of 3)
+  - Typing completion
+- Bilingual UI support (Chinese/English)
+- Persistent local progress tracking in SQLite
+
+## Repository Layout
+
+```text
+.
+|- books/                  # Vocabulary books and source files
+|- scripts/                # Build scripts for PDF and utilities
+|- src/backend/            # Flask API, scheduler, storage, wordbank logic
+|- src/frontend/           # Single-page frontend (HTML/CSS/JS)
+|- src/data/study.db       # Runtime SQLite DB (auto-created)
+|- requirements.txt        # Python dependencies
+|- Makefile                # Root command entrypoint
+`- DESIGN.md               # Product/design notes
+```
+
+## Requirements
+
+- Python 3.12 recommended
+- make recommended (WSL2/Linux/macOS)
+- On Windows, you can run the Python commands directly without make
+
+## Quick Start (Web App)
+
+### 1. Install dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+### 2. Build web wordbanks
+
+```bash
+python src/backend/build_wordbanks.py
+```
+
+Or:
+
+```bash
+make web-build-wordbanks
+```
+
+### 3. Start the local server
+
+```bash
+python src/backend/app.py
+```
+
+Or:
+
+```bash
+make web-run
+```
+
+### 4. Open in browser
+
+```text
+http://127.0.0.1:5000
+```
+
+## Common Commands
+
+```bash
+make web-install          # Install runtime dependencies
+make web-build-wordbanks  # Build books/*/wordbank.web.json
+make web-run              # Start local web service
+make web                  # Build wordbanks, then run web app
+
+make test-network         # Test online translation/dictionary connectivity
+
+make BOOK=新交际一二年级        # Build selected book PDF (incremental)
+make BOOK=新交际一二年级 rebuild
+make BOOK=新交际一二年级 clean
+```
+
+## Configuration
+
+### Environment Variables
+
+- APP_HOST (default: 127.0.0.1)
+- APP_PORT (default: 5000)
+- APP_DEBUG (default: 0)
+- STUDY_DB_PATH (default: src/data/study.db)
+- DAILY_TARGET_DEFAULT (default: 20)
+- IMAGE_MODE_ENABLED (default: 1)
+- IMAGE_PROVIDER (default: loremflickr)
+
+### Proxy Setup
+
+If your network requires a proxy, copy proxy.env.example to proxy.env.
+The root Makefile automatically loads proxy.env when present.
+
+```bash
+cp proxy.env.example proxy.env
+```
+
+PowerShell:
+
+```powershell
+Copy-Item proxy.env.example proxy.env
+```
+
+## Data Model
+
+### Wordbank Input/Output
+
+- Input: source files under books/<book>/, configured by book.json
+- Output: books/<book>/wordbank.web.json for web learning
+
+Key fields in wordbank.web.json:
+
+- book metadata
+- words[] entries with id, display, translation, pronunciation, sources, tags, and metadata
+
+### Study Storage (SQLite)
+
+Default path: src/data/study.db
+
+Main tables:
+
+- user_settings
+- word_state
+- review_log
+
+## API Overview
+
+- GET /api/health
+- GET /api/books
+- POST /api/wordbank/rebuild
+- GET /api/settings
+- POST /api/settings
+- GET /api/session
+- POST /api/answer
+- GET /api/progress
+- POST /api/reset
+
+## Add a New Vocabulary Book
+
+1. Copy books/新交际一二年级 to a new subfolder.
+2. Add your source files (for example, *.md).
+3. Update that folder's book.json.
+4. Update VOCAB in that folder's Makefile.
+5. Run make in the book folder, or run make BOOK=<folder_name> from repo root.
+
+See books/README.md for detailed book format guidance.
+
+## PDF Build (Optional)
+
+Inside a book directory:
+
+```bash
+make
+```
+
+Force rebuild:
+
+```bash
+make rebuild
+```
+
+If online translation/IPA is enabled, test connectivity first:
+
+```bash
+make test-network
+```
+
+Offline fallback:
+
+- Maintain books/<book>/translations.json
+- Keep translate_missing=false in book.json
+
+## Troubleshooting
+
+### UI appears stale or blank
+
+The backend sets no-cache headers for static assets. If needed, hard-refresh the browser and restart the server.
+
+### Image mode fails to load
+
+The frontend includes fallback image behavior. In restricted networks, disable image mode and use meaning/typing modes.
+
+### Need to reset learning progress
+
+Use the Reset action in the app, or remove the SQLite file and restart.
+
+## Development Notes
+
+- Build wordbanks before starting the web app.
+- Quiz logic: src/backend/quiz.py
+- Scheduling logic: src/backend/scheduler.py
+- Frontend interaction: src/frontend/app.js
+- Product/design context: DESIGN.md
