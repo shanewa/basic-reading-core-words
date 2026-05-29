@@ -54,7 +54,7 @@ def _ensure_default_settings() -> dict:
         settings = STORAGE.upsert_settings({"typing_mode": legacy_mode_map[typing_mode]})
         typing_mode = settings.get("typing_mode", "")
     if typing_mode not in {"all_missing", "missing_one_vowel", "missing_multi_vowels"}:
-        settings = STORAGE.upsert_settings({"typing_mode": "missing_one_vowel"})
+        settings = STORAGE.upsert_settings({"typing_mode": "missing_multi_vowels"})
     delay = int(settings.get("answer_delay_ms", 900) or 900)
     if delay < 200 or delay > 5000:
         settings = STORAGE.upsert_settings({"answer_delay_ms": 900})
@@ -160,7 +160,7 @@ def api_update_settings():
     if "daily_target" in patch:
         patch["daily_target"] = max(1, int(patch["daily_target"]))
     if "typing_mode" in patch and patch["typing_mode"] not in {"all_missing", "missing_one_vowel", "missing_multi_vowels"}:
-        patch["typing_mode"] = "missing_one_vowel"
+        patch["typing_mode"] = "missing_multi_vowels"
     if "answer_delay_ms" in patch:
         patch["answer_delay_ms"] = max(200, min(5000, int(patch["answer_delay_ms"])))
     settings = STORAGE.upsert_settings(patch)
