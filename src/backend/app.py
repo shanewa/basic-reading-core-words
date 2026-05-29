@@ -264,6 +264,7 @@ def api_favorites_toggle():
         return jsonify({"error": "no book selected"}), 400
     now_iso = datetime.utcnow().isoformat() + "Z"
     favorited = STORAGE.toggle_favorite(book_dir, word_id, now_iso)
+    print(f"[fav] toggle book={book_dir!r} word={word_id!r} -> favorited={favorited}", flush=True)
     return jsonify({"ok": True, "wordId": word_id, "favorited": favorited})
 
 
@@ -274,6 +275,7 @@ def api_favorites_list():
     if not book_dir:
         return jsonify({"error": "no book selected"}), 400
     word_ids = STORAGE.list_favorites(book_dir)
+    print(f"[fav] list book={book_dir!r} ids={word_ids}", flush=True)
     if not word_ids:
         return jsonify({"ok": True, "items": []})
     wordbank = load_wordbank(CFG.books_dir, book_dir)
