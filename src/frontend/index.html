@@ -34,7 +34,10 @@
         </div>
 
         <div id="questionBox" class="question-box">
-          <p class="muted">点击“下一题”开始。</p>
+          <div class="initial-loading" id="initialLoading">
+            <div class="loading-lottie" id="loadingLottie"></div>
+            <p class="muted">加载中...</p>
+          </div>
         </div>
 
         <div class="actions">
@@ -86,6 +89,7 @@
       </div>
     </aside>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/app.js"></script>
   </body>
 </html>

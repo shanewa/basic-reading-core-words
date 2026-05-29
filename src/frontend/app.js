@@ -12,6 +12,29 @@ const state = {
 
 const $ = (id) => document.getElementById(id);
 
+function renderInitialLoading() {
+  const box = $("questionBox");
+  if (!box) return;
+  box.classList.add("typing-focus");
+
+  const host = $("loadingLottie");
+  if (!host) return;
+
+  const lottie = window.lottie;
+  if (!lottie || typeof lottie.loadAnimation !== "function") {
+    host.innerHTML = "<p class=\"muted\">点击“下一题”开始。</p>";
+    return;
+  }
+
+  lottie.loadAnimation({
+    container: host,
+    renderer: "svg",
+    loop: true,
+    autoplay: true,
+    path: "/assets/Free%20Sandy%20Loading%20Animation.json",
+  });
+}
+
 async function api(url, opts = {}) {
   const res = await fetch(url, {
     headers: { "Content-Type": "application/json" },
@@ -385,6 +408,8 @@ async function resetProgress() {
 
 async function init() {
   try {
+    renderInitialLoading();
+
     const [books, settings] = await Promise.all([api("/api/books"), api("/api/settings")]);
     state.books = books.books || [];
     state.settings = settings.settings;

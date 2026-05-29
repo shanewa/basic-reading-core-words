@@ -421,6 +421,21 @@ button {
   text-align: center;
 }
 
+.initial-loading {
+  height: 100%;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.loading-lottie {
+  width: min(320px, 72vw);
+  height: min(320px, 48vh);
+}
+
 .progress-list {
   list-style: none;
   margin: 0;
