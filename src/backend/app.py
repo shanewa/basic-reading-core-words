@@ -55,9 +55,9 @@ def _ensure_default_settings() -> dict:
         typing_mode = settings.get("typing_mode", "")
     if typing_mode not in {"all_missing", "missing_one_vowel", "missing_multi_vowels"}:
         settings = STORAGE.upsert_settings({"typing_mode": "missing_multi_vowels"})
-    delay = int(settings.get("answer_delay_ms", 300) or 300)
-    if delay < 100 or delay > 3000:
-        settings = STORAGE.upsert_settings({"answer_delay_ms": 300})
+    delay = int(settings.get("answer_delay_ms", 200) or 200)
+    if delay < 100 or delay > 1000:
+        settings = STORAGE.upsert_settings({"answer_delay_ms": 200})
     return settings
 
 
@@ -163,7 +163,7 @@ def api_update_settings():
     if "typing_mode" in patch and patch["typing_mode"] not in {"all_missing", "missing_one_vowel", "missing_multi_vowels"}:
         patch["typing_mode"] = "missing_multi_vowels"
     if "answer_delay_ms" in patch:
-        patch["answer_delay_ms"] = max(100, min(3000, int(patch["answer_delay_ms"])))
+        patch["answer_delay_ms"] = max(100, min(1000, int(patch["answer_delay_ms"])))
     settings = STORAGE.upsert_settings(patch)
     return jsonify({"ok": True, "settings": settings})
 
