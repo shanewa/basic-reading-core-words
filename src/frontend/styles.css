@@ -203,6 +203,21 @@ h2 {
   stroke: #d49a00;
 }
 
+.q-prompt.with-speaker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.speaker-btn {
+  color: #2f7a99;
+}
+.speaker-btn:hover:not(:disabled) {
+  background: rgba(47, 122, 153, 0.12);
+}
+.speaker-btn svg {
+  display: block;
+}
+
 .favorites-list {
   list-style: none;
   padding: 0;
