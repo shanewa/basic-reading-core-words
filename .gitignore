@@ -6,5 +6,5 @@ books/*/.cache/
 # SQLite WAL/SHM ephemeral files (created by journal_mode=WAL)
 *.db-wal
 *.db-shm
-data/*
+src/data/*
 proxy.env
