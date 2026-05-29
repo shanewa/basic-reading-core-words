@@ -190,9 +190,13 @@ function speakerButtonHtml(text) {
 function pickEnglishVoice() {
   const voices = (window.speechSynthesis && window.speechSynthesis.getVoices()) || [];
   if (!voices.length) return null;
+  // Prefer Google / online voices first — Microsoft Zira on Windows often goes
+  // silent (start/end fire but no audio is produced). Fall back to any en-US.
   return (
-    voices.find((v) => /en[-_]?US/i.test(v.lang) && /female|samantha|zira|google/i.test(v.name)) ||
-    voices.find((v) => /en[-_]?US/i.test(v.lang)) ||
+    voices.find((v) => /^en/i.test(v.lang) && /google/i.test(v.name)) ||
+    voices.find((v) => /^en/i.test(v.lang) && /natural|online|neural/i.test(v.name)) ||
+    voices.find((v) => /en[-_]?US/i.test(v.lang) && !/zira/i.test(v.name)) ||
+    voices.find((v) => /^en/i.test(v.lang) && !/zira/i.test(v.name)) ||
     voices.find((v) => /^en/i.test(v.lang)) ||
     null
   );
@@ -215,16 +219,22 @@ if ("speechSynthesis" in window) {
 function actuallySpeak(text) {
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "en-US";
-  u.rate = 0.9;
+  u.rate = 0.85;
   u.pitch = 1.0;
+  u.volume = 1.0;
   const preferred = pickEnglishVoice();
   if (preferred) {
     u.voice = preferred;
     u.lang = preferred.lang || "en-US";
   }
-  u.onstart = () => console.log(`[wg] speak start: "${text}" voice=${u.voice && u.voice.name}`);
+  const t0 = performance.now();
+  u.onstart = () =>
+    console.log(`[wg] speak start: "${text}" voice=${u.voice && u.voice.name}`);
   u.onerror = (e) => console.warn("[wg] speak error", e.error || e);
-  u.onend = () => console.log("[wg] speak end");
+  u.onend = () => {
+    const dt = (performance.now() - t0).toFixed(0);
+    console.log(`[wg] speak end (${dt}ms)`);
+  };
   window.speechSynthesis.speak(u);
 }
 
