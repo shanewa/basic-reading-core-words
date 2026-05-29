@@ -11,7 +11,10 @@ const state = {
   pendingNextTimer: null,
   continueLearning: false,
   loadInFlight: false,
+  history: [],
 };
+
+const HISTORY_MAX = 50;
 
 const $ = (id) => document.getElementById(id);
 
@@ -355,6 +358,24 @@ function renderImageQuestion(q) {
   }
 }
 
+function updatePrevButton() {
+  const btn = $("prevBtn");
+  if (!btn) return;
+  // Need at least 2 entries: the current one (last) + one previous to jump to.
+  btn.disabled = state.history.length < 2;
+}
+
+function pushHistory(wordId) {
+  if (!wordId) return;
+  // Avoid duplicating the same word back-to-back.
+  if (state.history[state.history.length - 1] === wordId) return;
+  state.history.push(wordId);
+  if (state.history.length > HISTORY_MAX) {
+    state.history.splice(0, state.history.length - HISTORY_MAX);
+  }
+  updatePrevButton();
+}
+
 function renderQuestion(payload) {
   state.question = payload.question;
   if (state.typingKeyHandler) {
@@ -378,10 +399,12 @@ function renderQuestion(payload) {
       }
     }
     renderProgress(payload.progress, payload.dailyTarget || state.settings.daily_target);
+    updatePrevButton();
     return;
   }
 
   renderProgress(payload.progress, payload.dailyTarget);
+  pushHistory(state.question.wordId);
 
   const q = state.question;
   if (q.type === "meaning") renderMeaningQuestion(q);
@@ -396,7 +419,7 @@ function showLoadingNext() {
   box.innerHTML = '<p class="q-prompt muted" style="text-align:center">加载下一题... Loading…</p>';
 }
 
-async function loadSession() {
+async function loadSession(opts = {}) {
   if (state.loadInFlight) {
     console.warn("[wg] loadSession already in flight; ignoring duplicate call");
     return;
@@ -409,7 +432,14 @@ async function loadSession() {
       state.pendingNextTimer = null;
     }
     showLoadingNext();
-    const url = state.continueLearning ? "/api/session?continue=1" : "/api/session";
+    const params = new URLSearchParams();
+    if (opts.wordId) {
+      params.set("wordId", opts.wordId);
+    } else if (state.continueLearning) {
+      params.set("continue", "1");
+    }
+    const qs = params.toString();
+    const url = qs ? `/api/session?${qs}` : "/api/session";
     const data = await api(url);
     console.log(`[wg] /api/session took ${(performance.now() - t0).toFixed(0)}ms`);
     renderQuestion(data);
@@ -419,6 +449,32 @@ async function loadSession() {
     console.error("[wg] loadSession failed", err);
   } finally {
     state.loadInFlight = false;
+  }
+}
+
+async function loadPreviousSession() {
+  console.log("[wg] loadPreviousSession called", { historyLen: state.history.length });
+  if (state.history.length < 2) {
+    setFeedback("没有更早的题目了 No earlier question", false);
+    return;
+  }
+  // Pop current and previous; renderQuestion will re-push the previous one.
+  state.history.pop(); // current
+  const prevWordId = state.history.pop();
+  updatePrevButton();
+  if (state.pendingNextTimer) {
+    clearTimeout(state.pendingNextTimer);
+    state.pendingNextTimer = null;
+  }
+  if (state.typingKeyHandler) {
+    document.removeEventListener("keydown", state.typingKeyHandler);
+    state.typingKeyHandler = null;
+  }
+  state.questionLocked = false;
+  try {
+    await loadSession({ wordId: prevWordId });
+  } finally {
+    state.questionLocked = false;
   }
 }
 
@@ -495,6 +551,8 @@ function fillSettingsForm() {
 async function saveSettings() {
   try {
     state.continueLearning = false;
+    state.history = [];
+    updatePrevButton();
     const patch = {
       book_dir: $("bookSelect").value,
       daily_target: Number($("dailyTarget").value || 20),
@@ -532,6 +590,8 @@ async function resetProgress() {
   if (!confirm("确认重置当前book学习进度？")) return;
   try {
     state.continueLearning = false;
+    state.history = [];
+    updatePrevButton();
     await api("/api/reset", { method: "POST" });
     setFeedback("进度已重置", true);
     await loadSession();
@@ -551,6 +611,7 @@ async function init() {
 
     $("submitBtn").addEventListener("click", submitAnswer);
     $("nextBtn").addEventListener("click", forceLoadNextSession);
+    $("prevBtn").addEventListener("click", loadPreviousSession);
     $("saveSettingsBtn").addEventListener("click", saveSettings);
     $("rebuildBtn").addEventListener("click", rebuildWordbank);
     $("resetProgressBtn").addEventListener("click", resetProgress);
