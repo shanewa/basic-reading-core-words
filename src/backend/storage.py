@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import threading
 from contextlib import contextmanager
 from datetime import date
 from pathlib import Path
@@ -24,17 +25,32 @@ class StudyStorage:
     def __init__(self, db_path: Path):
         self.db_path = db_path
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        # Persistent single connection — avoids the per-request open/close
+        # overhead which is catastrophically slow on /mnt/c (WSL).
+        self._conn = sqlite3.connect(
+            str(self.db_path),
+            check_same_thread=False,
+            isolation_level=None,  # autocommit; we manage transactions explicitly.
+        )
+        self._conn.row_factory = sqlite3.Row
+        self._lock = threading.Lock()
+        # WAL gives much better read/write concurrency; synchronous=NORMAL is
+        # safe for our single-user app and dramatically reduces fsync waits.
+        with self._lock:
+            self._conn.execute("PRAGMA journal_mode=WAL")
+            self._conn.execute("PRAGMA synchronous=NORMAL")
+            self._conn.execute("PRAGMA temp_store=MEMORY")
+        self._settings_cache: dict | None = None
         self._init_db()
 
     @contextmanager
     def conn(self):
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        try:
-            yield conn
-            conn.commit()
-        finally:
-            conn.close()
+        # Serialize access to the single connection; SQLite connections are
+        # not safe for concurrent use across threads even with check_same_thread.
+        # We run in autocommit (isolation_level=None) so each statement is
+        # its own transaction — sufficient for this single-user app.
+        with self._lock:
+            yield self._conn
 
     def _init_db(self) -> None:
         with self.conn() as conn:
@@ -75,6 +91,8 @@ class StudyStorage:
             )
 
     def get_settings(self) -> dict:
+        if self._settings_cache is not None:
+            return dict(self._settings_cache)
         with self.conn() as conn:
             rows = conn.execute("SELECT key, value FROM user_settings").fetchall()
         settings = dict(DEFAULT_SETTINGS)
@@ -86,7 +104,8 @@ class StudyStorage:
                 settings[r["key"]] = value == "1"
             else:
                 settings[r["key"]] = value
-        return settings
+        self._settings_cache = settings
+        return dict(settings)
 
     def upsert_settings(self, patch: dict) -> dict:
         merged = self.get_settings()
@@ -104,6 +123,7 @@ class StudyStorage:
                     """,
                     (k, val),
                 )
+        self._settings_cache = dict(merged)
         return merged
 
     def get_word_state(self, book_dir: str, word_id: str) -> dict | None:
@@ -192,6 +212,14 @@ class StudyStorage:
             rows = conn.execute(
                 "SELECT DISTINCT word_id FROM review_log WHERE book_dir=? AND study_date=?",
                 (book_dir, today),
+            ).fetchall()
+        return {r["word_id"] for r in rows}
+
+    def list_known_word_ids(self, book_dir: str) -> set[str]:
+        with self.conn() as conn:
+            rows = conn.execute(
+                "SELECT word_id FROM word_state WHERE book_dir=?",
+                (book_dir,),
             ).fetchall()
         return {r["word_id"] for r in rows}
 

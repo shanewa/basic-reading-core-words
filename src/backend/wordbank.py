@@ -149,8 +149,18 @@ def list_books(books_dir: Path) -> list[dict]:
     return result
 
 
+_WORDBANK_CACHE: dict[str, tuple[float, dict]] = {}
+
+
 def load_wordbank(books_dir: Path, book_dir_name: str) -> dict:
     path = books_dir / book_dir_name / "wordbank.web.json"
     if not path.is_file():
         build_wordbank_for_book(books_dir / book_dir_name, offline=True)
-    return json.loads(path.read_text(encoding="utf-8"))
+    key = str(path.resolve())
+    mtime = path.stat().st_mtime
+    cached = _WORDBANK_CACHE.get(key)
+    if cached and cached[0] == mtime:
+        return cached[1]
+    data = json.loads(path.read_text(encoding="utf-8"))
+    _WORDBANK_CACHE[key] = (mtime, data)
+    return data

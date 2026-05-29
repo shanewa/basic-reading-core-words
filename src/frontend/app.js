@@ -10,6 +10,7 @@ const state = {
   typingKeyHandler: null,
   pendingNextTimer: null,
   continueLearning: false,
+  loadInFlight: false,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -65,28 +66,35 @@ function shakeQuestionBox() {
   box.classList.add("shake");
 }
 
+function scheduleAutoAdvance(delayMs) {
+  if (state.pendingNextTimer) {
+    clearTimeout(state.pendingNextTimer);
+    state.pendingNextTimer = null;
+  }
+  state.pendingNextTimer = setTimeout(() => {
+    state.pendingNextTimer = null;
+    forceLoadNextSession().catch(() => {
+      state.questionLocked = false;
+    });
+  }, delayMs);
+}
+
 async function submitAndHandle(answer, onWrong, onCorrect) {
-  if (!state.question || state.questionLocked) return;
+  console.log("[wg] submitAndHandle enter", { hasQ: !!state.question, locked: state.questionLocked, answer });
+  if (!state.question || state.questionLocked) {
+    console.warn("[wg] submitAndHandle bail", { hasQ: !!state.question, locked: state.questionLocked });
+    return;
+  }
   const currentQuestionId = state.question.questionId;
   state.questionLocked = true;
   const delayMs = Math.max(100, Math.min(1000, Number(state.settings?.answer_delay_ms || 150)));
-  const waitDelay = () =>
-    new Promise((resolve) => {
-      if (state.pendingNextTimer) {
-        clearTimeout(state.pendingNextTimer);
-        state.pendingNextTimer = null;
-      }
-      state.pendingNextTimer = setTimeout(() => {
-        state.pendingNextTimer = null;
-        resolve();
-      }, delayMs);
-    });
   try {
     const data = await api("/api/answer", {
       method: "POST",
       body: JSON.stringify({ questionId: state.question.questionId, answer }),
     });
 
+    console.log("[wg] /api/answer responded", data);
     if (data.isCorrect) {
       if (onCorrect) onCorrect();
       setFeedback("回答正确！", true);
@@ -94,8 +102,18 @@ async function submitAndHandle(answer, onWrong, onCorrect) {
       mark.className = "right-mark";
       mark.textContent = "✓";
       $("questionBox").appendChild(mark);
-      await waitDelay();
-      await forceLoadNextSession();
+      console.log("[wg] correct -> scheduling auto-advance", { delayMs });
+      // Fire-and-forget auto-advance so it survives any interruption.
+      scheduleAutoAdvance(delayMs);
+      // Safety watchdog: if for any reason we're still stuck on the same
+      // completed question after a generous delay, force the next load.
+      setTimeout(() => {
+        if (state.question && state.question.questionId === currentQuestionId) {
+          forceLoadNextSession().catch(() => {
+            state.questionLocked = false;
+          });
+        }
+      }, delayMs + 1500);
       return;
     }
 
@@ -371,22 +389,41 @@ function renderQuestion(payload) {
   else renderImageQuestion(q);
 }
 
+function showLoadingNext() {
+  const box = $("questionBox");
+  if (!box) return;
+  // Keep it lightweight so it never visually blocks the next render.
+  box.innerHTML = '<p class="q-prompt muted" style="text-align:center">加载下一题... Loading…</p>';
+}
+
 async function loadSession() {
+  if (state.loadInFlight) {
+    console.warn("[wg] loadSession already in flight; ignoring duplicate call");
+    return;
+  }
+  state.loadInFlight = true;
+  const t0 = performance.now();
   try {
     if (state.pendingNextTimer) {
       clearTimeout(state.pendingNextTimer);
       state.pendingNextTimer = null;
     }
+    showLoadingNext();
     const url = state.continueLearning ? "/api/session?continue=1" : "/api/session";
     const data = await api(url);
+    console.log(`[wg] /api/session took ${(performance.now() - t0).toFixed(0)}ms`);
     renderQuestion(data);
   } catch (err) {
     state.questionLocked = false;
     setFeedback(err.message, false);
+    console.error("[wg] loadSession failed", err);
+  } finally {
+    state.loadInFlight = false;
   }
 }
 
 async function forceLoadNextSession() {
+  console.log("[wg] forceLoadNextSession called", { locked: state.questionLocked, hasQ: !!state.question });
   if (state.pendingNextTimer) {
     clearTimeout(state.pendingNextTimer);
     state.pendingNextTimer = null;
@@ -400,7 +437,13 @@ async function forceLoadNextSession() {
     state.continueLearning = true;
   }
   state.questionLocked = false;
-  await loadSession();
+  try {
+    await loadSession();
+  } finally {
+    // Belt-and-suspenders: ensure we never leave the UI locked after a
+    // navigation attempt, even if rendering throws unexpectedly.
+    state.questionLocked = false;
+  }
 }
 
 function currentAnswer() {

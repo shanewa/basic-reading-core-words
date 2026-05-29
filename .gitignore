@@ -3,3 +3,6 @@
 books/*/*.pdf
 books/*/.cache/
 .claude/
+# SQLite WAL/SHM ephemeral files (created by journal_mode=WAL)
+*.db-wal
+*.db-shm
