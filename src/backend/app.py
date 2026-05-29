@@ -112,7 +112,9 @@ def _build_question(word: dict, all_words: list[dict], settings: dict) -> dict:
     qid = str(uuid.uuid4())
     source_items = word.get("sources") or []
     source_text = " / ".join(s.get("raw") or s.get("label") or "" for s in source_items if isinstance(s, dict))
-    ipa_text = str((word.get("pronunciation") or {}).get("ipa") or "")
+    pron = word.get("pronunciation") or {}
+    ipa_text = str(pron.get("ipa") or "")
+    phonics_text = str(pron.get("phonics") or "")
     QUESTION_CACHE[qid] = {
         "wordId": word["id"],
         "mode": q["type"],
@@ -124,6 +126,7 @@ def _build_question(word: dict, all_words: list[dict], settings: dict) -> dict:
     q["headword"] = word.get("headword") or word.get("display") or word["id"]
     q["sourceText"] = source_text
     q["ipaText"] = ipa_text
+    q["phonicsText"] = phonics_text
     q.pop("answer", None)
     return q
 
