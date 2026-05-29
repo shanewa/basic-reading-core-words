@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import random
 import sys
+import time
 import uuid
 from datetime import date, datetime
 from pathlib import Path
@@ -80,10 +81,12 @@ def _pick_next_word(wordbank: dict, book_dir: str, settings: dict) -> dict | Non
     if due_candidates:
         return random.choice(due_candidates)
 
+    # Bulk-load all known word ids once instead of N point queries.
+    known_ids = STORAGE.list_known_word_ids(book_dir)
     new_candidates = [
         w
         for w in words
-        if STORAGE.get_word_state(book_dir, w["id"]) is None and w["id"] not in reviewed_today
+        if w["id"] not in known_ids and w["id"] not in reviewed_today
     ]
     if new_candidates:
         return random.choice(new_candidates)
@@ -179,7 +182,9 @@ def api_update_settings():
 
 @app.get("/api/session")
 def api_session():
+    t0 = time.perf_counter()
     settings = _ensure_default_settings()
+    t1 = time.perf_counter()
     book_dir = settings["book_dir"]
     if not book_dir:
         return jsonify({"error": "no book selected"}), 400
@@ -187,16 +192,28 @@ def api_session():
     continue_learning = request.args.get("continue", "0") in {"1", "true", "True"}
 
     wordbank = load_wordbank(CFG.books_dir, book_dir)
+    t2 = time.perf_counter()
     progress = STORAGE.progress_summary(book_dir, len(wordbank["words"]), _today())
+    t3 = time.perf_counter()
 
     if (not continue_learning) and progress["todayReviewed"] >= int(settings.get("daily_target", CFG.daily_target_default)):
+        print(f"[session] settings={(t1-t0)*1000:.0f}ms wordbank={(t2-t1)*1000:.0f}ms progress={(t3-t2)*1000:.0f}ms TOTAL={(t3-t0)*1000:.0f}ms (done)", flush=True)
         return jsonify({"done": True, "progress": progress, "question": None, "canContinue": True})
 
     word = _pick_next_word(wordbank, book_dir, settings)
+    t4 = time.perf_counter()
     if not word:
+        print(f"[session] settings={(t1-t0)*1000:.0f}ms wordbank={(t2-t1)*1000:.0f}ms progress={(t3-t2)*1000:.0f}ms pick={(t4-t3)*1000:.0f}ms TOTAL={(t4-t0)*1000:.0f}ms (no word)", flush=True)
         return jsonify({"done": True, "progress": progress, "question": None, "canContinue": False})
 
     q = _build_question(word, wordbank["words"], settings)
+    t5 = time.perf_counter()
+    print(
+        f"[session] settings={(t1-t0)*1000:.0f}ms wordbank={(t2-t1)*1000:.0f}ms "
+        f"progress={(t3-t2)*1000:.0f}ms pick={(t4-t3)*1000:.0f}ms build={(t5-t4)*1000:.0f}ms "
+        f"TOTAL={(t5-t0)*1000:.0f}ms",
+        flush=True,
+    )
     return jsonify(
         {
             "done": False,
