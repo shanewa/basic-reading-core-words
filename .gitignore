@@ -7,3 +7,4 @@ books/*/.cache/
 *.db-wal
 *.db-shm
 data/*
+proxy.env
