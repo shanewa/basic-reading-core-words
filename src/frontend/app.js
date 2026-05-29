@@ -387,6 +387,10 @@ async function forceLoadNextSession() {
     document.removeEventListener("keydown", state.typingKeyHandler);
     state.typingKeyHandler = null;
   }
+  // If on completed screen, next should continue learning immediately.
+  if (!state.question) {
+    state.continueLearning = true;
+  }
   state.questionLocked = false;
   await loadSession();
 }
