@@ -162,8 +162,23 @@ function renderMeaningQuestion(q) {
 
 function renderTypingQuestion(q) {
   const box = $("questionBox");
-  const template = q.maskTemplate || "";
+  let template = q.maskTemplate || "";
+  if (!template) {
+    const legacy = (q.subPrompt || "").trim();
+    if (legacy) {
+      // Legacy fallback: keep punctuation/spaces, hide alphabetic chars.
+      template = legacy.replace(/[A-Za-z]/g, "_");
+    }
+  }
+  if (!template) {
+    // Absolute fallback: always render visible completion slots.
+    template = "______";
+  }
+
   state.typingMissingCount = Number(q.missingCount || 0);
+  if (!state.typingMissingCount || state.typingMissingCount < 0) {
+    state.typingMissingCount = Array.from(template).filter((ch) => ch === "_").length;
+  }
   state.typingChars = [];
   if (state.typingKeyHandler) {
     document.removeEventListener("keydown", state.typingKeyHandler);
