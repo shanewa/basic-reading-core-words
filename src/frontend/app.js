@@ -9,6 +9,7 @@ const state = {
   typingChars: [],
   typingKeyHandler: null,
   pendingNextTimer: null,
+  continueLearning: false,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -323,7 +324,20 @@ function renderQuestion(payload) {
   }
   setFeedback("");
   if (payload.done || !state.question) {
-    $("questionBox").innerHTML = `<p class="q-prompt">今天学习已完成，太棒了！</p>`;
+    const canContinue = !!payload.canContinue;
+    $("questionBox").innerHTML = `
+      <p class="q-prompt">今天学习已完成，太棒了！</p>
+      ${canContinue ? '<button id="continueLearningBtn" class="primary-btn">继续学习 Continue</button>' : ""}
+    `;
+    if (canContinue) {
+      const btn = $("continueLearningBtn");
+      if (btn) {
+        btn.addEventListener("click", async () => {
+          state.continueLearning = true;
+          await loadSession();
+        });
+      }
+    }
     renderProgress(payload.progress, payload.dailyTarget || state.settings.daily_target);
     return;
   }
@@ -342,7 +356,8 @@ async function loadSession() {
       clearTimeout(state.pendingNextTimer);
       state.pendingNextTimer = null;
     }
-    const data = await api("/api/session");
+    const url = state.continueLearning ? "/api/session?continue=1" : "/api/session";
+    const data = await api(url);
     renderQuestion(data);
   } catch (err) {
     state.questionLocked = false;
@@ -407,6 +422,7 @@ function fillSettingsForm() {
 
 async function saveSettings() {
   try {
+    state.continueLearning = false;
     const patch = {
       book_dir: $("bookSelect").value,
       daily_target: Number($("dailyTarget").value || 20),
@@ -443,6 +459,7 @@ async function rebuildWordbank() {
 async function resetProgress() {
   if (!confirm("确认重置当前book学习进度？")) return;
   try {
+    state.continueLearning = false;
     await api("/api/reset", { method: "POST" });
     setFeedback("进度已重置", true);
     await loadSession();

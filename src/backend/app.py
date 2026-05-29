@@ -174,15 +174,17 @@ def api_session():
     if not book_dir:
         return jsonify({"error": "no book selected"}), 400
 
+    continue_learning = request.args.get("continue", "0") in {"1", "true", "True"}
+
     wordbank = load_wordbank(CFG.books_dir, book_dir)
     progress = STORAGE.progress_summary(book_dir, len(wordbank["words"]), _today())
 
-    if progress["todayReviewed"] >= int(settings.get("daily_target", CFG.daily_target_default)):
-        return jsonify({"done": True, "progress": progress, "question": None})
+    if (not continue_learning) and progress["todayReviewed"] >= int(settings.get("daily_target", CFG.daily_target_default)):
+        return jsonify({"done": True, "progress": progress, "question": None, "canContinue": True})
 
     word = _pick_next_word(wordbank, book_dir, settings)
     if not word:
-        return jsonify({"done": True, "progress": progress, "question": None})
+        return jsonify({"done": True, "progress": progress, "question": None, "canContinue": False})
 
     q = _build_question(word, wordbank["words"], settings)
     return jsonify(

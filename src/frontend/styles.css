@@ -259,6 +259,11 @@ h2 {
   color: #1d9b57;
 }
 
+#continueLearningBtn {
+  display: block;
+  margin: 8px auto 0;
+}
+
 .options {
   display: grid;
   gap: 8px;
