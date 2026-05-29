@@ -190,11 +190,36 @@ def api_session():
         return jsonify({"error": "no book selected"}), 400
 
     continue_learning = request.args.get("continue", "0") in {"1", "true", "True"}
+    replay_word_id = request.args.get("wordId", "").strip()
 
     wordbank = load_wordbank(CFG.books_dir, book_dir)
     t2 = time.perf_counter()
     progress = STORAGE.progress_summary(book_dir, len(wordbank["words"]), _today())
     t3 = time.perf_counter()
+
+    # Explicit replay (e.g. clicking "Previous") bypasses the daily-target gate.
+    if replay_word_id:
+        word = next((w for w in wordbank["words"] if w["id"] == replay_word_id), None)
+        if not word:
+            return jsonify({"error": "wordId not found in current book"}), 404
+        q = _build_question(word, wordbank["words"], settings)
+        t5 = time.perf_counter()
+        print(
+            f"[session] settings={(t1-t0)*1000:.0f}ms wordbank={(t2-t1)*1000:.0f}ms "
+            f"progress={(t3-t2)*1000:.0f}ms build={(t5-t3)*1000:.0f}ms "
+            f"TOTAL={(t5-t0)*1000:.0f}ms (replay)",
+            flush=True,
+        )
+        return jsonify(
+            {
+                "done": False,
+                "book": wordbank["book"],
+                "question": q,
+                "progress": progress,
+                "dailyTarget": int(settings.get("daily_target", CFG.daily_target_default)),
+                "replay": True,
+            }
+        )
 
     if (not continue_learning) and progress["todayReviewed"] >= int(settings.get("daily_target", CFG.daily_target_default)):
         print(f"[session] settings={(t1-t0)*1000:.0f}ms wordbank={(t2-t1)*1000:.0f}ms progress={(t3-t2)*1000:.0f}ms TOTAL={(t3-t0)*1000:.0f}ms (done)", flush=True)
