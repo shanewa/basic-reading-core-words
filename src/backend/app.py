@@ -32,6 +32,15 @@ FRONTEND_DIR = CFG.repo_root / "src" / "frontend"
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
 
 
+@app.after_request
+def add_no_cache_headers(response):
+    # Prevent stale frontend assets causing old client logic to keep running.
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
+
 def _today() -> str:
     return date.today().isoformat()
 
@@ -55,9 +64,9 @@ def _ensure_default_settings() -> dict:
         typing_mode = settings.get("typing_mode", "")
     if typing_mode not in {"all_missing", "missing_one_vowel", "missing_multi_vowels"}:
         settings = STORAGE.upsert_settings({"typing_mode": "missing_multi_vowels"})
-    delay = int(settings.get("answer_delay_ms", 200) or 200)
+    delay = int(settings.get("answer_delay_ms", 150) or 150)
     if delay < 100 or delay > 1000:
-        settings = STORAGE.upsert_settings({"answer_delay_ms": 200})
+        settings = STORAGE.upsert_settings({"answer_delay_ms": 150})
     return settings
 
 

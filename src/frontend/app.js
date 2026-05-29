@@ -68,7 +68,7 @@ function shakeQuestionBox() {
 async function submitAndHandle(answer, onWrong, onCorrect) {
   if (!state.question || state.questionLocked) return;
   state.questionLocked = true;
-  const delayMs = Math.max(100, Math.min(1000, Number(state.settings?.answer_delay_ms || 200)));
+  const delayMs = Math.max(100, Math.min(1000, Number(state.settings?.answer_delay_ms || 150)));
   const scheduleNext = () => {
     if (state.pendingNextTimer) {
       clearTimeout(state.pendingNextTimer);
@@ -410,7 +410,7 @@ async function submitAnswer() {
 function fillSettingsForm() {
   const s = state.settings;
   $("dailyTarget").value = s.daily_target;
-  $("answerDelayMs").value = s.answer_delay_ms || 200;
+  $("answerDelayMs").value = s.answer_delay_ms || 150;
   $("modeMeaning").checked = !!s.mode_meaning;
   $("modeImage").checked = !!s.mode_image;
   $("modeTyping").checked = !!s.mode_typing;
@@ -443,7 +443,7 @@ async function saveSettings() {
     const patch = {
       book_dir: $("bookSelect").value,
       daily_target: Number($("dailyTarget").value || 20),
-      answer_delay_ms: Number($("answerDelayMs").value || 200),
+      answer_delay_ms: Number($("answerDelayMs").value || 150),
       mode_meaning: $("modeMeaning").checked,
       mode_image: $("modeImage").checked,
       mode_typing: $("modeTyping").checked,
