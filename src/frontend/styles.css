@@ -210,6 +210,7 @@ h2 {
 }
 .speaker-btn {
   color: #2f7a99;
+  padding: 6px;
 }
 .speaker-btn:hover:not(:disabled) {
   background: rgba(47, 122, 153, 0.12);

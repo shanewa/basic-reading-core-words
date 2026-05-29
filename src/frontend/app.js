@@ -178,7 +178,7 @@ function speakerButtonHtml(text) {
   return (
     '<button type="button" class="icon-btn speaker-btn" ' +
     `data-speak="${safe}" title="朗读 Speak" aria-label="朗读 Speak">` +
-    '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">' +
+    '<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">' +
     '<path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/>' +
     '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor"/>' +
     '<path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"/>' +
