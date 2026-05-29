@@ -15,7 +15,7 @@ DEFAULT_SETTINGS = {
     "mode_typing": True,
     # Default typing style: partial phonics omission mode.
     "typing_mode": "missing_multi_vowels",
-    "answer_delay_ms": 300,
+    "answer_delay_ms": 200,
     "ui_language": "zh",
 }
 
