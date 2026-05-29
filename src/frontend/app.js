@@ -360,6 +360,7 @@ function fillSettingsForm() {
   $("modeMeaning").checked = !!s.mode_meaning;
   $("modeImage").checked = !!s.mode_image;
   $("modeTyping").checked = !!s.mode_typing;
+  // Default typing mode is the top option: 上部分省略.
   $("typingMode").value = s.typing_mode || "missing_one_vowel";
 
   const select = $("bookSelect");

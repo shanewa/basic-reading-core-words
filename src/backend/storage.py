@@ -13,6 +13,7 @@ DEFAULT_SETTINGS = {
     "mode_meaning": True,
     "mode_image": False,
     "mode_typing": True,
+    # Default typing style: top-option omission mode.
     "typing_mode": "missing_one_vowel",
     "answer_delay_ms": 900,
     "ui_language": "zh",
