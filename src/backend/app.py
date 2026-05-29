@@ -45,7 +45,15 @@ def _ensure_default_settings() -> dict:
         settings = STORAGE.upsert_settings({"daily_target": CFG.daily_target_default})
     if not CFG.image_mode_enabled and settings.get("mode_image"):
         settings = STORAGE.upsert_settings({"mode_image": False})
-    if settings.get("typing_mode") not in {"all_missing", "missing_one_vowel", "missing_multi_vowels"}:
+    typing_mode = str(settings.get("typing_mode", "")).strip()
+    legacy_mode_map = {
+        "full": "all_missing",
+        "missing_vowels": "missing_multi_vowels",
+    }
+    if typing_mode in legacy_mode_map:
+        settings = STORAGE.upsert_settings({"typing_mode": legacy_mode_map[typing_mode]})
+        typing_mode = settings.get("typing_mode", "")
+    if typing_mode not in {"all_missing", "missing_one_vowel", "missing_multi_vowels"}:
         settings = STORAGE.upsert_settings({"typing_mode": "missing_one_vowel"})
     delay = int(settings.get("answer_delay_ms", 900) or 900)
     if delay < 200 or delay > 5000:
