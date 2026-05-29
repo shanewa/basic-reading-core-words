@@ -1,11 +1,16 @@
-# Basic Reading Core 400 Words
+<div align="center">
+  <img src="./assets/word_garden_icon.png" alt="Word Garden icon" width="120" />
+  <h1>Basic Reading Core Words</h1>
+  <p><strong>A local-first English vocabulary learning project for children.</strong></p>
+  <p>Built for adaptive review, daily practice, and lightweight content operations.</p>
+</div>
 
-A local-first English vocabulary learning project for children, with adaptive review and lightweight content tooling.
+This repository provides two core workflows:
 
-This repository combines two workflows:
+- Web learning application (Flask + vanilla frontend + SQLite)
+- Vocabulary pipeline for generating web wordbanks and printable PDF materials
 
-- A web learning application (Flask + vanilla frontend + SQLite)
-- A vocabulary pipeline that builds word banks and printable PDF materials
+---
 
 ## Demo
 
