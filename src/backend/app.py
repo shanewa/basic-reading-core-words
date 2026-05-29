@@ -30,7 +30,12 @@ STORAGE = StudyStorage(CFG.db_path)
 QUESTION_CACHE: dict[str, dict] = {}
 
 FRONTEND_DIR = CFG.repo_root / "src" / "frontend"
+AVATAR_DIR = CFG.db_path.parent / "avatars"
+AVATAR_DIR.mkdir(parents=True, exist_ok=True)
+ALLOWED_AVATAR_EXTS = {"png", "jpg", "jpeg", "gif", "webp"}
+MAX_AVATAR_BYTES = 4 * 1024 * 1024  # 4 MB
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
+app.config["MAX_CONTENT_LENGTH"] = MAX_AVATAR_BYTES + 64 * 1024
 
 
 @app.after_request
@@ -172,6 +177,7 @@ def api_update_settings():
         "typing_mode",
         "answer_delay_ms",
         "ui_language",
+        "child_name",
     }
     patch = {k: v for k, v in payload.items() if k in allowed}
     if "daily_target" in patch:
@@ -180,6 +186,8 @@ def api_update_settings():
         patch["typing_mode"] = "missing_multi_vowels"
     if "answer_delay_ms" in patch:
         patch["answer_delay_ms"] = max(100, min(1000, int(patch["answer_delay_ms"])))
+    if "child_name" in patch:
+        patch["child_name"] = str(patch["child_name"]).strip()[:60]
     settings = STORAGE.upsert_settings(patch)
     return jsonify({"ok": True, "settings": settings})
 
@@ -270,6 +278,54 @@ def api_favorites_toggle():
     favorited = STORAGE.toggle_favorite(book_dir, word_id, now_iso)
     print(f"[fav] toggle book={book_dir!r} word={word_id!r} -> favorited={favorited}", flush=True)
     return jsonify({"ok": True, "wordId": word_id, "favorited": favorited})
+
+
+@app.post("/api/avatar")
+def api_avatar_upload():
+    if "file" not in request.files:
+        return jsonify({"error": "file field required"}), 400
+    f = request.files["file"]
+    if not f or not f.filename:
+        return jsonify({"error": "empty file"}), 400
+    ext = f.filename.rsplit(".", 1)[-1].lower() if "." in f.filename else ""
+    if ext not in ALLOWED_AVATAR_EXTS:
+        return jsonify({"error": f"unsupported extension: {ext}"}), 400
+    # Remove any existing avatar to avoid stale files of other extensions.
+    for old in AVATAR_DIR.glob("avatar.*"):
+        try:
+            old.unlink()
+        except OSError:
+            pass
+    dest = AVATAR_DIR / f"avatar.{ext}"
+    f.save(str(dest))
+    if dest.stat().st_size > MAX_AVATAR_BYTES:
+        dest.unlink(missing_ok=True)
+        return jsonify({"error": "file too large"}), 413
+    STORAGE.upsert_settings({"avatar_ext": ext})
+    return jsonify({"ok": True, "url": f"/api/avatar?v={int(dest.stat().st_mtime)}"})
+
+
+@app.get("/api/avatar")
+def api_avatar_get():
+    settings = STORAGE.get_settings()
+    ext = (settings.get("avatar_ext") or "").strip().lower()
+    if not ext:
+        return jsonify({"error": "no avatar"}), 404
+    path = AVATAR_DIR / f"avatar.{ext}"
+    if not path.is_file():
+        return jsonify({"error": "no avatar file"}), 404
+    return send_from_directory(str(AVATAR_DIR), f"avatar.{ext}")
+
+
+@app.delete("/api/avatar")
+def api_avatar_delete():
+    for old in AVATAR_DIR.glob("avatar.*"):
+        try:
+            old.unlink()
+        except OSError:
+            pass
+    STORAGE.upsert_settings({"avatar_ext": ""})
+    return jsonify({"ok": True})
 
 
 @app.get("/api/favorites")

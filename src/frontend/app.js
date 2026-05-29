@@ -754,8 +754,32 @@ async function submitAnswer() {
   await submitAndHandle(answer, null, null);
 }
 
+function applyTitleAndAvatar() {
+  const s = state.settings || {};
+  const titleEl = $("title");
+  const name = (s.child_name || "").trim();
+  if (titleEl) {
+    titleEl.textContent = name ? `${name}'s Word Garden` : "Word Garden";
+  }
+  document.title = name ? `${name}'s Word Garden` : "Word Garden";
+
+  const img = $("avatarImg");
+  if (img) {
+    if (s.avatar_ext) {
+      // Cache-bust by timestamp so the new upload appears immediately.
+      img.src = `/api/avatar?t=${Date.now()}`;
+      img.classList.remove("hidden");
+    } else {
+      img.removeAttribute("src");
+      img.classList.add("hidden");
+    }
+  }
+}
+
 function fillSettingsForm() {
   const s = state.settings;
+  const childNameInput = $("childName");
+  if (childNameInput) childNameInput.value = s.child_name || "";
   $("dailyTarget").value = s.daily_target;
   $("answerDelayMs").value = s.answer_delay_ms || 150;
   $("modeMeaning").checked = !!s.mode_meaning;
@@ -797,14 +821,56 @@ async function saveSettings() {
       mode_image: $("modeImage").checked,
       mode_typing: $("modeTyping").checked,
       typing_mode: $("typingMode").value,
+      child_name: ($("childName").value || "").trim(),
     };
     const data = await api("/api/settings", {
       method: "POST",
       body: JSON.stringify(patch),
     });
     state.settings = data.settings;
+    applyTitleAndAvatar();
     setFeedback("设置已保存", true);
     await loadSession();
+  } catch (err) {
+    setFeedback(err.message, false);
+  }
+}
+
+async function uploadAvatar() {
+  const input = $("avatarInput");
+  if (!input || !input.files || !input.files[0]) {
+    setFeedback("请先选择图片 Please pick an image first", false);
+    return;
+  }
+  const file = input.files[0];
+  if (file.size > 4 * 1024 * 1024) {
+    setFeedback("图片不能超过 4MB", false);
+    return;
+  }
+  try {
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/avatar", { method: "POST", body: fd, cache: "no-store" });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `Upload failed: ${res.status}`);
+    // Refresh settings (avatar_ext was updated) and apply.
+    const sRes = await api("/api/settings");
+    state.settings = sRes.settings;
+    applyTitleAndAvatar();
+    setFeedback("头像已更新 Avatar updated", true);
+    input.value = "";
+  } catch (err) {
+    setFeedback(err.message, false);
+  }
+}
+
+async function removeAvatar() {
+  try {
+    await api("/api/avatar", { method: "DELETE" });
+    const sRes = await api("/api/settings");
+    state.settings = sRes.settings;
+    applyTitleAndAvatar();
+    setFeedback("已移除头像 Avatar removed", true);
   } catch (err) {
     setFeedback(err.message, false);
   }
@@ -844,6 +910,7 @@ async function init() {
     state.books = books.books || [];
     state.settings = settings.settings;
     fillSettingsForm();
+    applyTitleAndAvatar();
 
     $("submitBtn").addEventListener("click", submitAnswer);
     $("nextBtn").addEventListener("click", forceLoadNextSession);
@@ -852,6 +919,8 @@ async function init() {
     $("favoritesToggleBtn").addEventListener("click", () => toggleFavoritesPanel());
     $("favoritesCloseBtn").addEventListener("click", () => toggleFavoritesPanel(false));
     $("saveSettingsBtn").addEventListener("click", saveSettings);
+    $("avatarUploadBtn").addEventListener("click", uploadAvatar);
+    $("avatarRemoveBtn").addEventListener("click", removeAvatar);
     $("rebuildBtn").addEventListener("click", rebuildWordbank);
     $("resetProgressBtn").addEventListener("click", resetProgress);
     $("settingsToggleBtn").addEventListener("click", () => toggleSettingsPanel());

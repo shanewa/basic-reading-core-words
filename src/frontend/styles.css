@@ -75,6 +75,25 @@ body {
   font-size: 2rem;
 }
 
+.title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffd8a7;
+  background: #fff3dd;
+  box-shadow: 0 2px 6px rgba(143, 83, 0, 0.18);
+}
+.avatar-img.hidden {
+  display: none;
+}
+
 .top-actions {
   display: flex;
   gap: 10px;
