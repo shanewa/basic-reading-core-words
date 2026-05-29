@@ -105,6 +105,7 @@ def _build_question(word: dict, all_words: list[dict], settings: dict) -> dict:
         "wordId": word["id"],
         "mode": q["type"],
         "answer": q["answer"],
+        "wrongAttempts": 0,
     }
     q["questionId"] = qid
     q["wordId"] = word["id"]
@@ -206,13 +207,41 @@ def api_answer():
     if not qid or qid not in QUESTION_CACHE:
         return jsonify({"error": "question expired or invalid"}), 400
 
-    qinfo = QUESTION_CACHE.pop(qid)
+    qinfo = QUESTION_CACHE[qid]
     settings = _ensure_default_settings()
     book_dir = settings["book_dir"]
 
-    is_correct, quality = evaluate_answer(qinfo["mode"], qinfo["answer"], user_answer)
+    is_correct, base_quality = evaluate_answer(qinfo["mode"], qinfo["answer"], user_answer)
 
     today_s = _today()
+    wrong_attempts = int(qinfo.get("wrongAttempts", 0))
+
+    if not is_correct:
+        qinfo["wrongAttempts"] = wrong_attempts + 1
+        STORAGE.log_review(
+            reviewed_at=datetime.utcnow().isoformat() + "Z",
+            study_date=today_s,
+            book_dir=book_dir,
+            word_id=qinfo["wordId"],
+            mode=qinfo["mode"],
+            quality=1,
+            is_correct=False,
+            user_answer=json.dumps(user_answer, ensure_ascii=False),
+        )
+        return jsonify(
+            {
+                "ok": True,
+                "isCorrect": False,
+                "quality": 1,
+                "stayOnQuestion": True,
+                "wrongAttempts": qinfo["wrongAttempts"],
+            }
+        )
+
+    # Correct answer: apply penalty based on wrong attempts before success.
+    penalty = min(3, wrong_attempts)
+    quality = max(0, int(base_quality) - penalty)
+
     state_raw = STORAGE.get_word_state(book_dir, qinfo["wordId"]) or {
         "repetitions": 0,
         "interval_days": 0,
@@ -247,6 +276,9 @@ def api_answer():
         user_answer=json.dumps(user_answer, ensure_ascii=False),
     )
 
+    # Question is completed only after correct answer.
+    QUESTION_CACHE.pop(qid, None)
+
     return jsonify(
         {
             "ok": True,
@@ -254,6 +286,7 @@ def api_answer():
             "quality": quality,
             "nextDueDate": updated.due_date,
             "intervalDays": updated.interval_days,
+            "wrongAttempts": wrong_attempts,
         }
     )
 

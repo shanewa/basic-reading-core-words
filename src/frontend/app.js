@@ -98,8 +98,9 @@ async function submitAndHandle(answer, onWrong, onCorrect) {
 
     if (onWrong) onWrong();
     shakeQuestionBox();
-    setFeedback("回答错误", false);
-    scheduleNext();
+    const wrongAttempts = Number(data.wrongAttempts || 1);
+    setFeedback(`回答错误，第 ${wrongAttempts} 次错误，请继续作答`, false);
+    state.questionLocked = false;
   } catch (err) {
     state.questionLocked = false;
     setFeedback(err.message, false);
@@ -155,6 +156,7 @@ function renderMeaningQuestion(q) {
       submitAndHandle(
         state.selected,
         () => {
+          for (const b of box.querySelectorAll(".option-btn")) b.classList.remove("wrong", "correct");
           btn.classList.add("wrong");
         },
         () => {
@@ -241,6 +243,11 @@ function renderTypingQuestion(q) {
           answer,
           () => {
             for (const b of box.querySelectorAll(".blank-slot")) b.classList.add("wrong");
+            state.typingChars = [];
+            refreshTypingBoard();
+            setTimeout(() => {
+              for (const b of box.querySelectorAll(".blank-slot")) b.classList.remove("wrong");
+            }, 260);
           },
           () => {
             for (const b of box.querySelectorAll(".blank-slot")) b.classList.add("correct");
@@ -304,6 +311,12 @@ function renderImageQuestion(q) {
             for (const card of box.querySelectorAll(".img-option.selected")) {
               card.classList.add("wrong");
             }
+            setTimeout(() => {
+              state.selectedImages.clear();
+              for (const card of box.querySelectorAll(".img-option")) {
+                card.classList.remove("selected", "wrong", "correct");
+              }
+            }, 280);
           },
           () => {
             for (const card of box.querySelectorAll(".img-option.selected")) {
