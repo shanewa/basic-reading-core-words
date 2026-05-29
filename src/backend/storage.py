@@ -13,7 +13,7 @@ DEFAULT_SETTINGS = {
     "mode_meaning": True,
     "mode_image": False,
     "mode_typing": True,
-    "typing_mode": "full",
+    "typing_mode": "missing_one_vowel",
     "ui_language": "zh",
 }
 

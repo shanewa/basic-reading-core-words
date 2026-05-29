@@ -171,6 +171,14 @@ h2 {
   padding: 16px;
 }
 
+.question-box.typing-focus {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 .q-prompt {
   font-size: clamp(2.8rem, 6vw, 6rem);
   line-height: 1.1;
@@ -182,6 +190,55 @@ h2 {
   margin: 0 0 12px;
   font-size: clamp(1.05rem, 1.35vw, 1.35rem);
   color: var(--muted);
+}
+
+.completion-board {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 6px 0 14px;
+  font-size: clamp(1.6rem, 3.4vw, 2.9rem);
+  line-height: 1.2;
+  min-height: 64px;
+}
+
+.fixed-char {
+  display: inline-block;
+  padding: 0 2px;
+}
+
+.blank-slot {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 1.05em;
+  padding: 0 2px 2px;
+  border-bottom: 4px solid #4f6879;
+}
+
+.blank-char {
+  display: inline-block;
+  min-width: 0.7em;
+  text-align: center;
+}
+
+.blank-slot.wrong {
+  border-bottom-color: #d64545;
+  color: #d64545;
+}
+
+.blank-slot.correct {
+  border-bottom-color: #1d9b57;
+  color: #1d9b57;
+}
+
+.right-mark {
+  margin-top: 8px;
+  font-size: clamp(2.2rem, 4vw, 3.6rem);
+  font-weight: 700;
+  color: #1d9b57;
 }
 
 .options {

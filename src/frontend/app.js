@@ -5,6 +5,9 @@ const state = {
   selected: null,
   selectedImages: new Set(),
   questionLocked: false,
+  typingMissingCount: 0,
+  typingChars: [],
+  typingKeyHandler: null,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -48,15 +51,22 @@ async function submitAndHandle(answer, onWrong, onCorrect) {
     if (data.isCorrect) {
       if (onCorrect) onCorrect();
       setFeedback("回答正确！", true);
+      const mark = document.createElement("span");
+      mark.className = "right-mark";
+      mark.textContent = "✓";
+      $("questionBox").appendChild(mark);
       setTimeout(() => {
         loadSession();
-      }, 420);
+      }, 1600);
       return;
     }
 
     if (onWrong) onWrong();
     shakeQuestionBox();
-    setFeedback("回答错误，请点击下一题继续", false);
+    setFeedback("回答错误", false);
+    setTimeout(() => {
+      loadSession();
+    }, 1600);
   } catch (err) {
     setFeedback(err.message, false);
   } finally {
@@ -117,23 +127,79 @@ function renderMeaningQuestion(q) {
 
 function renderTypingQuestion(q) {
   const box = $("questionBox");
-  const isMissingVowels = q.typingMode === "missing_vowels";
-  const title = isMissingVowels
-    ? "Fill in missing letters (vowels)"
-    : "Type the full English word/phrase";
-  const placeholder = isMissingVowels ? "Type missing vowels..." : "Type full answer...";
+  const template = q.maskTemplate || "";
+  state.typingMissingCount = Number(q.missingCount || 0);
+  state.typingChars = [];
+  if (state.typingKeyHandler) {
+    document.removeEventListener("keydown", state.typingKeyHandler);
+    state.typingKeyHandler = null;
+  }
+
+  const tokens = Array.from(template)
+    .map((ch, i) => {
+      if (ch === "_") {
+        return `<span class="blank-slot" data-blank-idx="${i}"><span class="blank-char">&nbsp;</span></span>`;
+      }
+      return `<span class="fixed-char">${ch}</span>`;
+    })
+    .join("");
+
   box.innerHTML = `
-    <p class="q-sub">${title}</p>
+    <p class="q-sub">根据中文补全单词（不显示完整英文）</p>
     <p class="q-prompt">${q.prompt}</p>
-    <p class="q-sub">${q.subPrompt || ""}</p>
-    <input id="typingInput" type="text" placeholder="${placeholder}" />
+    <div class="completion-board" id="completionBoard">${tokens}</div>
+    <p class="q-sub">键盘输入字母，Backspace 删除</p>
   `;
+
+  box.classList.add("typing-focus");
   state.selected = null;
   state.questionLocked = false;
+
+  const refreshTypingBoard = () => {
+    const blanks = box.querySelectorAll(".blank-slot .blank-char");
+    blanks.forEach((node, idx) => {
+      node.textContent = state.typingChars[idx] || "";
+    });
+  };
+
+  const handleKey = (e) => {
+    if (!state.question || state.question.type !== "typing" || state.questionLocked) return;
+    if (e.key === "Backspace") {
+      if (state.typingChars.length > 0) {
+        state.typingChars.pop();
+        refreshTypingBoard();
+      }
+      e.preventDefault();
+      return;
+    }
+    if (/^[a-zA-Z]$/.test(e.key)) {
+      if (state.typingChars.length < state.typingMissingCount) {
+        state.typingChars.push(e.key);
+        refreshTypingBoard();
+      }
+      e.preventDefault();
+      if (state.typingChars.length === state.typingMissingCount) {
+        const answer = state.typingChars.join("");
+        submitAndHandle(
+          answer,
+          () => {
+            for (const b of box.querySelectorAll(".blank-slot")) b.classList.add("wrong");
+          },
+          () => {
+            for (const b of box.querySelectorAll(".blank-slot")) b.classList.add("correct");
+          }
+        );
+      }
+    }
+  };
+
+  state.typingKeyHandler = handleKey;
+  document.addEventListener("keydown", state.typingKeyHandler);
 }
 
 function renderImageQuestion(q) {
   const box = $("questionBox");
+  box.classList.remove("typing-focus");
   const cards = q.options
     .map(
       (o) => `
@@ -193,6 +259,10 @@ function renderImageQuestion(q) {
 
 function renderQuestion(payload) {
   state.question = payload.question;
+  if (state.typingKeyHandler) {
+    document.removeEventListener("keydown", state.typingKeyHandler);
+    state.typingKeyHandler = null;
+  }
   setFeedback("");
   if (payload.done || !state.question) {
     $("questionBox").innerHTML = `<p class="q-prompt">今天学习已完成，太棒了！</p>`;
@@ -220,15 +290,16 @@ async function loadSession() {
 function currentAnswer() {
   if (!state.question) return null;
   if (state.question.type === "meaning") return state.selected;
-  if (state.question.type === "typing") return $("typingInput")?.value || "";
+  if (state.question.type === "typing") return state.typingChars.join("");
   return Array.from(state.selectedImages.values());
 }
 
 async function submitAnswer() {
   if (!state.question) return;
-  if (state.question.type !== "typing") return;
+  if (state.question.type === "typing") return;
   const answer = currentAnswer();
-  if (state.question.type === "typing" && !String(answer).trim()) return setFeedback("请输入答案", false);
+  if (state.question.type === "meaning" && !answer) return setFeedback("请选择一个答案", false);
+  if (state.question.type === "image" && (!answer || answer.length !== 2)) return setFeedback("请选择两张图片", false);
   await submitAndHandle(answer, null, null);
 }
 
@@ -238,7 +309,7 @@ function fillSettingsForm() {
   $("modeMeaning").checked = !!s.mode_meaning;
   $("modeImage").checked = !!s.mode_image;
   $("modeTyping").checked = !!s.mode_typing;
-  $("typingMode").value = s.typing_mode || "full";
+  $("typingMode").value = s.typing_mode || "missing_one_vowel";
 
   const select = $("bookSelect");
   select.innerHTML = "";

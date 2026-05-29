@@ -39,6 +39,44 @@ def _missing_vowels(text: str) -> str:
     return "".join(ch for ch in letters if ch in VOWELS)
 
 
+def _vowel_groups(text: str) -> list[list[int]]:
+    groups: list[list[int]] = []
+    cur: list[int] = []
+    for i, ch in enumerate(text):
+        low = ch.lower()
+        if not ch.isalpha():
+            if cur:
+                groups.append(cur)
+                cur = []
+            continue
+        if low in VOWELS:
+            cur.append(i)
+        else:
+            if cur:
+                groups.append(cur)
+                cur = []
+    if cur:
+        groups.append(cur)
+    return groups
+
+
+def _alpha_positions(text: str) -> list[int]:
+    return [i for i, ch in enumerate(text) if ch.isalpha()]
+
+
+def _build_masked_template(text: str, missing_positions: list[int]) -> tuple[str, str]:
+    miss_set = set(missing_positions)
+    chars: list[str] = []
+    missing_letters: list[str] = []
+    for i, ch in enumerate(text):
+        if i in miss_set:
+            chars.append("_")
+            missing_letters.append(ch)
+        else:
+            chars.append(ch)
+    return "".join(chars), "".join(missing_letters)
+
+
 def pick_modes(settings: dict) -> list[str]:
     modes: list[str] = []
     if settings.get("mode_meaning", True):
@@ -93,40 +131,46 @@ def build_meaning_question(word: dict, all_words: list[dict], rng: random.Random
     }
 
 
-def build_typing_question(word: dict, typing_mode: str = "full") -> dict:
+def build_typing_question(word: dict, rng: random.Random, typing_mode: str = "missing_one_vowel") -> dict:
     headword = word["headword"]
-    mode = (typing_mode or "full").strip().lower()
-    if mode not in {"full", "missing_vowels"}:
-        mode = "full"
+    mode = (typing_mode or "missing_one_vowel").strip().lower()
+    if mode not in {"all_missing", "missing_one_vowel", "missing_multi_vowels"}:
+        mode = "missing_one_vowel"
 
-    if mode == "missing_vowels":
-        missing = _missing_vowels(headword)
-        # If there are no vowels to hide, fallback to full dictation.
-        if not missing:
-            mode = "full"
+    alpha_pos = _alpha_positions(headword)
+    vowel_groups = _vowel_groups(headword)
+    missing_positions: list[int] = []
+
+    if mode == "all_missing":
+        missing_positions = list(alpha_pos)
+    elif mode == "missing_multi_vowels":
+        for g in vowel_groups:
+            missing_positions.extend(g)
+    else:
+        if vowel_groups:
+            missing_positions = list(rng.choice(vowel_groups))
         else:
-            return {
-                "type": "typing",
-                "typingMode": "missing_vowels",
-                "prompt": word["translation"].get("zhHans") or headword,
-                "subPrompt": _mask_vowels(headword),
-                "inputHint": "Type only the missing vowels in order",
-                "answer": {
-                    "style": "missing_vowels",
-                    "full": headword,
-                    "missing": missing,
-                },
-            }
+            # No vowels: fallback to one random alphabetic letter.
+            if alpha_pos:
+                missing_positions = [rng.choice(alpha_pos)]
+
+    if not missing_positions and alpha_pos:
+        missing_positions = [rng.choice(alpha_pos)]
+
+    mask_template, missing_letters = _build_masked_template(headword, missing_positions)
 
     return {
         "type": "typing",
-        "typingMode": "full",
+        "typingMode": mode,
         "prompt": word["translation"].get("zhHans") or headword,
-        "subPrompt": headword,
-        "inputHint": "Type the full English word/phrase",
+        "subPrompt": "",
+        "maskTemplate": mask_template,
+        "missingCount": len(missing_letters),
+        "inputHint": "Fill the missing letters",
         "answer": {
-            "style": "full",
+            "style": "masked_completion",
             "full": headword,
+            "missing": missing_letters,
         },
     }
 
@@ -176,12 +220,12 @@ def evaluate_answer(mode: str, expected, user_answer) -> tuple[bool, int]:
     if mode == "typing":
         user_text = str(user_answer or "")
         if isinstance(expected, dict):
-            style = expected.get("style", "full")
+            style = expected.get("style", "masked_completion")
             full = str(expected.get("full", ""))
-            if style == "missing_vowels":
+            if style == "masked_completion":
                 missing = str(expected.get("missing", ""))
                 ok = (
-                    _letters_only(user_text) == missing
+                    _letters_only(user_text) == _letters_only(missing)
                     or normalize_typing(user_text) == normalize_typing(full)
                 )
             else:
