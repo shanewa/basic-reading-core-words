@@ -360,8 +360,17 @@ function fillSettingsForm() {
   $("modeMeaning").checked = !!s.mode_meaning;
   $("modeImage").checked = !!s.mode_image;
   $("modeTyping").checked = !!s.mode_typing;
-  // Default typing mode is the top option: 上部分省略.
-  $("typingMode").value = s.typing_mode || "missing_one_vowel";
+
+  // Compatibility mapping for old stored values.
+  const modeMap = {
+    full: "all_missing",
+    missing_vowels: "missing_multi_vowels",
+    missing_one_vowel: "missing_one_vowel",
+    missing_multi_vowels: "missing_multi_vowels",
+    all_missing: "all_missing",
+  };
+  const normalizedTypingMode = modeMap[s.typing_mode] || "missing_one_vowel";
+  $("typingMode").value = normalizedTypingMode;
 
   const select = $("bookSelect");
   select.innerHTML = "";
