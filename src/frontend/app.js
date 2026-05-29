@@ -187,27 +187,73 @@ function speakerButtonHtml(text) {
   );
 }
 
+function pickEnglishVoice() {
+  const voices = (window.speechSynthesis && window.speechSynthesis.getVoices()) || [];
+  if (!voices.length) return null;
+  return (
+    voices.find((v) => /en[-_]?US/i.test(v.lang) && /female|samantha|zira|google/i.test(v.name)) ||
+    voices.find((v) => /en[-_]?US/i.test(v.lang)) ||
+    voices.find((v) => /^en/i.test(v.lang)) ||
+    null
+  );
+}
+
+// Warm up the voice list at startup. Some browsers (Chrome) load voices async.
+if ("speechSynthesis" in window) {
+  try {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.addEventListener &&
+      window.speechSynthesis.addEventListener("voiceschanged", () => {
+        const vs = window.speechSynthesis.getVoices();
+        console.log(`[wg] voices loaded: ${vs.length}`, vs.slice(0, 5).map((v) => `${v.name} (${v.lang})`));
+      });
+  } catch (e) {
+    /* ignore */
+  }
+}
+
+function actuallySpeak(text) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  u.rate = 0.9;
+  u.pitch = 1.0;
+  const preferred = pickEnglishVoice();
+  if (preferred) {
+    u.voice = preferred;
+    u.lang = preferred.lang || "en-US";
+  }
+  u.onstart = () => console.log(`[wg] speak start: "${text}" voice=${u.voice && u.voice.name}`);
+  u.onerror = (e) => console.warn("[wg] speak error", e.error || e);
+  u.onend = () => console.log("[wg] speak end");
+  window.speechSynthesis.speak(u);
+}
+
 function speakText(text) {
   if (!text) return;
   if (!("speechSynthesis" in window)) {
     setFeedback("浏览器不支持朗读 Speech not supported", false);
     return;
   }
+  console.log(`[wg] speakText invoked: "${text}"`);
   try {
     window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "en-US";
-    u.rate = 0.9;
-    u.pitch = 1.0;
-    const voices = window.speechSynthesis.getVoices();
-    const preferred =
-      voices.find((v) => /en[-_]?US/i.test(v.lang) && /female|samantha|zira|google/i.test(v.name)) ||
-      voices.find((v) => /^en/i.test(v.lang));
-    if (preferred) u.voice = preferred;
-    window.speechSynthesis.speak(u);
-  } catch (err) {
-    console.warn("[wg] speak failed", err);
+  } catch (e) {
+    /* ignore */
   }
+  // Chrome glitch: speak() right after cancel() sometimes silently no-ops.
+  // A tiny delay avoids this reliably.
+  setTimeout(() => {
+    try {
+      // If voices still empty, getVoices once more to nudge async load, then speak.
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) {
+        console.log("[wg] voices not ready yet, speaking with default voice");
+      }
+      actuallySpeak(text);
+    } catch (err) {
+      console.warn("[wg] speak failed", err);
+    }
+  }, 60);
 }
 
 // Single delegated handler for any .speaker-btn inside the question box.
