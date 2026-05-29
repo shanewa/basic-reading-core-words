@@ -203,6 +203,13 @@ h2 {
   display: inline-block;
 }
 
+.ipa-line {
+  margin: 0 0 8px;
+  font-size: clamp(1rem, 1.2vw, 1.2rem);
+  color: #173042;
+  font-weight: 600;
+}
+
 .completion-board {
   display: flex;
   flex-wrap: wrap;
