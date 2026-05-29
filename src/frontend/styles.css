@@ -381,6 +381,21 @@ label {
   margin-top: 0;
 }
 
+.settings-panel .actions.compact {
+  margin-top: 14px;
+  gap: 12px;
+}
+
+.settings-panel .actions.compact + .actions.compact {
+  margin-top: 10px;
+}
+
+.settings-panel .actions.compact button {
+  min-height: 46px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
 button {
   border: 0;
   border-radius: 12px;
