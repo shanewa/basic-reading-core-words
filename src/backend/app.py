@@ -87,6 +87,8 @@ def _build_question(word: dict, all_words: list[dict], settings: dict) -> dict:
         q = build_image_question(word, all_words, rng, provider=CFG.image_provider)
 
     qid = str(uuid.uuid4())
+    source_items = word.get("sources") or []
+    source_text = " / ".join(s.get("raw") or s.get("label") or "" for s in source_items if isinstance(s, dict))
     QUESTION_CACHE[qid] = {
         "wordId": word["id"],
         "mode": q["type"],
@@ -94,6 +96,7 @@ def _build_question(word: dict, all_words: list[dict], settings: dict) -> dict:
     }
     q["questionId"] = qid
     q["wordId"] = word["id"]
+    q["sourceText"] = source_text
     q.pop("answer", None)
     return q
 

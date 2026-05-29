@@ -92,6 +92,11 @@ function toggleSettingsPanel(forceOpen = null) {
   panel.setAttribute("aria-hidden", willOpen ? "false" : "true");
 }
 
+function renderSourceLine(q) {
+  if (!q || !q.sourceText) return "";
+  return `<p class="source-line">出处 Source: ${q.sourceText}</p>`;
+}
+
 function renderMeaningQuestion(q) {
   const box = $("questionBox");
   const opts = q.options
@@ -100,6 +105,7 @@ function renderMeaningQuestion(q) {
   box.innerHTML = `
     <p class="q-sub">Choose meaning</p>
     <p class="q-prompt">${q.prompt}</p>
+    ${renderSourceLine(q)}
     <div class="options">${opts}</div>
   `;
 
@@ -147,6 +153,7 @@ function renderTypingQuestion(q) {
   box.innerHTML = `
     <p class="q-sub">根据中文补全单词（不显示完整英文）</p>
     <p class="q-prompt">${q.prompt}</p>
+    ${renderSourceLine(q)}
     <div class="completion-board" id="completionBoard">${tokens}</div>
     <p class="q-sub">键盘输入字母，Backspace 删除</p>
   `;
@@ -213,6 +220,7 @@ function renderImageQuestion(q) {
   box.innerHTML = `
     <p class="q-sub">Select two related images</p>
     <p class="q-prompt">${q.prompt}</p>
+    ${renderSourceLine(q)}
     <div class="img-grid">${cards}</div>
   `;
 
