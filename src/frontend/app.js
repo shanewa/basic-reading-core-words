@@ -8,6 +8,7 @@ const state = {
   typingMissingCount: 0,
   typingChars: [],
   typingKeyHandler: null,
+  pendingNextTimer: null,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -65,7 +66,17 @@ function shakeQuestionBox() {
 async function submitAndHandle(answer, onWrong, onCorrect) {
   if (!state.question || state.questionLocked) return;
   state.questionLocked = true;
-  const delayMs = Math.max(200, Math.min(5000, Number(state.settings?.answer_delay_ms || 900)));
+  const delayMs = Math.max(100, Math.min(3000, Number(state.settings?.answer_delay_ms || 600)));
+  const scheduleNext = () => {
+    if (state.pendingNextTimer) {
+      clearTimeout(state.pendingNextTimer);
+      state.pendingNextTimer = null;
+    }
+    state.pendingNextTimer = setTimeout(() => {
+      state.pendingNextTimer = null;
+      loadSession();
+    }, delayMs);
+  };
   try {
     const data = await api("/api/answer", {
       method: "POST",
@@ -79,19 +90,16 @@ async function submitAndHandle(answer, onWrong, onCorrect) {
       mark.className = "right-mark";
       mark.textContent = "✓";
       $("questionBox").appendChild(mark);
-      setTimeout(() => {
-        loadSession();
-      }, delayMs);
+      scheduleNext();
       return;
     }
 
     if (onWrong) onWrong();
     shakeQuestionBox();
     setFeedback("回答错误", false);
-    setTimeout(() => {
-      loadSession();
-    }, delayMs);
+    scheduleNext();
   } catch (err) {
+    state.questionLocked = false;
     setFeedback(err.message, false);
   }
 }
@@ -329,6 +337,10 @@ function renderQuestion(payload) {
 
 async function loadSession() {
   try {
+    if (state.pendingNextTimer) {
+      clearTimeout(state.pendingNextTimer);
+      state.pendingNextTimer = null;
+    }
     const data = await api("/api/session");
     renderQuestion(data);
   } catch (err) {
@@ -356,7 +368,7 @@ async function submitAnswer() {
 function fillSettingsForm() {
   const s = state.settings;
   $("dailyTarget").value = s.daily_target;
-  $("answerDelayMs").value = s.answer_delay_ms || 900;
+  $("answerDelayMs").value = s.answer_delay_ms || 600;
   $("modeMeaning").checked = !!s.mode_meaning;
   $("modeImage").checked = !!s.mode_image;
   $("modeTyping").checked = !!s.mode_typing;
@@ -388,7 +400,7 @@ async function saveSettings() {
     const patch = {
       book_dir: $("bookSelect").value,
       daily_target: Number($("dailyTarget").value || 20),
-      answer_delay_ms: Number($("answerDelayMs").value || 900),
+      answer_delay_ms: Number($("answerDelayMs").value || 600),
       mode_meaning: $("modeMeaning").checked,
       mode_image: $("modeImage").checked,
       mode_typing: $("modeTyping").checked,
@@ -439,7 +451,14 @@ async function init() {
     fillSettingsForm();
 
     $("submitBtn").addEventListener("click", submitAnswer);
-    $("nextBtn").addEventListener("click", loadSession);
+    $("nextBtn").addEventListener("click", () => {
+      if (state.pendingNextTimer) {
+        clearTimeout(state.pendingNextTimer);
+        state.pendingNextTimer = null;
+      }
+      state.questionLocked = false;
+      loadSession();
+    });
     $("saveSettingsBtn").addEventListener("click", saveSettings);
     $("rebuildBtn").addEventListener("click", rebuildWordbank);
     $("resetProgressBtn").addEventListener("click", resetProgress);
