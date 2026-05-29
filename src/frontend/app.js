@@ -157,8 +157,12 @@ function renderSourceLine(q) {
 }
 
 function renderIpaLine(q) {
-  if (!q || !q.ipaText) return "";
-  return `<p class="ipa-line">音标 IPA: ${q.ipaText}</p>`;
+  if (!q) return "";
+  const parts = [];
+  if (q.ipaText) parts.push(`音标 IPA: ${q.ipaText}`);
+  if (q.phonicsText) parts.push(`自然拼读 Phonics: ${q.phonicsText}`);
+  if (!parts.length) return "";
+  return `<p class="ipa-line">${parts.join("  ·  ")}</p>`;
 }
 
 // --- Speech (TTS) ---------------------------------------------------------
