@@ -218,6 +218,7 @@ def api_session():
                 "progress": progress,
                 "dailyTarget": int(settings.get("daily_target", CFG.daily_target_default)),
                 "replay": True,
+                "favorited": STORAGE.is_favorite(book_dir, word["id"]),
             }
         )
 
@@ -246,8 +247,33 @@ def api_session():
             "question": q,
             "progress": progress,
             "dailyTarget": int(settings.get("daily_target", CFG.daily_target_default)),
+            "favorited": STORAGE.is_favorite(book_dir, word["id"]),
         }
     )
+
+
+@app.post("/api/favorites/toggle")
+def api_favorites_toggle():
+    payload = request.get_json(silent=True) or {}
+    word_id = (payload.get("wordId") or "").strip()
+    if not word_id:
+        return jsonify({"error": "wordId required"}), 400
+    settings = _ensure_default_settings()
+    book_dir = settings["book_dir"]
+    if not book_dir:
+        return jsonify({"error": "no book selected"}), 400
+    now_iso = datetime.utcnow().isoformat() + "Z"
+    favorited = STORAGE.toggle_favorite(book_dir, word_id, now_iso)
+    return jsonify({"ok": True, "wordId": word_id, "favorited": favorited})
+
+
+@app.get("/api/favorites")
+def api_favorites_list():
+    settings = _ensure_default_settings()
+    book_dir = settings["book_dir"]
+    if not book_dir:
+        return jsonify({"error": "no book selected"}), 400
+    return jsonify({"ok": True, "wordIds": STORAGE.list_favorites(book_dir)})
 
 
 @app.post("/api/answer")

@@ -87,6 +87,13 @@ class StudyStorage:
                     is_correct INTEGER NOT NULL,
                     user_answer TEXT
                 );
+
+                CREATE TABLE IF NOT EXISTS favorites (
+                    book_dir TEXT NOT NULL,
+                    word_id TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    PRIMARY KEY (book_dir, word_id)
+                );
                 """
             )
 
@@ -274,6 +281,41 @@ class StudyStorage:
             "todayCorrect": today_ok,
             "todayAccuracy": (today_ok / today_count) if today_count else 0.0,
         }
+
+    def is_favorite(self, book_dir: str, word_id: str) -> bool:
+        with self.conn() as conn:
+            row = conn.execute(
+                "SELECT 1 FROM favorites WHERE book_dir=? AND word_id=?",
+                (book_dir, word_id),
+            ).fetchone()
+        return row is not None
+
+    def toggle_favorite(self, book_dir: str, word_id: str, now_iso: str) -> bool:
+        """Returns the new favorited state (True if now favorited)."""
+        with self.conn() as conn:
+            row = conn.execute(
+                "SELECT 1 FROM favorites WHERE book_dir=? AND word_id=?",
+                (book_dir, word_id),
+            ).fetchone()
+            if row is None:
+                conn.execute(
+                    "INSERT INTO favorites(book_dir, word_id, created_at) VALUES (?, ?, ?)",
+                    (book_dir, word_id, now_iso),
+                )
+                return True
+            conn.execute(
+                "DELETE FROM favorites WHERE book_dir=? AND word_id=?",
+                (book_dir, word_id),
+            )
+            return False
+
+    def list_favorites(self, book_dir: str) -> list[str]:
+        with self.conn() as conn:
+            rows = conn.execute(
+                "SELECT word_id FROM favorites WHERE book_dir=? ORDER BY created_at DESC",
+                (book_dir,),
+            ).fetchall()
+        return [r["word_id"] for r in rows]
 
     def reset_book_progress(self, book_dir: str) -> None:
         with self.conn() as conn:

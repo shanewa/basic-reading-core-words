@@ -12,6 +12,7 @@ const state = {
   continueLearning: false,
   loadInFlight: false,
   history: [],
+  favorited: false,
 };
 
 const HISTORY_MAX = 50;
@@ -358,6 +359,39 @@ function renderImageQuestion(q) {
   }
 }
 
+function updateFavoriteButton() {
+  const btn = $("favoriteBtn");
+  if (!btn) return;
+  const hasWord = !!(state.question && state.question.wordId);
+  btn.disabled = !hasWord;
+  btn.classList.toggle("is-favorited", !!state.favorited);
+  btn.setAttribute(
+    "aria-pressed",
+    state.favorited ? "true" : "false"
+  );
+  btn.title = state.favorited ? "取消收藏 Unfavorite" : "收藏 Favorite";
+}
+
+async function toggleFavorite() {
+  if (!state.question || !state.question.wordId) return;
+  const wordId = state.question.wordId;
+  // Optimistic toggle.
+  const prev = state.favorited;
+  state.favorited = !prev;
+  updateFavoriteButton();
+  try {
+    const data = await api("/api/favorites/toggle", {
+      method: "POST",
+      body: JSON.stringify({ wordId }),
+    });
+    state.favorited = !!data.favorited;
+  } catch (err) {
+    state.favorited = prev;
+    setFeedback(err.message, false);
+  }
+  updateFavoriteButton();
+}
+
 function updatePrevButton() {
   const btn = $("prevBtn");
   if (!btn) return;
@@ -378,6 +412,7 @@ function pushHistory(wordId) {
 
 function renderQuestion(payload) {
   state.question = payload.question;
+  state.favorited = !!payload.favorited;
   if (state.typingKeyHandler) {
     document.removeEventListener("keydown", state.typingKeyHandler);
     state.typingKeyHandler = null;
@@ -400,11 +435,13 @@ function renderQuestion(payload) {
     }
     renderProgress(payload.progress, payload.dailyTarget || state.settings.daily_target);
     updatePrevButton();
+    updateFavoriteButton();
     return;
   }
 
   renderProgress(payload.progress, payload.dailyTarget);
   pushHistory(state.question.wordId);
+  updateFavoriteButton();
 
   const q = state.question;
   if (q.type === "meaning") renderMeaningQuestion(q);
@@ -604,6 +641,7 @@ async function init() {
     $("submitBtn").addEventListener("click", submitAnswer);
     $("nextBtn").addEventListener("click", forceLoadNextSession);
     $("prevBtn").addEventListener("click", loadPreviousSession);
+    $("favoriteBtn").addEventListener("click", toggleFavorite);
     $("saveSettingsBtn").addEventListener("click", saveSettings);
     $("rebuildBtn").addEventListener("click", rebuildWordbank);
     $("resetProgressBtn").addEventListener("click", resetProgress);
