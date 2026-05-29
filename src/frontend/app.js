@@ -369,7 +369,7 @@ function fillSettingsForm() {
     missing_multi_vowels: "missing_multi_vowels",
     all_missing: "all_missing",
   };
-  const normalizedTypingMode = modeMap[s.typing_mode] || "missing_one_vowel";
+  const normalizedTypingMode = modeMap[s.typing_mode] || "missing_multi_vowels";
   $("typingMode").value = normalizedTypingMode;
 
   const select = $("bookSelect");
