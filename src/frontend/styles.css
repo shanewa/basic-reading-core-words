@@ -65,6 +65,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
 }
 
 #title {
@@ -79,32 +80,44 @@ body {
   gap: 10px;
 }
 
+.progress-mini {
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.pm-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #cfe2eb;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.pm-item b {
+  font-size: 1rem;
+}
+
+.pm-item small {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
 .layout {
   max-width: 1440px;
   margin: 0 auto;
   padding: 4px 14px 18px;
-  display: grid;
-  grid-template-columns: 2.35fr 1fr;
-  grid-template-areas:
-    "learn settings"
-    "learn progress";
-  grid-template-rows: auto 1fr;
-  gap: 12px;
+  display: block;
 }
 
 #learnCard {
-  grid-area: learn;
+  max-width: 1380px;
+  margin: 0 auto;
   min-height: calc(100vh - 128px);
   display: flex;
   flex-direction: column;
-}
-
-#settingsCard {
-  grid-area: settings;
-}
-
-#progressCard {
-  grid-area: progress;
 }
 
 .card {
@@ -336,6 +349,32 @@ button {
   gap: 8px;
 }
 
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(420px, 92vw);
+  height: 100vh;
+  overflow-y: auto;
+  padding: 18px 16px 18px;
+  border-left: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(6px);
+  box-shadow: -10px 0 30px rgba(23, 48, 66, 0.12);
+  z-index: 30;
+}
+
+.settings-panel.hidden {
+  display: none;
+}
+
+.settings-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
 .progress-list li {
   border: 1px solid #d4e5ed;
   border-radius: 12px;
@@ -345,13 +384,18 @@ button {
 }
 
 @media (max-width: 920px) {
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .progress-mini {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+  }
+
   .layout {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "learn"
-      "settings"
-      "progress";
-    grid-template-rows: auto;
+    display: block;
   }
 
   #learnCard {
