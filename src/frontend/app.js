@@ -372,6 +372,95 @@ function updateFavoriteButton() {
   btn.title = state.favorited ? "取消收藏 Unfavorite" : "收藏 Favorite";
 }
 
+function toggleFavoritesPanel(forceOpen = null) {
+  const panel = $("favoritesPanel");
+  if (!panel) return;
+  const willOpen = forceOpen === null ? panel.classList.contains("hidden") : !!forceOpen;
+  panel.classList.toggle("hidden", !willOpen);
+  panel.setAttribute("aria-hidden", willOpen ? "false" : "true");
+  if (willOpen) {
+    loadAndRenderFavorites();
+  }
+}
+
+async function loadAndRenderFavorites() {
+  const listEl = $("favoritesList");
+  const emptyEl = $("favoritesEmpty");
+  if (!listEl) return;
+  listEl.innerHTML = '<li class="muted">加载中... Loading…</li>';
+  emptyEl.classList.add("hidden");
+  try {
+    const data = await api("/api/favorites");
+    const items = data.items || [];
+    renderFavoritesList(items);
+  } catch (err) {
+    listEl.innerHTML = `<li class="muted">加载失败：${err.message}</li>`;
+  }
+}
+
+function renderFavoritesList(items) {
+  const listEl = $("favoritesList");
+  const emptyEl = $("favoritesEmpty");
+  if (!listEl) return;
+  listEl.innerHTML = "";
+  if (!items.length) {
+    emptyEl.classList.remove("hidden");
+    return;
+  }
+  emptyEl.classList.add("hidden");
+  for (const item of items) {
+    const li = document.createElement("li");
+
+    const info = document.createElement("div");
+    info.className = "fav-info";
+    info.title = "去做这个词的题 Go to this word";
+    const head = document.createElement("div");
+    head.className = "fav-head" + (item.missing ? " fav-missing" : "");
+    head.textContent = item.headword + (item.missing ? "  (已不在当前书) (no longer in book)" : "");
+    const zh = document.createElement("div");
+    zh.className = "fav-zh";
+    zh.textContent = item.zhHans || "";
+    info.appendChild(head);
+    if (item.zhHans) info.appendChild(zh);
+    info.addEventListener("click", async () => {
+      if (item.missing) return;
+      toggleFavoritesPanel(false);
+      // Reset history-current so prev still works naturally.
+      await loadSession({ wordId: item.wordId });
+    });
+
+    const removeBtn = document.createElement("button");
+    removeBtn.className = "icon-btn favorite-btn is-favorited";
+    removeBtn.title = "取消收藏 Remove";
+    removeBtn.setAttribute("aria-label", "取消收藏 Remove");
+    removeBtn.innerHTML =
+      '<svg class="star-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">' +
+      '<path class="star-path" d="M12 2.5l2.95 6.36 7.05.74-5.3 4.86 1.57 7.04L12 17.9l-6.27 3.6 1.57-7.04L2 9.6l7.05-.74L12 2.5z" />' +
+      "</svg>";
+    removeBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      try {
+        await api("/api/favorites/toggle", {
+          method: "POST",
+          body: JSON.stringify({ wordId: item.wordId }),
+        });
+        // If the removed word is the one currently displayed, sync the star.
+        if (state.question && state.question.wordId === item.wordId) {
+          state.favorited = false;
+          updateFavoriteButton();
+        }
+        await loadAndRenderFavorites();
+      } catch (err) {
+        setFeedback(err.message, false);
+      }
+    });
+
+    li.appendChild(info);
+    li.appendChild(removeBtn);
+    listEl.appendChild(li);
+  }
+}
+
 async function toggleFavorite() {
   if (!state.question || !state.question.wordId) return;
   const wordId = state.question.wordId;
@@ -642,6 +731,8 @@ async function init() {
     $("nextBtn").addEventListener("click", forceLoadNextSession);
     $("prevBtn").addEventListener("click", loadPreviousSession);
     $("favoriteBtn").addEventListener("click", toggleFavorite);
+    $("favoritesToggleBtn").addEventListener("click", () => toggleFavoritesPanel());
+    $("favoritesCloseBtn").addEventListener("click", () => toggleFavoritesPanel(false));
     $("saveSettingsBtn").addEventListener("click", saveSettings);
     $("rebuildBtn").addEventListener("click", rebuildWordbank);
     $("resetProgressBtn").addEventListener("click", resetProgress);

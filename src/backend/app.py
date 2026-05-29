@@ -273,7 +273,26 @@ def api_favorites_list():
     book_dir = settings["book_dir"]
     if not book_dir:
         return jsonify({"error": "no book selected"}), 400
-    return jsonify({"ok": True, "wordIds": STORAGE.list_favorites(book_dir)})
+    word_ids = STORAGE.list_favorites(book_dir)
+    if not word_ids:
+        return jsonify({"ok": True, "items": []})
+    wordbank = load_wordbank(CFG.books_dir, book_dir)
+    by_id = {w["id"]: w for w in wordbank["words"]}
+    items = []
+    for wid in word_ids:
+        w = by_id.get(wid)
+        if not w:
+            # Word may have been removed from the book; surface it anyway.
+            items.append({"wordId": wid, "headword": wid, "zhHans": "", "missing": True})
+            continue
+        items.append(
+            {
+                "wordId": wid,
+                "headword": w.get("headword") or w.get("display") or wid,
+                "zhHans": ((w.get("translation") or {}).get("zhHans")) or "",
+            }
+        )
+    return jsonify({"ok": True, "items": items})
 
 
 @app.post("/api/answer")
