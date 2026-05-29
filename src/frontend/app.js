@@ -67,18 +67,20 @@ function shakeQuestionBox() {
 
 async function submitAndHandle(answer, onWrong, onCorrect) {
   if (!state.question || state.questionLocked) return;
+  const currentQuestionId = state.question.questionId;
   state.questionLocked = true;
   const delayMs = Math.max(100, Math.min(1000, Number(state.settings?.answer_delay_ms || 150)));
-  const scheduleNext = () => {
-    if (state.pendingNextTimer) {
-      clearTimeout(state.pendingNextTimer);
-      state.pendingNextTimer = null;
-    }
-    state.pendingNextTimer = setTimeout(() => {
-      state.pendingNextTimer = null;
-      forceLoadNextSession();
-    }, delayMs);
-  };
+  const waitDelay = () =>
+    new Promise((resolve) => {
+      if (state.pendingNextTimer) {
+        clearTimeout(state.pendingNextTimer);
+        state.pendingNextTimer = null;
+      }
+      state.pendingNextTimer = setTimeout(() => {
+        state.pendingNextTimer = null;
+        resolve();
+      }, delayMs);
+    });
   try {
     const data = await api("/api/answer", {
       method: "POST",
@@ -92,7 +94,8 @@ async function submitAndHandle(answer, onWrong, onCorrect) {
       mark.className = "right-mark";
       mark.textContent = "✓";
       $("questionBox").appendChild(mark);
-      scheduleNext();
+      await waitDelay();
+      await forceLoadNextSession();
       return;
     }
 
@@ -104,6 +107,11 @@ async function submitAndHandle(answer, onWrong, onCorrect) {
   } catch (err) {
     state.questionLocked = false;
     setFeedback(err.message, false);
+  }
+
+  // Fallback: never leave the current question permanently locked.
+  if (state.questionLocked && state.question && state.question.questionId === currentQuestionId) {
+    state.questionLocked = false;
   }
 }
 
