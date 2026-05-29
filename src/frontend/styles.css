@@ -203,6 +203,56 @@ h2 {
   stroke: #d49a00;
 }
 
+.favorites-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.favorites-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #e6eef2;
+  border-radius: 10px;
+  background: #fcfeff;
+}
+.favorites-list .fav-info {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.favorites-list .fav-info:hover .fav-head {
+  text-decoration: underline;
+}
+.favorites-list .fav-head {
+  font-weight: 600;
+  color: #1f3b46;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.favorites-list .fav-zh {
+  font-size: 0.88rem;
+  color: #5d7480;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.favorites-list .fav-missing {
+  color: #b35454;
+  font-style: italic;
+}
+
 .question-box {
   min-height: 52vh;
   flex: 1;
