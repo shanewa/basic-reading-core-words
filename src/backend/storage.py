@@ -14,6 +14,7 @@ DEFAULT_SETTINGS = {
     "mode_image": False,
     "mode_typing": True,
     "typing_mode": "missing_one_vowel",
+    "answer_delay_ms": 900,
     "ui_language": "zh",
 }
 
@@ -78,7 +79,7 @@ class StudyStorage:
         settings = dict(DEFAULT_SETTINGS)
         for r in rows:
             value = r["value"]
-            if r["key"] in {"daily_target"}:
+            if r["key"] in {"daily_target", "answer_delay_ms"}:
                 settings[r["key"]] = int(value)
             elif r["key"] in {"mode_meaning", "mode_image", "mode_typing"}:
                 settings[r["key"]] = value == "1"

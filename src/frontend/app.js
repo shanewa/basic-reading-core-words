@@ -65,6 +65,7 @@ function shakeQuestionBox() {
 async function submitAndHandle(answer, onWrong, onCorrect) {
   if (!state.question || state.questionLocked) return;
   state.questionLocked = true;
+  const delayMs = Math.max(200, Math.min(5000, Number(state.settings?.answer_delay_ms || 900)));
   try {
     const data = await api("/api/answer", {
       method: "POST",
@@ -80,7 +81,7 @@ async function submitAndHandle(answer, onWrong, onCorrect) {
       $("questionBox").appendChild(mark);
       setTimeout(() => {
         loadSession();
-      }, 1600);
+      }, delayMs);
       return;
     }
 
@@ -89,15 +90,9 @@ async function submitAndHandle(answer, onWrong, onCorrect) {
     setFeedback("回答错误", false);
     setTimeout(() => {
       loadSession();
-    }, 1600);
+    }, delayMs);
   } catch (err) {
     setFeedback(err.message, false);
-  } finally {
-    // Wrong answer should stop auto-resubmission on the same consumed question.
-    // Correct answer path will load next question shortly.
-    if (state.question) {
-      state.questionLocked = false;
-    }
   }
 }
 
@@ -337,6 +332,7 @@ async function loadSession() {
     const data = await api("/api/session");
     renderQuestion(data);
   } catch (err) {
+    state.questionLocked = false;
     setFeedback(err.message, false);
   }
 }
@@ -360,6 +356,7 @@ async function submitAnswer() {
 function fillSettingsForm() {
   const s = state.settings;
   $("dailyTarget").value = s.daily_target;
+  $("answerDelayMs").value = s.answer_delay_ms || 900;
   $("modeMeaning").checked = !!s.mode_meaning;
   $("modeImage").checked = !!s.mode_image;
   $("modeTyping").checked = !!s.mode_typing;
@@ -381,6 +378,7 @@ async function saveSettings() {
     const patch = {
       book_dir: $("bookSelect").value,
       daily_target: Number($("dailyTarget").value || 20),
+      answer_delay_ms: Number($("answerDelayMs").value || 900),
       mode_meaning: $("modeMeaning").checked,
       mode_image: $("modeImage").checked,
       mode_typing: $("modeTyping").checked,
