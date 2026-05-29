@@ -18,6 +18,8 @@ DEFAULT_SETTINGS = {
     "typing_mode": "missing_multi_vowels",
     "answer_delay_ms": 150,
     "ui_language": "zh",
+    "child_name": "",
+    "avatar_ext": "",  # set when an avatar has been uploaded (e.g. "png").
 }
 
 
