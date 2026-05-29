@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/styles.css?v=20260529h" />
+    <link rel="stylesheet" href="/styles.css?v=20260529i" />
   </head>
   <body>
     <div class="bg-orb orb-a"></div>
@@ -30,7 +30,14 @@
       <section class="card" id="learnCard">
         <div class="section-head">
           <h2 id="learnTitle">学习 Learn</h2>
-          <span id="progressBadge" class="badge">0 / 20</span>
+          <div class="section-head-right">
+            <button id="favoriteBtn" class="icon-btn favorite-btn" aria-label="收藏 Favorite" title="收藏 Favorite" disabled>
+              <svg id="favoriteIcon" class="star-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                <path class="star-path" d="M12 2.5l2.95 6.36 7.05.74-5.3 4.86 1.57 7.04L12 17.9l-6.27 3.6 1.57-7.04L2 9.6l7.05-.74L12 2.5z" />
+              </svg>
+            </button>
+            <span id="progressBadge" class="badge">0 / 20</span>
+          </div>
         </div>
 
         <div id="questionBox" class="question-box">
@@ -96,6 +103,6 @@
     </aside>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="/app.js?v=20260529h"></script>
+    <script src="/app.js?v=20260529i"></script>
   </body>
 </html>

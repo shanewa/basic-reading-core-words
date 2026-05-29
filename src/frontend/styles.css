@@ -162,6 +162,47 @@ h2 {
   padding: 4px 10px;
 }
 
+.section-head-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.icon-btn:hover:not(:disabled) {
+  background: rgba(255, 195, 0, 0.12);
+}
+.icon-btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.star-icon .star-path {
+  fill: none;
+  stroke: #d49a00;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: fill 0.18s ease, stroke 0.18s ease;
+}
+.favorite-btn.is-favorited .star-icon .star-path {
+  fill: #ffc83d;
+  stroke: #d49a00;
+}
+
 .question-box {
   min-height: 52vh;
   flex: 1;
