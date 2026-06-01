@@ -160,6 +160,7 @@ Main tables:
 - GET /api/session
 - POST /api/answer
 - GET /api/progress
+- GET /api/wordbank/overview
 - POST /api/reset
 
 ## Add a New Vocabulary Book

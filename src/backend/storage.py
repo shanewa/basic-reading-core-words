@@ -240,6 +240,37 @@ class StudyStorage:
             ).fetchall()
         return {r["word_id"] for r in rows}
 
+    def list_word_states_for_book(self, book_dir: str) -> dict[str, dict]:
+        """All SM-2 rows for a book, keyed by word_id."""
+        with self.conn() as conn:
+            rows = conn.execute(
+                "SELECT * FROM word_state WHERE book_dir=?",
+                (book_dir,),
+            ).fetchall()
+        return {str(r["word_id"]): dict(r) for r in rows}
+
+    def review_log_stats_by_word(self, book_dir: str) -> dict[str, dict[str, int]]:
+        """Per-word counts from review_log (includes wrong attempts)."""
+        with self.conn() as conn:
+            rows = conn.execute(
+                """
+                SELECT word_id,
+                       COUNT(*) AS attempts,
+                       COALESCE(SUM(is_correct), 0) AS correct_attempts
+                FROM review_log
+                WHERE book_dir=?
+                GROUP BY word_id
+                """,
+                (book_dir,),
+            ).fetchall()
+        return {
+            str(r["word_id"]): {
+                "attempts": int(r["attempts"] or 0),
+                "correctAttempts": int(r["correct_attempts"] or 0),
+            }
+            for r in rows
+        }
+
     def progress_summary(self, book_dir: str, total_words: int, today: str) -> dict:
         with self.conn() as conn:
             row = conn.execute(

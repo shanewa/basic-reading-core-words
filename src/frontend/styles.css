@@ -669,3 +669,113 @@ button {
     height: 180px;
   }
 }
+
+/* --- Wordbank overview (full list) ------------------------------------ */
+
+.settings-panel.wordbank-panel {
+  width: min(1120px, 98vw);
+}
+
+.wordbank-summary {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  margin: 0 0 8px;
+  color: var(--text, #1e3a4a);
+}
+
+.wordbank-hint {
+  font-size: 0.88rem;
+  margin: 0 0 12px;
+}
+
+.wordbank-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.wordbank-filter span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2e4d60;
+}
+
+.wordbank-filter input {
+  border: 1px solid #c7d9e2;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.wordbank-table-wrap {
+  overflow: auto;
+  max-height: calc(100vh - 220px);
+  border: 1px solid #d4e5ed;
+  border-radius: 12px;
+  background: #fcfeff;
+}
+
+.wordbank-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.wordbank-table th,
+.wordbank-table td {
+  padding: 7px 8px;
+  border-bottom: 1px solid #e4eef4;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.wordbank-table th:nth-child(3),
+.wordbank-table td:nth-child(3) {
+  white-space: normal;
+  max-width: 12rem;
+}
+
+.wordbank-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(180deg, #f7fbfd 0%, #eef6fa 100%);
+  text-align: left;
+  font-weight: 700;
+  color: #2e4d60;
+  box-shadow: 0 1px 0 #d4e5ed;
+  cursor: help;
+}
+
+.wordbank-table td:nth-child(1),
+.wordbank-table th:nth-child(1) {
+  text-align: right;
+  width: 2.5rem;
+}
+
+.wordbank-table td:nth-child(n + 6),
+.wordbank-table th:nth-child(n + 6) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.wordbank-table td:nth-child(4),
+.wordbank-table th:nth-child(4),
+.wordbank-table td:nth-child(5),
+.wordbank-table th:nth-child(5) {
+  text-align: center;
+}
+
+.wordbank-row {
+  cursor: pointer;
+}
+
+.wordbank-row:hover {
+  background: rgba(255, 179, 71, 0.12);
+}
+
+.wordbank-row-due td:nth-child(2) {
+  box-shadow: inset 3px 0 0 var(--accent, #ff8a4c);
+}

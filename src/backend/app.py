@@ -459,6 +459,84 @@ def api_progress():
     return jsonify({"progress": STORAGE.progress_summary(book_dir, len(wordbank["words"]), _today())})
 
 
+@app.get("/api/wordbank/overview")
+def api_wordbank_overview():
+    """Full word list for the current book plus study stats (for the wordbank table UI)."""
+    settings = _ensure_default_settings()
+    book_dir = settings.get("book_dir")
+    if not book_dir:
+        return jsonify({"error": "no book selected"}), 400
+    today_s = _today()
+    wordbank = load_wordbank(CFG.books_dir, book_dir)
+    states = STORAGE.list_word_states_for_book(book_dir)
+    review_stats = STORAGE.review_log_stats_by_word(book_dir)
+    fav_ids = set(STORAGE.list_favorites(book_dir))
+    progress = STORAGE.progress_summary(book_dir, len(wordbank["words"]), today_s)
+
+    items: list[dict] = []
+    for i, w in enumerate(wordbank["words"], start=1):
+        wid = w["id"]
+        st = states.get(wid)
+        rs = review_stats.get(wid, {"attempts": 0, "correctAttempts": 0})
+        zh = ((w.get("translation") or {}).get("zhHans")) or ""
+        head = w.get("headword") or w.get("display") or wid
+        disp = w.get("display") or w.get("headword") or wid
+        due = bool(st and str(st["due_date"]) <= today_s)
+        if st:
+            row = {
+                "index": i,
+                "wordId": wid,
+                "headword": head,
+                "display": disp,
+                "zhHans": zh,
+                "favorited": wid in fav_ids,
+                "due": due,
+                "reviewAttempts": rs["attempts"],
+                "reviewCorrectAttempts": rs["correctAttempts"],
+                "repetitions": int(st["repetitions"]),
+                "intervalDays": int(st["interval_days"]),
+                "ef": float(st["ef"]),
+                "dueDate": str(st["due_date"]),
+                "lastReviewDate": str(st["last_review_date"] or ""),
+                "lapses": int(st["lapses"]),
+                "correctStreak": int(st["correct_streak"]),
+                "totalReviews": int(st["total_reviews"]),
+                "totalCorrect": int(st["total_correct"]),
+            }
+        else:
+            row = {
+                "index": i,
+                "wordId": wid,
+                "headword": head,
+                "display": disp,
+                "zhHans": zh,
+                "favorited": wid in fav_ids,
+                "due": False,
+                "reviewAttempts": rs["attempts"],
+                "reviewCorrectAttempts": rs["correctAttempts"],
+                "repetitions": 0,
+                "intervalDays": 0,
+                "ef": 2.5,
+                "dueDate": "",
+                "lastReviewDate": "",
+                "lapses": 0,
+                "correctStreak": 0,
+                "totalReviews": 0,
+                "totalCorrect": 0,
+            }
+        items.append(row)
+
+    return jsonify(
+        {
+            "book": wordbank.get("book"),
+            "bookDir": book_dir,
+            "today": today_s,
+            "progress": progress,
+            "items": items,
+        }
+    )
+
+
 @app.post("/api/reset")
 def api_reset():
     settings = _ensure_default_settings()

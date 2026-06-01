@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/styles.css?v=20260529p" />
+    <link rel="stylesheet" href="/styles.css?v=20260601b" />
   </head>
   <body>
     <div class="bg-orb orb-a"></div>
@@ -26,6 +26,7 @@
       <div class="top-actions">
         <button id="langBtn" class="ghost-btn">中文 / EN</button>
         <button id="favoritesToggleBtn" class="ghost-btn">收藏夹 Favorites</button>
+        <button id="wordbankOverviewBtn" class="ghost-btn">词库总表 Word list</button>
         <button id="settingsToggleBtn" class="ghost-btn">Settings</button>
       </div>
     </header>
@@ -129,7 +130,43 @@
       <ul id="favoritesList" class="favorites-list"></ul>
     </aside>
 
+    <aside id="wordbankOverviewPanel" class="settings-panel wordbank-panel hidden" aria-hidden="true">
+      <div class="settings-head">
+        <h2>词库总表 Word list</h2>
+        <button id="wordbankOverviewCloseBtn" class="ghost-btn">Close</button>
+      </div>
+      <p id="wordbankOverviewSummary" class="wordbank-summary"></p>
+      <p class="wordbank-hint muted">点击表格一行可跳到该词学习。Tap a row to study that word.</p>
+      <label class="wordbank-filter">
+        <span>筛选 Filter</span>
+        <input id="wordbankFilterInput" type="search" placeholder="单词或中文 English or Chinese" autocomplete="off" />
+      </label>
+      <div class="wordbank-table-wrap">
+        <table class="wordbank-table" aria-label="Wordbank overview">
+          <thead>
+            <tr>
+              <th scope="col" title="词库中的顺序号（与 wordbank.web.json 中词条顺序一致）。Index in this book (same order as the wordbank file).">#</th>
+              <th scope="col" title="英文词或短语（显示用词条）。English word or phrase.">单词 Word</th>
+              <th scope="col" title="中文释义（简体）。Chinese meaning (Simplified).">中文</th>
+              <th scope="col" title="是否已收藏。Whether this word is in favorites.">★</th>
+              <th scope="col" title="今天是否到期需复习：计划复习日 ≤ 今天。Due today: next review date is on or before today.">到期 Due</th>
+              <th scope="col" title="历史答题提交总次数 / 其中答对次数（含答错后重试，来自答题日志）。Total submits / correct submits from review log (includes retries).">做题/作对 Submits/OK</th>
+              <th scope="col" title="SM-2 复习「档次」：成功掌握后的重复计数（越大表示复习轮次越深）。SM-2 repetition count after successful reviews.">档次 Rep</th>
+              <th scope="col" title="当前 SM-2 间隔：距下次复习的天数。Current interval in days until the next scheduled review.">间隔 d</th>
+              <th scope="col" title="计划下次复习日期（YYYY-MM-DD）。Next scheduled review date.">下次复习 Next</th>
+              <th scope="col" title="最近一次答对并写入学习档案的日期。Last date a correct answer updated study state.">上次 Last</th>
+              <th scope="col" title="遗忘次数：复习中评为「困难」等导致间隔被重置的累计（SM-2 lapses）。Lapses: hard reviews that reset the interval in SM-2.">遗忘 Lap</th>
+              <th scope="col" title="连续答对并完成（写入档案）的次数。Streak of successful completed reviews.">连对 Str</th>
+              <th scope="col" title="学习档案中累计「成功完成一次复习」的次数（与 SM-2 状态同步）。Total successful graded reviews stored in SM-2 state.">复习计 Rev#</th>
+              <th scope="col" title="易度因子 Ease Factor（SuperMemo SM-2）：初始约 2.5；越高通常表示记忆越牢、下次间隔越长；过低则间隔缩短。SM-2 ease factor (~2.5 default); higher → longer intervals, lower → shorter.">EF</th>
+            </tr>
+          </thead>
+          <tbody id="wordbankOverviewBody"></tbody>
+        </table>
+      </div>
+    </aside>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="/app.js?v=20260529p"></script>
+    <script src="/app.js?v=20260601b"></script>
   </body>
 </html>

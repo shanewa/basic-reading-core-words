@@ -14,6 +14,7 @@ The app supports:
   - Image choice: see English, choose two related images from three images.
   - Typing completion: type the English word or phrase.
 - Bilingual UI (Chinese/English switch).
+- Wordbank overview: side panel listing every word in the selected book with study stats (SM-2 fields, review counts) and a filter; tap a row to jump to that word in practice.
 
 ## Architecture
 

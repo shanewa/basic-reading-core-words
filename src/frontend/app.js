@@ -17,6 +17,9 @@ const state = {
 
 const HISTORY_MAX = 50;
 
+/** @type {null | { items: object[], progress?: object, book?: object, bookDir?: string, today?: string }} */
+let wordbankOverviewData = null;
+
 const $ = (id) => document.getElementById(id);
 
 function renderInitialLoading() {
@@ -501,6 +504,89 @@ function toggleFavoritesPanel(forceOpen = null) {
   }
 }
 
+function toggleWordbankOverviewPanel(forceOpen = null) {
+  const panel = $("wordbankOverviewPanel");
+  if (!panel) return;
+  const willOpen = forceOpen === null ? panel.classList.contains("hidden") : !!forceOpen;
+  panel.classList.toggle("hidden", !willOpen);
+  panel.setAttribute("aria-hidden", willOpen ? "false" : "true");
+  if (willOpen) {
+    void loadAndRenderWordbankOverview();
+  }
+}
+
+async function loadAndRenderWordbankOverview() {
+  const body = $("wordbankOverviewBody");
+  const summaryEl = $("wordbankOverviewSummary");
+  if (!body || !summaryEl) return;
+  const colspan = 14;
+  body.innerHTML = `<tr><td class="muted" colspan="${colspan}">加载中… Loading…</td></tr>`;
+  summaryEl.textContent = "";
+  try {
+    const data = await api("/api/wordbank/overview");
+    wordbankOverviewData = data;
+    const p = data.progress || {};
+    const bookName = (data.book && data.book.name) || data.bookDir || "";
+    summaryEl.textContent = `《${bookName}》共 ${p.totalWords ?? 0} 词 · 已学入库 ${p.learnedWords ?? 0} · 未学 ${p.newWords ?? 0} · 今日完成 ${p.todayReviewed ?? 0} · 到期 ${p.dueWords ?? 0} · Today ${data.today || ""}`;
+    applyWordbankFilter();
+  } catch (err) {
+    wordbankOverviewData = null;
+    body.innerHTML = `<tr><td class="muted" colspan="${colspan}">加载失败：${escapeHtml(err.message)}</td></tr>`;
+  }
+}
+
+function applyWordbankFilter() {
+  if (!wordbankOverviewData || !wordbankOverviewData.items) return;
+  const input = $("wordbankFilterInput");
+  const q = (input && input.value.trim().toLowerCase()) || "";
+  const items = wordbankOverviewData.items;
+  const filtered = q
+    ? items.filter((it) => {
+        const blob = `${it.headword}\t${it.display}\t${it.zhHans}\t${it.wordId}`.toLowerCase();
+        return blob.includes(q);
+      })
+    : items;
+  renderWordbankOverviewRows(filtered);
+}
+
+function renderWordbankOverviewRows(items) {
+  const body = $("wordbankOverviewBody");
+  if (!body) return;
+  const colspan = 14;
+  body.innerHTML = "";
+  if (!items.length) {
+    body.innerHTML = `<tr><td class="muted" colspan="${colspan}">无匹配 / No matches</td></tr>`;
+    return;
+  }
+  for (const it of items) {
+    const tr = document.createElement("tr");
+    tr.dataset.wordId = it.wordId;
+    tr.className = "wordbank-row" + (it.due ? " wordbank-row-due" : "");
+    const cells = [
+      String(it.index),
+      it.headword,
+      it.zhHans || "—",
+      it.favorited ? "★" : "—",
+      it.due ? "Y" : "—",
+      `${it.reviewAttempts}/${it.reviewCorrectAttempts}`,
+      String(it.repetitions),
+      String(it.intervalDays),
+      it.dueDate || "—",
+      it.lastReviewDate || "—",
+      String(it.lapses),
+      String(it.correctStreak),
+      String(it.totalReviews),
+      Number(it.ef).toFixed(2),
+    ];
+    for (const text of cells) {
+      const td = document.createElement("td");
+      td.textContent = text;
+      tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  }
+}
+
 async function loadAndRenderFavorites() {
   const listEl = $("favoritesList");
   const emptyEl = $("favoritesEmpty");
@@ -918,6 +1004,30 @@ async function init() {
     $("favoriteBtn").addEventListener("click", toggleFavorite);
     $("favoritesToggleBtn").addEventListener("click", () => toggleFavoritesPanel());
     $("favoritesCloseBtn").addEventListener("click", () => toggleFavoritesPanel(false));
+    $("wordbankOverviewBtn").addEventListener("click", () => toggleWordbankOverviewPanel());
+    $("wordbankOverviewCloseBtn").addEventListener("click", () => toggleWordbankOverviewPanel(false));
+    const wordbankFilterInput = $("wordbankFilterInput");
+    if (wordbankFilterInput) {
+      wordbankFilterInput.addEventListener("input", () => {
+        if (!wordbankOverviewData) return;
+        applyWordbankFilter();
+      });
+    }
+    const wordbankBody = $("wordbankOverviewBody");
+    if (wordbankBody) {
+      wordbankBody.addEventListener("click", async (e) => {
+        const tr = e.target && e.target.closest && e.target.closest("tr[data-word-id]");
+        if (!tr) return;
+        const wid = tr.dataset.wordId;
+        if (!wid) return;
+        try {
+          toggleWordbankOverviewPanel(false);
+          await loadSession({ wordId: wid });
+        } catch (err) {
+          setFeedback(err.message, false);
+        }
+      });
+    }
     $("saveSettingsBtn").addEventListener("click", saveSettings);
     $("avatarUploadBtn").addEventListener("click", uploadAvatar);
     $("avatarRemoveBtn").addEventListener("click", removeAvatar);
