@@ -515,11 +515,101 @@ function toggleWordbankOverviewPanel(forceOpen = null) {
   }
 }
 
+function hideWordbankProgressBlock() {
+  const el = $("wordbankProgressBlock");
+  if (!el) return;
+  el.classList.add("hidden");
+  el.innerHTML = "";
+}
+
+/** @param {Record<string, unknown>} progress */
+function renderWordbankOverallProgressBlock(progress, dailyTarget) {
+  const el = $("wordbankProgressBlock");
+  if (!el) return;
+
+  const total = Math.max(0, Number(progress.totalWords) || 0);
+  const learned = Math.max(0, Number(progress.learnedWords) || 0);
+  const due = Math.max(0, Number(progress.dueWords) || 0);
+  const newWords = Math.max(0, Number(progress.newWords) || 0);
+  const todayDone = Math.max(0, Number(progress.todayReviewed) || 0);
+  const target = Math.max(1, Number(dailyTarget) || 20);
+  const attempts = Math.max(0, Number(progress.todayAttempts) || 0);
+  const correctSubs = Math.max(0, Number(progress.todayCorrect) || 0);
+  const accPct = attempts ? Math.round((correctSubs / attempts) * 100) : 0;
+
+  const pctLearned = total ? Math.round((learned / total) * 1000) / 10 : 0;
+  const barLearned = total ? Math.min(100, (learned / total) * 100) : 0;
+  const pctToday = Math.min(100, Math.round((todayDone / target) * 1000) / 10);
+  const barToday = Math.min(100, (todayDone / target) * 100);
+  const pctDueAmongLearned = learned ? Math.round((due / learned) * 1000) / 10 : 0;
+  const barDueAmongLearned = learned ? Math.min(100, (due / learned) * 100) : 0;
+
+  const tLearned =
+    "已写入学习档案（SM-2）的词数占全书比例。Share of book words that already have study state.";
+  const tToday =
+    "今日已完成的「不同词」数量除以每日目标（与首页徽章一致）。Distinct words completed correctly today vs daily target.";
+  const tDueAmong =
+    "在已学词中，今天已到期的比例。Among learned words, share that are due for review today.";
+  const tAcc =
+    "今日每次提交的对错统计（含同一题重试）。Submit-level accuracy for today.";
+
+  const dueMeta = learned ? `${due} / ${learned} (${pctDueAmongLearned}%)` : "—";
+  const dueBarHtml = learned
+    ? `<div class="wp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(
+        barDueAmongLearned
+      )}" aria-label="Due among learned ${pctDueAmongLearned}%"><div class="wp-fill wp-fill--due" style="width:${barDueAmongLearned}%"></div></div>`
+    : '<div class="wp-sub muted">尚无已学记录 · No learned words yet</div>';
+
+  const accBarHtml =
+    attempts > 0
+      ? `<div class="wp-bar wp-bar--thin" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${accPct}" aria-label="Accuracy ${accPct}%"><div class="wp-fill wp-fill--acc" style="width:${accPct}%"></div></div>`
+      : '<div class="wp-sub muted">今日尚无答题记录 · No attempts today</div>';
+
+  el.innerHTML =
+    '<h3 class="wordbank-progress-title">整体进度 Overall</h3>' +
+    `<div class="wp-row">
+      <div class="wp-head">
+        <span class="wp-label" title="${tLearned}">学习档案 Book learned</span>
+        <span class="wp-meta">${learned} / ${total} <span class="wp-pct">(${pctLearned}%)</span></span>
+      </div>
+      <div class="wp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(
+        barLearned
+      )}" aria-label="Book learned ${pctLearned}%"><div class="wp-fill wp-fill--learned" style="width:${barLearned}%"></div></div>
+      <div class="wp-sub muted">未接触 ${newWords} 词 · Not started: ${newWords}</div>
+    </div>` +
+    `<div class="wp-row">
+      <div class="wp-head">
+        <span class="wp-label" title="${tToday}">今日目标 Daily target</span>
+        <span class="wp-meta">${todayDone} / ${target} <span class="wp-pct">(${pctToday}%)</span></span>
+      </div>
+      <div class="wp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(
+        barToday
+      )}" aria-label="Daily target ${pctToday}%"><div class="wp-fill wp-fill--today" style="width:${barToday}%"></div></div>
+    </div>` +
+    `<div class="wp-row">
+      <div class="wp-head">
+        <span class="wp-label" title="${tDueAmong}">已学中的到期 Due among learned</span>
+        <span class="wp-meta">${dueMeta}</span>
+      </div>
+      ${dueBarHtml}
+    </div>` +
+    `<div class="wp-row wp-row--acc">
+      <div class="wp-head">
+        <span class="wp-label" title="${tAcc}">今日作答 Today submits</span>
+        <span class="wp-meta">${attempts} 次 · ${correctSubs} 对 · 正确率 ${accPct}%</span>
+      </div>
+      ${accBarHtml}
+    </div>`;
+
+  el.classList.remove("hidden");
+}
+
 async function loadAndRenderWordbankOverview() {
   const body = $("wordbankOverviewBody");
   const summaryEl = $("wordbankOverviewSummary");
   if (!body || !summaryEl) return;
   const colspan = 14;
+  hideWordbankProgressBlock();
   body.innerHTML = `<tr><td class="muted" colspan="${colspan}">加载中… Loading…</td></tr>`;
   summaryEl.textContent = "";
   try {
@@ -528,9 +618,12 @@ async function loadAndRenderWordbankOverview() {
     const p = data.progress || {};
     const bookName = (data.book && data.book.name) || data.bookDir || "";
     summaryEl.textContent = `《${bookName}》共 ${p.totalWords ?? 0} 词 · 已学入库 ${p.learnedWords ?? 0} · 未学 ${p.newWords ?? 0} · 今日完成 ${p.todayReviewed ?? 0} · 到期 ${p.dueWords ?? 0} · Today ${data.today || ""}`;
+    const dailyTarget = Number(data.dailyTarget) || Number(state.settings?.daily_target) || 20;
+    renderWordbankOverallProgressBlock(p, dailyTarget);
     applyWordbankFilter();
   } catch (err) {
     wordbankOverviewData = null;
+    hideWordbankProgressBlock();
     body.innerHTML = `<tr><td class="muted" colspan="${colspan}">加载失败：${escapeHtml(err.message)}</td></tr>`;
   }
 }

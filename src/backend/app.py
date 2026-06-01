@@ -526,12 +526,14 @@ def api_wordbank_overview():
             }
         items.append(row)
 
+    daily_tgt = int(settings.get("daily_target", CFG.daily_target_default))
     return jsonify(
         {
             "book": wordbank.get("book"),
             "bookDir": book_dir,
             "today": today_s,
             "progress": progress,
+            "dailyTarget": daily_tgt,
             "items": items,
         }
     )

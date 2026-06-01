@@ -683,6 +683,99 @@ button {
   color: var(--text, #1e3a4a);
 }
 
+.wordbank-progress {
+  border: 1px solid #d4e5ed;
+  border-radius: 12px;
+  padding: 12px 14px 14px;
+  margin: 0 0 12px;
+  background: linear-gradient(165deg, #ffffff 0%, #f4fbfe 100%);
+}
+
+.wordbank-progress.hidden {
+  display: none;
+}
+
+.wordbank-progress-title {
+  margin: 0 0 12px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #1e3a4a;
+}
+
+.wp-row {
+  margin-bottom: 12px;
+}
+
+.wp-row:last-child {
+  margin-bottom: 0;
+}
+
+.wp-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.wp-label {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #2e4d60;
+  cursor: help;
+}
+
+.wp-meta {
+  font-size: 0.84rem;
+  color: #5a7a8c;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-pct {
+  font-weight: 700;
+  color: #2e4d60;
+}
+
+.wp-sub {
+  margin-top: 5px;
+  font-size: 0.8rem;
+}
+
+.wp-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: #e4eef4;
+  overflow: hidden;
+}
+
+.wp-bar--thin {
+  height: 6px;
+}
+
+.wp-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.28s ease;
+}
+
+.wp-fill--learned {
+  background: linear-gradient(90deg, #7ec8e3, #4a9fbf);
+}
+
+.wp-fill--today {
+  background: linear-gradient(90deg, #ffb347, var(--accent, #ff8a4c));
+}
+
+.wp-fill--due {
+  background: linear-gradient(90deg, #e8a598, #c75b5b);
+}
+
+.wp-fill--acc {
+  background: linear-gradient(90deg, #8fd9a8, #3a9d5f);
+}
+
 .wordbank-hint {
   font-size: 0.88rem;
   margin: 0 0 12px;
@@ -711,7 +804,7 @@ button {
 
 .wordbank-table-wrap {
   overflow: auto;
-  max-height: calc(100vh - 220px);
+  max-height: calc(100vh - 420px);
   border: 1px solid #d4e5ed;
   border-radius: 12px;
   background: #fcfeff;

@@ -163,7 +163,7 @@ Main tables:
 - GET /api/wordbank/overview
 - POST /api/reset
 
-## Add a New Vocabulary Book
+`progress` objects (from `/api/progress`, `/api/session`, and `/api/wordbank/overview`) include: `totalWords`, `learnedWords`, `newWords`, `dueWords`, `todayReviewed`, `todayAttempts` (submit rows today), `todayCorrect`, `todayAccuracy`. Overview also returns `dailyTarget` for the daily-target bar.
 
 1. Copy books/新交际一二年级 to a new subfolder.
 2. Add your source files (for example, *.md).

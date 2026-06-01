@@ -312,6 +312,7 @@ class StudyStorage:
             # Use completed word count so retries do not exhaust daily quota.
             "todayReviewed": today_completed_words,
             "todayCorrect": today_ok,
+            "todayAttempts": today_count,
             "todayAccuracy": (today_ok / today_count) if today_count else 0.0,
         }
 
