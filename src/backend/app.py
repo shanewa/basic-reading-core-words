@@ -7,8 +7,9 @@ import time
 import uuid
 from datetime import date, datetime
 from pathlib import Path
+from urllib.parse import quote
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_file, send_from_directory
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -49,6 +50,28 @@ def add_no_cache_headers(response):
 
 def _today() -> str:
     return date.today().isoformat()
+
+
+def _safe_pdf_download_filename(book_json_dir: Path, book_dir_fallback: str) -> str:
+    """Use book.json `name` for the attachment filename (avoids broken ASCII fallbacks for Chinese stems)."""
+    try:
+        from scripts.vocab_pdf.config import load_book_config
+
+        cfg = load_book_config(book_json_dir / "book.json")
+        raw = (cfg.name or book_dir_fallback or "vocabulary").strip()
+    except Exception:
+        raw = (book_dir_fallback or "vocabulary").strip()
+    forbidden = '<>:"/\\|?*'
+    chars: list[str] = []
+    for ch in raw:
+        if ch in forbidden or ord(ch) < 32:
+            chars.append("-")
+        else:
+            chars.append(ch)
+    base = "".join(chars).strip("- ").strip() or book_dir_fallback
+    if base.lower().endswith(".pdf"):
+        return base
+    return f"{base}.pdf"
 
 
 def _ensure_default_settings() -> dict:
@@ -537,6 +560,40 @@ def api_wordbank_overview():
             "items": items,
         }
     )
+
+
+@app.get("/api/book/pdf")
+def api_book_pdf():
+    """Build the printable PDF for the current book (offline) and return it as a download."""
+    settings = _ensure_default_settings()
+    book_dir = settings.get("book_dir")
+    if not book_dir:
+        return jsonify({"error": "no book selected"}), 400
+    book_path = CFG.books_dir / book_dir
+    if not book_path.is_dir():
+        return jsonify({"error": "book not found"}), 404
+    try:
+        from scripts.vocab_pdf.build import build_book
+
+        out = build_book(book_path, offline=True)
+    except FileNotFoundError as e:
+        return jsonify({"error": str(e)}), 404
+    except Exception as e:
+        print(f"[pdf] build failed: {e!r}", flush=True)
+        return jsonify({"error": f"PDF build failed: {e}"}), 500
+    if not out.is_file():
+        return jsonify({"error": "PDF output missing"}), 500
+    download_name = _safe_pdf_download_filename(book_path, book_dir)
+    response = send_file(
+        out,
+        as_attachment=True,
+        download_name=download_name,
+        mimetype="application/pdf",
+        max_age=0,
+    )
+    # ASCII-safe hint so browsers that mishandle Content-Disposition still get the right name.
+    response.headers["X-Download-Filename-UTF8"] = quote(download_name, safe="")
+    return response
 
 
 @app.post("/api/reset")

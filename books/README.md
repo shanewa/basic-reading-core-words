@@ -49,5 +49,5 @@ make rebuild  # 强制重新生成（PDF 已存在但想全量重做时用）
 在线翻译失败时可把 `translate_missing` 设为 `false`，并维护此文件。也可运行：
 
 ```bash
-python ../../scripts/generate_vocab_pdf.py --book-dir . --offline
+python ../../src/scripts/generate_vocab_pdf.py --book-dir . --offline
 ```

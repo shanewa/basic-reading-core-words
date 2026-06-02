@@ -6,9 +6,9 @@ $(error REPO_ROOT is not set)
 endif
 
 PYTHON ?= python3
-SCRIPT ?= $(REPO_ROOT)/scripts/generate_vocab_pdf.py
-OUTPUT_NAME_SCRIPT ?= $(REPO_ROOT)/scripts/book_output_name.py
-SCRIPT_DEPS := $(wildcard $(REPO_ROOT)/scripts/vocab_pdf/*.py) $(REPO_ROOT)/proxy.env
+SCRIPT ?= $(REPO_ROOT)/src/scripts/generate_vocab_pdf.py
+OUTPUT_NAME_SCRIPT ?= $(REPO_ROOT)/src/scripts/book_output_name.py
+SCRIPT_DEPS := $(wildcard $(REPO_ROOT)/src/scripts/vocab_pdf/*.py) $(REPO_ROOT)/proxy.env
 ifndef OUTPUT
 OUTPUT := $(shell $(PYTHON) "$(OUTPUT_NAME_SCRIPT)" "$(CURDIR)")
 endif

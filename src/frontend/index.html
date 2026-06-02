@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/styles.css?v=20260601c" />
+    <link rel="stylesheet" href="/styles.css?v=20260602a" />
   </head>
   <body>
     <div class="bg-orb orb-a"></div>
@@ -131,9 +131,19 @@
     </aside>
 
     <aside id="wordbankOverviewPanel" class="settings-panel wordbank-panel hidden" aria-hidden="true">
-      <div class="settings-head">
+      <div class="settings-head wordbank-settings-head">
         <h2>词库总表 Word list</h2>
-        <button id="wordbankOverviewCloseBtn" class="ghost-btn">Close</button>
+        <div class="wordbank-head-actions">
+          <button
+            type="button"
+            id="wordbankPdfBtn"
+            class="secondary-btn"
+            title="离线生成当前书的可打印 PDF 并下载（与该书目录下 make pdf 相同流程）。Build offline PDF like make pdf in the book folder."
+          >
+            下载 PDF Download
+          </button>
+          <button type="button" id="wordbankOverviewCloseBtn" class="ghost-btn">Close</button>
+        </div>
       </div>
       <p id="wordbankOverviewSummary" class="wordbank-summary"></p>
       <div id="wordbankProgressBlock" class="wordbank-progress hidden" aria-label="Overall learning progress"></div>
@@ -168,6 +178,6 @@
     </aside>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="/app.js?v=20260601c"></script>
+    <script src="/app.js?v=20260602b"></script>
   </body>
 </html>

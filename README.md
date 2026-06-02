@@ -33,7 +33,7 @@ This repository provides two core workflows:
 ```text
 .
 |- books/                  # Vocabulary books and source files
-|- scripts/                # Build scripts for PDF and utilities
+|- src/scripts/            # PDF build pipeline (vocab_pdf) and CLI utilities
 |- src/backend/            # Flask API, scheduler, storage, wordbank logic
 |- src/frontend/           # Single-page frontend (HTML/CSS/JS)
 |- src/data/study.db       # Runtime SQLite DB (auto-created)
@@ -161,9 +161,14 @@ Main tables:
 - POST /api/answer
 - GET /api/progress
 - GET /api/wordbank/overview
+- GET /api/book/pdf
 - POST /api/reset
 
 `progress` objects (from `/api/progress`, `/api/session`, and `/api/wordbank/overview`) include: `totalWords`, `learnedWords`, `newWords`, `dueWords`, `todayReviewed`, `todayAttempts` (submit rows today), `todayCorrect`, `todayAccuracy`. Overview also returns `dailyTarget` for the daily-target bar.
+
+`GET /api/book/pdf` builds the selected book PDF in **offline** mode (no translation/IPA network calls) and returns it as a download — same pipeline as `make pdf` in the book directory.
+
+## Add a New Vocabulary Book
 
 1. Copy books/新交际一二年级 to a new subfolder.
 2. Add your source files (for example, *.md).
@@ -215,6 +220,7 @@ Use the Reset action in the app, or remove the SQLite file and restart.
 ## Development Notes
 
 - Build wordbanks before starting the web app.
+- **Cursor Agent auto-commit**: see [.cursor/README-hooks.md](.cursor/README-hooks.md) (runs on agent `stop`, not on every manual keystroke).
 - Quiz logic: src/backend/quiz.py
 - Scheduling logic: src/backend/scheduler.py
 - Frontend interaction: src/frontend/app.js

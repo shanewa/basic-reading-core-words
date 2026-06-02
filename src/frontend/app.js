@@ -515,6 +515,62 @@ function toggleWordbankOverviewPanel(forceOpen = null) {
   }
 }
 
+function filenameFromContentDisposition(cd) {
+  if (!cd) return null;
+  const m = /filename\*=UTF-8''([^;]+)|filename="([^"]+)"|filename=([^;]+)/i.exec(cd);
+  if (!m) return null;
+  const raw = (m[1] || m[2] || m[3] || "").trim();
+  try {
+    return decodeURIComponent(raw.replace(/^"|"$/g, ""));
+  } catch {
+    return raw;
+  }
+}
+
+async function downloadWordbankPdf() {
+  const btn = $("wordbankPdfBtn");
+  if (!btn) return;
+  const prev = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "生成中… Building…";
+  try {
+    const res = await fetch("/api/book/pdf", { method: "GET", cache: "no-store" });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || res.statusText || "Download failed");
+    }
+    const cd = res.headers.get("Content-Disposition") || "";
+    const utf8Hint = res.headers.get("X-Download-Filename-UTF8");
+    let fn = null;
+    if (utf8Hint) {
+      try {
+        fn = decodeURIComponent(utf8Hint);
+      } catch {
+        fn = null;
+      }
+    }
+    if (!fn) {
+      fn = filenameFromContentDisposition(cd) || "vocabulary.pdf";
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fn;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    setFeedback("PDF 已下载", true);
+  } catch (err) {
+    setFeedback(err.message || String(err), false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = prev;
+  }
+}
+
 function hideWordbankProgressBlock() {
   const el = $("wordbankProgressBlock");
   if (!el) return;
@@ -1099,6 +1155,10 @@ async function init() {
     $("favoritesCloseBtn").addEventListener("click", () => toggleFavoritesPanel(false));
     $("wordbankOverviewBtn").addEventListener("click", () => toggleWordbankOverviewPanel());
     $("wordbankOverviewCloseBtn").addEventListener("click", () => toggleWordbankOverviewPanel(false));
+    const wordbankPdfBtn = $("wordbankPdfBtn");
+    if (wordbankPdfBtn) {
+      wordbankPdfBtn.addEventListener("click", () => downloadWordbankPdf());
+    }
     const wordbankFilterInput = $("wordbankFilterInput");
     if (wordbankFilterInput) {
       wordbankFilterInput.addEventListener("input", () => {

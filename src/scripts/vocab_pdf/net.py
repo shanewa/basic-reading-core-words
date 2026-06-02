@@ -6,8 +6,8 @@ import os
 import urllib.request
 from pathlib import Path
 
-# repo root: scripts/vocab_pdf/net.py -> parents[2]
-_REPO_ROOT = Path(__file__).resolve().parents[2]
+# repo root: src/scripts/vocab_pdf/net.py -> parents[3]
+_REPO_ROOT = Path(__file__).resolve().parents[3]
 _PROXY_LOADED = False
 
 

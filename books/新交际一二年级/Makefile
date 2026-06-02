@@ -4,4 +4,4 @@
 REPO_ROOT := $(abspath $(CURDIR)/../..)
 VOCAB     := 一年级词汇.md 二年级词汇.md 基础阅读400词汇.md translations.json ipa.json
 
-include $(REPO_ROOT)/scripts/Makefile.inc
+include $(REPO_ROOT)/src/scripts/Makefile.inc

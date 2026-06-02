@@ -16,7 +16,7 @@ all pdf clean help rebuild:
 
 # 先测 Google 翻译 / 词典 API 是否可达，再决定是否开在线翻译
 test-network:
-	$(PYTHON) "$(REPO_ROOT)/scripts/test_connectivity.py"
+	$(PYTHON) "$(REPO_ROOT)/src/scripts/test_connectivity.py"
 
 # --- Web app targets ---
 

@@ -8,3 +8,4 @@ books/*/.cache/
 *.db-shm
 src/data/*
 proxy.env
+.cursor/*

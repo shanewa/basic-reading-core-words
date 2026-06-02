@@ -14,7 +14,7 @@ The app supports:
   - Image choice: see English, choose two related images from three images.
   - Typing completion: type the English word or phrase.
 - Bilingual UI (Chinese/English switch).
-- Wordbank overview: side panel listing every word in the selected book with study stats (SM-2 fields, review counts) and a filter; tap a row to jump to that word in practice.
+- Wordbank overview: side panel listing every word in the selected book with study stats (SM-2 fields, review counts) and a filter; tap a row to jump to that word in practice; download printable PDF (offline build) from the same panel.
 
 ## Architecture
 
@@ -29,7 +29,7 @@ The app supports:
 
 ### Reused Existing Modules
 
-Reuse existing parsing and enrichment pipeline from `scripts/vocab_pdf`:
+Reuse existing parsing and enrichment pipeline from `src/scripts/vocab_pdf`:
 
 - `load_book_config`
 - `load_entries`
@@ -40,7 +40,7 @@ Reuse existing parsing and enrichment pipeline from `scripts/vocab_pdf`:
 - `example_sentence`
 - `clean_headword`
 
-The web app does not depend on PDF generation.
+The web app does not require PDFs for learning, but the word list panel can trigger the same offline PDF build for download.
 
 ## Wordbank JSON Schema
 

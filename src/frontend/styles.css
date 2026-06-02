@@ -676,6 +676,26 @@ button {
   width: min(1120px, 98vw);
 }
 
+.wordbank-panel .wordbank-settings-head {
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.wordbank-head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.wordbank-panel .wordbank-settings-head h2 {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
 .wordbank-summary {
   font-size: 0.95rem;
   line-height: 1.45;
