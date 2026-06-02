@@ -9,3 +9,4 @@ books/*/.cache/
 src/data/*
 proxy.env
 .cursor/*
+.mailmap
