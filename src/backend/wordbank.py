@@ -50,9 +50,10 @@ def infer_tags(source_labels: list[str]) -> list[str]:
     return tags
 
 
-def build_wordbank_for_book(book_dir: Path, *, offline: bool = True) -> Path:
+def build_wordbank_for_book(book_dir: Path, *, offline: bool = True, fetch_ipa: bool | None = None) -> Path:
     cfg_path = book_dir / "book.json"
     config = load_book_config(cfg_path)
+    effective_fetch = config.fetch_ipa if fetch_ipa is None else fetch_ipa
 
     entries = load_entries(book_dir, config)
     fill_chinese(
@@ -61,7 +62,7 @@ def build_wordbank_for_book(book_dir: Path, *, offline: bool = True) -> Path:
         translate_missing=config.translate_missing,
         offline=offline,
     )
-    prefetch_ipa(entries, book_dir, use_network=(config.fetch_ipa and not offline))
+    prefetch_ipa(entries, book_dir, use_network=(effective_fetch and not offline))
 
     words = []
     for idx, entry in enumerate(sorted(entries, key=lambda e: e.english.lower()), start=1):
@@ -84,7 +85,7 @@ def build_wordbank_for_book(book_dir: Path, *, offline: bool = True) -> Path:
                 },
                 "pronunciation": {
                     "phonics": phonics_display(head),
-                    "ipa": to_ipa(head, allow_network=False),
+                    "ipa": to_ipa(head, allow_network=effective_fetch and not offline),
                     "source": "cache_or_generated",
                 },
                 "examples": [

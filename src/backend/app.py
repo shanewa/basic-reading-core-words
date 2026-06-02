@@ -178,7 +178,9 @@ def api_rebuild_wordbank():
     target = CFG.books_dir / book_dir
     if not target.is_dir():
         return jsonify({"error": "bookDir not found"}), 404
-    path = build_wordbank_for_book(target, offline=True)
+    settings = _ensure_default_settings()
+    fetch_ipa = bool(settings.get("fetch_ipa", False))
+    path = build_wordbank_for_book(target, offline=True, fetch_ipa=fetch_ipa)
     return jsonify({"ok": True, "path": str(path.relative_to(CFG.repo_root))})
 
 
@@ -197,6 +199,7 @@ def api_update_settings():
         "mode_meaning",
         "mode_image",
         "mode_typing",
+        "fetch_ipa",
         "typing_mode",
         "answer_delay_ms",
         "ui_language",

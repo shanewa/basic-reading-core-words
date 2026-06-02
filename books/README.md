@@ -40,7 +40,7 @@ make rebuild  # 强制重新生成（PDF 已存在但想全量重做时用）
 | `sources[].parser` | `grade_table`（单元表格）或 `word_list`（每行一词） |
 | `sources[].label` | 出处列中的书名标签 |
 | `translate_missing` | `true` 时对缺中文词条调用在线翻译（默认 `false`） |
-| `fetch_ipa` | `true` 时在离线音标之外再尝试在线词典 API（默认 `false`；离线音标用 eng-to-ipa，始终写入「音标（自然拼读）」列，格式如 `b-ee-f  /biːf/`） |
+| `fetch_ipa` | `true` 且能联网时，音标**先**查 free dictionary API（Wiktionary 美式，例 *alligator* `/ˈælɪɡeɪtɚ/`，更接近常见「美音」教材）；失败再回退 eng-to-ipa（CMU，例 *alligator* 常为 `/ˈæləˌgeɪtər/`）。`false` 则仅用 CMU。音节间的 `.` 在写入前会去掉以便阅读。音标列格式如 `b-ee-f  /biːf/` |
 
 ### translations.json
 

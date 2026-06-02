@@ -20,13 +20,14 @@ VOWEL_TEAMS = sorted(
     reverse=True,
 )
 
+# Hand-tuned General American (GA); eng-to-ipa is CMUdict-based (already AmE).
 MANUAL_IPA: dict[str, str] = {
     "I": "/aɪ/",
     "a": "/ə/",
     "PE": "/ˌpiːˈiː/",
-    "OK": "/ˌəʊˈkeɪ/",
-    "Mr": "/ˈmɪstə(r)/",
-    "o'clock": "/əˈklɒk/",
+    "OK": "/ˌoʊˈkeɪ/",
+    "Mr": "/ˈmɪstɚ/",
+    "o'clock": "/əˈklɑːk/",
     "Chinese": "/ˌtʃaɪˈniːz/",
     "maths": "/mæθs/",
 }
@@ -104,6 +105,10 @@ def _format_ipa(raw: str) -> str:
         return ""
     if not raw.startswith("/"):
         raw = f"/{raw}/"
+    # Drop syllable-separator dots (common on Wiktionary) so /ˈæl.ɪ.ɡeɪ.tɚ/ → /ˈælɪɡeɪtɚ/, closer to many learner / 百度-style prints.
+    if raw.startswith("/") and raw.endswith("/") and len(raw) > 2:
+        inner = raw[1:-1].replace(".", "")
+        raw = f"/{inner}/"
     return raw
 
 
@@ -111,6 +116,7 @@ _ENG_TO_IPA_WARNED = False
 
 
 def ipa_from_eng_to_ipa(word: str) -> str:
+    """CMUdict → IPA via eng-to-ipa (American English inventory)."""
     global _ENG_TO_IPA_WARNED
     try:
         import eng_to_ipa as eta
@@ -130,6 +136,68 @@ def ipa_from_eng_to_ipa(word: str) -> str:
     return ""
 
 
+def _score_phonetic_us_preference(text: str, audio_url: str) -> int:
+    """Prefer US (or neutral) over UK/AU when dictionaryapi.dev lists several phonetics."""
+    t = text or ""
+    a = (audio_url or "").lower()
+    score = 0
+    if re.search(r"[-_]uk\.mp3|[-.]uk[._]", a) or "uk.mp3" in a:
+        score -= 8
+    if re.search(r"[-_]us\.mp3|[-.]us[._]", a) or "us.mp3" in a:
+        score += 10
+    if "au.mp3" in a or re.search(r"[-_]au\.mp3", a):
+        score -= 4
+    if "oʊ" in t:
+        score += 4
+    if "əʊ" in t:
+        score -= 4
+    if "ɒ" in t:
+        score -= 3
+    if "ɑ" in t:
+        score += 1
+    # Full vowel ɪ in the syllable after primary stress often matches US learner transcriptions (vs schwa).
+    if re.search(r"ˈ[^ˈˌ]*ɪ", t):
+        score += 1
+    return score
+
+
+def _best_phonetic_from_dictionary_entry(entry: dict) -> str:
+    """Pick the most US-like phonetic string from a free-dictionary-api.dev entry."""
+    candidates: list[tuple[int, str]] = []
+    top = entry.get("phonetic")
+    if top and str(top).strip():
+        candidates.append((_score_phonetic_us_preference(str(top), ""), str(top).strip()))
+    for phon in entry.get("phonetics") or []:
+        if not isinstance(phon, dict):
+            continue
+        t = phon.get("text")
+        if not t or not str(t).strip():
+            continue
+        t = str(t).strip()
+        candidates.append((_score_phonetic_us_preference(t, phon.get("audio") or ""), t))
+    if not candidates:
+        return ""
+    candidates.sort(key=lambda x: (-x[0], -len(x[1])))
+    return candidates[0][1]
+
+
+def _lookup_ipa_dictionary_api(w: str) -> str:
+    """Free dictionaryapi.dev — Wiktionary-style US transcriptions (learner-friendlier than CMU alone)."""
+    url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{urllib.parse.quote(w, safe='')}"
+    try:
+        with urlopen(url, timeout=8) as resp:
+            data = json.loads(resp.read().decode())
+        for entry in data:
+            if not isinstance(entry, dict):
+                continue
+            best = _best_phonetic_from_dictionary_entry(entry)
+            if best:
+                return _format_ipa(best)
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, KeyError):
+        pass
+    return ""
+
+
 def lookup_ipa_word(word: str, *, allow_network: bool = False) -> str:
     w = word.lower().replace("'", "'")
     if word in MANUAL_IPA:
@@ -137,31 +205,15 @@ def lookup_ipa_word(word: str, *, allow_network: bool = False) -> str:
     if w in _IPA_CACHE and _IPA_CACHE[w]:
         return _IPA_CACHE[w]
 
-    ipa = ipa_from_eng_to_ipa(word)
+    ipa = ""
+    if allow_network:
+        ipa = _lookup_ipa_dictionary_api(w)
+    if not ipa:
+        ipa = ipa_from_eng_to_ipa(word)
     if ipa:
         _IPA_CACHE[w] = ipa
         return ipa
 
-    if not allow_network:
-        _IPA_CACHE[w] = ""
-        return ""
-
-    url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{urllib.parse.quote(w, safe='')}"
-    try:
-        with urlopen(url, timeout=8) as resp:
-            data = json.loads(resp.read().decode())
-        for entry in data:
-            if entry.get("phonetic"):
-                ipa = _format_ipa(entry["phonetic"])
-                _IPA_CACHE[w] = ipa
-                return ipa
-            for phon in entry.get("phonetics", []):
-                if phon.get("text"):
-                    ipa = _format_ipa(phon["text"])
-                    _IPA_CACHE[w] = ipa
-                    return ipa
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, KeyError):
-        pass
     _IPA_CACHE[w] = ""
     return ""
 
@@ -203,8 +255,12 @@ def prefetch_ipa(entries, book_dir: Path, *, use_network: bool = False) -> None:
             if re.search(r"[a-zA-Z]", piece):
                 words.add(piece)
 
+    if use_network:
+        for w in words:
+            _IPA_CACHE.pop(w.lower(), None)
+
     total = len(words)
-    mode = "offline + cache" if not use_network else "offline, cache, then online"
+    mode = "offline + cache (CMU)" if not use_network else "Wiktionary US first, then CMU + cache"
     log(f"[ipa] start: building IPA for {total} headwords ({mode})...")
     with ThreadPoolExecutor(max_workers=8) as pool:
         futures = {

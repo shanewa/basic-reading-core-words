@@ -1020,6 +1020,8 @@ function fillSettingsForm() {
   $("modeMeaning").checked = !!s.mode_meaning;
   $("modeImage").checked = !!s.mode_image;
   $("modeTyping").checked = !!s.mode_typing;
+  const fetchIpaEl = $("fetchIpa");
+  if (fetchIpaEl) fetchIpaEl.checked = !!s.fetch_ipa;
 
   // Compatibility mapping for old stored values.
   const modeMap = {
@@ -1055,6 +1057,7 @@ async function saveSettings() {
       mode_meaning: $("modeMeaning").checked,
       mode_image: $("modeImage").checked,
       mode_typing: $("modeTyping").checked,
+      fetch_ipa: $("fetchIpa") ? $("fetchIpa").checked : false,
       typing_mode: $("typingMode").value,
       child_name: ($("childName").value || "").trim(),
     };

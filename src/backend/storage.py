@@ -14,6 +14,8 @@ DEFAULT_SETTINGS = {
     "mode_meaning": True,
     "mode_image": False,
     "mode_typing": True,
+    # When true, wordbank rebuild may call the free dictionary API for US-style IPA (needs network).
+    "fetch_ipa": False,
     # Default typing style: partial phonics omission mode.
     "typing_mode": "missing_multi_vowels",
     "answer_delay_ms": 150,
@@ -109,7 +111,7 @@ class StudyStorage:
             value = r["value"]
             if r["key"] in {"daily_target", "answer_delay_ms"}:
                 settings[r["key"]] = int(value)
-            elif r["key"] in {"mode_meaning", "mode_image", "mode_typing"}:
+            elif r["key"] in {"mode_meaning", "mode_image", "mode_typing", "fetch_ipa"}:
                 settings[r["key"]] = value == "1"
             else:
                 settings[r["key"]] = value

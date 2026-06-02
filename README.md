@@ -150,6 +150,8 @@ Main tables:
 - word_state
 - review_log
 
+`user_settings` includes `fetch_ipa` (在线音标 / online IPA). The web **Rebuild Wordbank** action uses this value from the Settings panel. Command-line builds (`make`, `build_wordbanks.py`, etc.) still follow each book’s `book.json` `fetch_ipa` unless you pass overrides in code.
+
 ## API Overview
 
 - GET /api/health

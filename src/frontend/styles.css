@@ -501,6 +501,25 @@ label {
   margin: 10px 0;
 }
 
+.settings-panel label.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.settings-panel label.checkbox-row > input[type="checkbox"] {
+  margin-top: 0.35em;
+  flex-shrink: 0;
+}
+
+.settings-panel label.checkbox-row span small {
+  display: block;
+  margin-top: 4px;
+  font-weight: normal;
+  font-size: 0.85em;
+  color: #666;
+}
+
 .actions {
   display: flex;
   gap: 10px;
