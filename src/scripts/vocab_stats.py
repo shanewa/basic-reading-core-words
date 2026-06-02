@@ -2,17 +2,22 @@
 """统计词汇库中英文词汇的数量和分类分布。
 
 用法:
-  python vocab_stats.py <词汇目录路径>
+  python vocab_stats.py <词汇目录路径> [--write-readme]
 
   目录中应包含以下文件（按命名匹配）：
     - *一年级词汇*.md  (外研社新交际英语一年级，中英表格格式)
     - *二年级词汇*.md  (外研社新交际英语二年级，中英表格格式)
     - *基础阅读*词汇*.md 或 *400*词汇*.md  (基础阅读400词，纯英文列表格式)
+    - KET词汇.md  (Cambridge KET 词表，纯英文列表，与 word_list 解析器一致)
 
   示例:
   python vocab_stats.py books/新交际一二年级和基础阅读/
+  python vocab_stats.py books/KET-Key_English_Test/
+  python vocab_stats.py books/KET-Key_English_Test/ --write-readme
+    将「概览 + 分类统计」写入该目录 README.md（<!-- vocab-stats:auto-begin/end --> 块内）。
 """
 
+import argparse
 import re
 import sys
 from pathlib import Path
@@ -188,7 +193,92 @@ def find_files(directory: str) -> dict[str, str]:
             result["二年级词汇"] = str(f)
         elif ("基础阅读" in name and "词汇" in name) or ("400" in name and "词汇" in name):
             result["基础阅读400词汇"] = str(f)
+        elif name == "KET词汇.md":
+            result["KET词汇"] = str(f)
     return result
+
+
+STATS_BEGIN = "<!-- vocab-stats:auto-begin -->"
+STATS_END = "<!-- vocab-stats:auto-end -->"
+README_ANCHOR = "## 生成"
+
+
+def _example_cell(words: list[str], limit: int = 12) -> str:
+    parts = words[:limit]
+    s = ", ".join(parts)
+    if len(words) > limit:
+        s += ", …"
+    return s.replace("|", "\\|")
+
+
+def format_ket_readme_section(words: set[str], *, raw_lines: int) -> str:
+    """生成与新交际 README 风格相近的 Markdown 片段（不含外层注释标记）。"""
+    cats = categorize(words, CATEGORIES)
+    unique = len(words)
+    dup_note = ""
+    if raw_lines != unique:
+        dup_note = f"\n\n- 列表行数 **{raw_lines}**，去重后 **{unique}** 词条（行级重复已合并统计）。"
+    rows: list[tuple[str, int, str]] = []
+    for name, wlist in cats.items():
+        if name == "其他":
+            continue
+        if wlist:
+            rows.append((name, len(wlist), _example_cell(wlist)))
+    rows.sort(key=lambda x: (-x[1], x[0]))
+    other_n = len(cats.get("其他", []))
+    rows.append(("其他", other_n, _example_cell(cats.get("其他", []), limit=8)))
+
+    table = ["| 分类 | 数量 | 示例 |", "|------|------|------|"]
+    for cat_name, n, ex in rows:
+        table.append(f"| {cat_name} | {n} | {ex} |")
+    table_s = "\n".join(table)
+
+    return (
+        "## 词汇概览与分类\n\n"
+        "### 概览\n\n"
+        "| 词汇表 | 词条数（去重） |\n"
+        "|--------|----------------|\n"
+        f"| KET词汇.md | {unique} |\n"
+        f"{dup_note}\n\n"
+        "以下统计基于本目录 `KET词汇.md`（`word_list` 一行一词，与 `vocab_stats.py` 中「纯英文列表」解析一致）。"
+        "分类规则与 `books/新交际一二年级和基础阅读` 所用脚本相同，**按整行词条与关键词表精确匹配**，"
+        "短语、带 `/` 或括号变体的行多落入「其他」。\n\n"
+        "### 主题分类（近似）\n\n"
+        f"{table_s}\n\n"
+        "更新上表与分类：在仓库根目录执行  \n"
+        "`python src/scripts/vocab_stats.py books/KET-Key_English_Test --write-readme`\n"
+    )
+
+
+def merge_readme_stats(readme_path: Path, section: str) -> None:
+    """将 section 写入 README 中 STATS 块；若无标记则在 `## 生成` 之前插入。"""
+    block = f"{STATS_BEGIN}\n{section.rstrip()}\n{STATS_END}\n"
+    text = readme_path.read_text(encoding="utf-8")
+    if STATS_BEGIN in text and STATS_END in text:
+        pre, _, rest = text.partition(STATS_BEGIN)
+        _, _, post = rest.partition(STATS_END)
+        new_text = pre + block + post
+    elif README_ANCHOR in text:
+        new_text = text.replace(README_ANCHOR, block + "\n" + README_ANCHOR, 1)
+    else:
+        new_text = text.rstrip() + "\n\n" + block
+    readme_path.write_text(new_text, encoding="utf-8")
+
+
+def print_ket_report(ket_path: str) -> tuple[set[str], int]:
+    raw = parse_flat_list(ket_path)
+    words = set(raw)
+    print(f"\nKET 词汇表 ({Path(ket_path).name}): 列表行 {len(raw)}，唯一词 {len(words)}")
+    print("\n--- KET 分类统计 ---")
+    cats = categorize(words, CATEGORIES)
+    for cat_name, wlist in sorted(cats.items(), key=lambda x: (-len(x[1]), x[0])):
+        if cat_name == "其他":
+            print(f"\n{cat_name}: {len(wlist)} 词")
+        elif len(wlist) >= 1:
+            preview = ", ".join(wlist[:8])
+            tail = " …" if len(wlist) > 8 else ""
+            print(f"  {cat_name}: {len(wlist)} 词  [{preview}{tail}]")
+    return words, len(raw)
 
 
 def categorize(words: set[str], categories: dict[str, list[str]]) -> dict[str, list[str]]:
@@ -204,13 +294,42 @@ def categorize(words: set[str], categories: dict[str, list[str]]) -> dict[str, l
 
 
 def main() -> None:
-    directory = sys.argv[1] if len(sys.argv) > 1 else "."
+    parser = argparse.ArgumentParser(description="词汇表统计（新交际 / KET 等）")
+    parser.add_argument("directory", nargs="?", default=".", help="含词汇 .md 的目录")
+    parser.add_argument(
+        "--write-readme",
+        action="store_true",
+        help="KET 专用：将概览与分类表写入该目录 README.md（自动块内）",
+    )
+    args = parser.parse_args()
+    directory = args.directory
     files = find_files(directory)
 
     if not files:
         print(f"错误：在目录 '{directory}' 中未找到词汇文件")
-        print("文件名应包含：一年级词汇、二年级词汇、基础阅读/400词汇")
+        print("文件名应包含：一年级词汇、二年级词汇、基础阅读/400词汇，或 KET词汇.md")
         sys.exit(1)
+
+    ket_only = "KET词汇" in files and not (
+        {"一年级词汇", "二年级词汇", "基础阅读400词汇"} & set(files.keys())
+    )
+
+    if ket_only:
+        print("=" * 60)
+        print("KET 词汇库统计报告")
+        print("=" * 60)
+        path_ket = files["KET词汇"]
+        words, raw_len = print_ket_report(path_ket)
+        if args.write_readme:
+            readme = Path(directory).resolve() / "README.md"
+            section = format_ket_readme_section(words, raw_lines=raw_len)
+            merge_readme_stats(readme, section)
+            print(f"\n已写入: {readme}")
+        print()
+        return
+
+    if args.write_readme:
+        print("提示：--write-readme 仅适用于仅含 KET词汇.md 的目录，已忽略。", file=sys.stderr)
 
     # —— 解析各文件 ——
     g1 = g2 = b400 = None

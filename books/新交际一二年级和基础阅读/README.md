@@ -56,3 +56,4 @@
 - `translations.json` —— 中文翻译数据
 - `ipa.json` —— 国际音标数据
 - `wordbank.web.json` —— Web 端词库配置
+- 词汇统计脚本：`src/scripts/vocab_stats.py`（对本目录执行 `python src/scripts/vocab_stats.py books/新交际一二年级和基础阅读/`）；KET 词表目录可用 `python src/scripts/vocab_stats.py books/KET-Key_English_Test/ --write-readme` 更新该书的统计说明。
