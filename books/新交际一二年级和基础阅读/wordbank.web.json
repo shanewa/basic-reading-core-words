@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "book": {
-    "id": "新交际一二年级-基础阅读400",
-    "name": "新交际一二年级 + 基础阅读400",
+    "id": "新交际一二年级和基础阅读-基础阅读400",
+    "name": "新交际一二年级和基础阅读 + 基础阅读400",
     "outputPdf": "auto",
     "seed": 42,
     "sourceFiles": [
@@ -83,7 +83,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: all.",
+          "en": "Can you spell “all” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -120,12 +120,12 @@
       },
       "pronunciation": {
         "phonics": "all-i-g-a-t-or",
-        "ipa": "/ˈæləˌgeɪtər/",
+        "ipa": "/ˈælɪɡeɪtər/",
         "source": "cache_or_generated"
       },
       "examples": [
         {
-          "en": "We saw a alligator at the zoo yesterday.",
+          "en": "The little alligator ran across the grass.",
           "zhHans": null,
           "source": "generated"
         }
@@ -167,7 +167,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: am.",
+          "en": "Can you spell “am” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -251,7 +251,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word and in it.",
+          "en": "Listen and repeat: and.",
           "zhHans": null,
           "source": "generated"
         }
@@ -293,7 +293,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word angry in it.",
+          "en": "Can you spell “angry” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -335,7 +335,7 @@
       },
       "examples": [
         {
-          "en": "We saw a animal at the zoo yesterday.",
+          "en": "Do you know what sound a animal makes?",
           "zhHans": null,
           "source": "generated"
         }
@@ -468,7 +468,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: art.",
+          "en": "The sentence has the word art in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -510,7 +510,7 @@
       },
       "examples": [
         {
-          "en": "The aunt smiled and waved at us.",
+          "en": "Ask the aunt if you need help.",
           "zhHans": null,
           "source": "generated"
         }
@@ -594,7 +594,7 @@
       },
       "examples": [
         {
-          "en": "The room feels bad and cosy.",
+          "en": "Today the weather is bad.",
           "zhHans": null,
           "source": "generated"
         }
@@ -678,7 +678,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word ball in it.",
+          "en": "Can you spell “ball” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -846,7 +846,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: basketball.",
+          "en": "Can you spell “basketball” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -888,7 +888,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “bath” in our story.",
+          "en": "Can you spell “bath” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -930,7 +930,7 @@
       },
       "examples": [
         {
-          "en": "The beach is quiet and clean.",
+          "en": "Meet me near the beach at noon.",
           "zhHans": null,
           "source": "generated"
         }
@@ -1056,7 +1056,7 @@
       },
       "examples": [
         {
-          "en": "Can you bed slowly, please?",
+          "en": "Every morning we bed before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -1238,7 +1238,7 @@
       },
       "examples": [
         {
-          "en": "We saw a bird at the zoo yesterday.",
+          "en": "The little bird ran across the grass.",
           "zhHans": null,
           "source": "generated"
         }
@@ -1322,7 +1322,7 @@
       },
       "examples": [
         {
-          "en": "I bite with my friends after class.",
+          "en": "Can you bite slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -1364,7 +1364,7 @@
       },
       "examples": [
         {
-          "en": "My favourite colour is black.",
+          "en": "The black kite flew high above us.",
           "zhHans": null,
           "source": "generated"
         }
@@ -1406,7 +1406,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “blackboard” out loud?",
+          "en": "We use the word “blackboard” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -1448,7 +1448,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: blanket.",
+          "en": "Can you spell “blanket” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -1532,7 +1532,7 @@
       },
       "examples": [
         {
-          "en": "We travelled by boat on holiday.",
+          "en": "Look — a big boat is coming!",
           "zhHans": null,
           "source": "generated"
         }
@@ -1574,7 +1574,7 @@
       },
       "examples": [
         {
-          "en": "We draw a face with eyes and a body.",
+          "en": "Touch your body with one finger.",
           "zhHans": null,
           "source": "generated"
         }
@@ -1616,7 +1616,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “book” in our story.",
+          "en": "The sentence has the word book in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -1658,7 +1658,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “boots” in our story.",
+          "en": "The sentence has the word boots in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -1742,7 +1742,7 @@
       },
       "examples": [
         {
-          "en": "Ask the boy if you need help.",
+          "en": "The boy smiled and waved at us.",
           "zhHans": null,
           "source": "generated"
         }
@@ -1784,7 +1784,7 @@
       },
       "examples": [
         {
-          "en": "Mum bought fresh bread at the market.",
+          "en": "Would you like some bread for lunch?",
           "zhHans": null,
           "source": "generated"
         }
@@ -1875,7 +1875,7 @@
       },
       "examples": [
         {
-          "en": "Can you bring slowly, please?",
+          "en": "Every morning we bring before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -2001,7 +2001,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “brush” out loud?",
+          "en": "Listen and repeat: brush.",
           "zhHans": null,
           "source": "generated"
         }
@@ -2043,7 +2043,7 @@
       },
       "examples": [
         {
-          "en": "We saw a bug at the zoo yesterday.",
+          "en": "The little bug ran across the grass.",
           "zhHans": null,
           "source": "generated"
         }
@@ -2085,7 +2085,7 @@
       },
       "examples": [
         {
-          "en": "Look — a big bus is coming!",
+          "en": "The bus stopped at the station.",
           "zhHans": null,
           "source": "generated"
         }
@@ -2176,7 +2176,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: but.",
+          "en": "Can you spell “but” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -2218,7 +2218,7 @@
       },
       "examples": [
         {
-          "en": "Mum bought fresh butter at the market.",
+          "en": "This butter tastes sweet and yummy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -2302,7 +2302,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we buy before breakfast.",
+          "en": "Can you buy slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -2344,7 +2344,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word by in it.",
+          "en": "We use the word “by” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -2428,7 +2428,7 @@
       },
       "examples": [
         {
-          "en": "This cake tastes sweet and yummy.",
+          "en": "Mum bought fresh cake at the market.",
           "zhHans": null,
           "source": "generated"
         }
@@ -2477,7 +2477,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we call before breakfast.",
+          "en": "Can you call slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -2519,7 +2519,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word camp in it.",
+          "en": "Listen and repeat: camp.",
           "zhHans": null,
           "source": "generated"
         }
@@ -2561,7 +2561,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word camra in it.",
+          "en": "Listen and repeat: camra.",
           "zhHans": null,
           "source": "generated"
         }
@@ -2645,7 +2645,7 @@
       },
       "examples": [
         {
-          "en": "Mum bought fresh candy at the market.",
+          "en": "Would you like some candy for lunch?",
           "zhHans": null,
           "source": "generated"
         }
@@ -2687,7 +2687,7 @@
       },
       "examples": [
         {
-          "en": "Look — a big car is coming!",
+          "en": "We travelled by car on holiday.",
           "zhHans": null,
           "source": "generated"
         }
@@ -2939,7 +2939,7 @@
       },
       "examples": [
         {
-          "en": "Can you chase slowly, please?",
+          "en": "Every morning we chase before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -2981,7 +2981,7 @@
       },
       "examples": [
         {
-          "en": "This cheese tastes sweet and yummy.",
+          "en": "Would you like some cheese for lunch?",
           "zhHans": null,
           "source": "generated"
         }
@@ -3023,7 +3023,7 @@
       },
       "examples": [
         {
-          "en": "We saw a chicken at the zoo yesterday.",
+          "en": "Do you know what sound a chicken makes?",
           "zhHans": null,
           "source": "generated"
         }
@@ -3065,7 +3065,7 @@
       },
       "examples": [
         {
-          "en": "The child smiled and waved at us.",
+          "en": "Ask the child if you need help.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3191,7 +3191,7 @@
       },
       "examples": [
         {
-          "en": "Would you like some chips for lunch?",
+          "en": "Mum bought fresh chips at the market.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3233,7 +3233,7 @@
       },
       "examples": [
         {
-          "en": "Would you like some chocolate for lunch?",
+          "en": "This chocolate tastes sweet and yummy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3275,7 +3275,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “circle” out loud?",
+          "en": "The sentence has the word circle in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3317,7 +3317,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “class” out loud?",
+          "en": "Listen and repeat: class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3401,7 +3401,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we clean before breakfast.",
+          "en": "I clean with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3443,7 +3443,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we climb before breakfast.",
+          "en": "I climb with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3485,7 +3485,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “clock” in our story.",
+          "en": "Can you spell “clock” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -3534,7 +3534,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we clothes before breakfast.",
+          "en": "Can you clothes slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -3618,7 +3618,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word coat in it.",
+          "en": "Listen and repeat: coat.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3660,7 +3660,7 @@
       },
       "examples": [
         {
-          "en": "That was a cold story, wasn't it?",
+          "en": "The room feels cold and cosy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3702,7 +3702,7 @@
       },
       "examples": [
         {
-          "en": "She painted the sky colour.",
+          "en": "My favourite colour is colour.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3744,7 +3744,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “come” out loud?",
+          "en": "The sentence has the word come in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3828,7 +3828,7 @@
       },
       "examples": [
         {
-          "en": "Would you like some cookie for lunch?",
+          "en": "This cookie tastes sweet and yummy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3870,7 +3870,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word cool in it.",
+          "en": "Can you spell “cool” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -3912,7 +3912,7 @@
       },
       "examples": [
         {
-          "en": "The little cow ran across the grass.",
+          "en": "We saw a cow at the zoo yesterday.",
           "zhHans": null,
           "source": "generated"
         }
@@ -3996,7 +3996,7 @@
       },
       "examples": [
         {
-          "en": "Do you know what sound a cricket makes?",
+          "en": "We saw a cricket at the zoo yesterday.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4248,7 +4248,7 @@
       },
       "examples": [
         {
-          "en": "Mum bought fresh delicious at the market.",
+          "en": "This delicious tastes sweet and yummy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4290,7 +4290,7 @@
       },
       "examples": [
         {
-          "en": "The desert is quiet and clean.",
+          "en": "Meet me near the desert at noon.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4332,7 +4332,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word desk in it.",
+          "en": "We use the word “desk” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4374,7 +4374,7 @@
       },
       "examples": [
         {
-          "en": "Today the weather is different.",
+          "en": "The room feels different and cosy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4423,7 +4423,7 @@
       },
       "examples": [
         {
-          "en": "Can you dig slowly, please?",
+          "en": "Every morning we dig before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4465,7 +4465,7 @@
       },
       "examples": [
         {
-          "en": "Would you like some dinner for lunch?",
+          "en": "Mum bought fresh dinner at the market.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4549,7 +4549,7 @@
       },
       "examples": [
         {
-          "en": "The little dog ran across the grass.",
+          "en": "We saw a dog at the zoo yesterday.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4591,7 +4591,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word door in it.",
+          "en": "We use the word “door” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4640,7 +4640,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word down in it.",
+          "en": "Can you spell “down” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -4724,7 +4724,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “dress” out loud?",
+          "en": "The sentence has the word dress in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4850,7 +4850,7 @@
       },
       "examples": [
         {
-          "en": "This eat tastes sweet and yummy.",
+          "en": "Mum bought fresh eat at the market.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4892,7 +4892,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word egg in it.",
+          "en": "We use the word “egg” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -4934,7 +4934,7 @@
       },
       "examples": [
         {
-          "en": "I can count up to eight.",
+          "en": "She has eight pencils in her case.",
           "zhHans": null,
           "source": "generated"
         }
@@ -5018,7 +5018,7 @@
       },
       "examples": [
         {
-          "en": "There are eleven birds on the tree.",
+          "en": "She has eleven pencils in her case.",
           "zhHans": null,
           "source": "generated"
         }
@@ -5060,7 +5060,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “English” out loud?",
+          "en": "We use the word “English” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -5186,7 +5186,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: excuse.",
+          "en": "Can you spell “excuse” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -5228,7 +5228,7 @@
       },
       "examples": [
         {
-          "en": "The doctor looked at my eye.",
+          "en": "Touch your eye with one finger.",
           "zhHans": null,
           "source": "generated"
         }
@@ -5270,7 +5270,7 @@
       },
       "examples": [
         {
-          "en": "Touch your face with one finger.",
+          "en": "The doctor looked at my face.",
           "zhHans": null,
           "source": "generated"
         }
@@ -5354,7 +5354,7 @@
       },
       "examples": [
         {
-          "en": "Meet me near the farm at noon.",
+          "en": "The farm is quiet and clean.",
           "zhHans": null,
           "source": "generated"
         }
@@ -5403,7 +5403,7 @@
       },
       "examples": [
         {
-          "en": "Ask the farmer if you need help.",
+          "en": "A farmer works at our school.",
           "zhHans": null,
           "source": "generated"
         }
@@ -5697,7 +5697,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we find before breakfast.",
+          "en": "I find with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -5781,7 +5781,7 @@
       },
       "examples": [
         {
-          "en": "She has five pencils in her case.",
+          "en": "I can count up to five.",
           "zhHans": null,
           "source": "generated"
         }
@@ -5823,7 +5823,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “flower” in our story.",
+          "en": "Can you spell “flower” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -5914,7 +5914,7 @@
       },
       "examples": [
         {
-          "en": "Mum bought fresh food at the market.",
+          "en": "Would you like some food for lunch?",
           "zhHans": null,
           "source": "generated"
         }
@@ -5956,7 +5956,7 @@
       },
       "examples": [
         {
-          "en": "We draw a face with eyes and a foot.",
+          "en": "The doctor looked at my foot.",
           "zhHans": null,
           "source": "generated"
         }
@@ -5998,7 +5998,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “football” in our story.",
+          "en": "The sentence has the word football in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6040,7 +6040,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “for” in our story.",
+          "en": "Listen and repeat: for.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6082,7 +6082,7 @@
       },
       "examples": [
         {
-          "en": "The forest is quiet and clean.",
+          "en": "We walked to the forest after school.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6166,7 +6166,7 @@
       },
       "examples": [
         {
-          "en": "Friday is my favourite day of the week.",
+          "en": "See you on Friday morning.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6208,7 +6208,7 @@
       },
       "examples": [
         {
-          "en": "The friend smiled and waved at us.",
+          "en": "A friend works at our school.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6257,7 +6257,7 @@
       },
       "examples": [
         {
-          "en": "We saw a frog at the zoo yesterday.",
+          "en": "Do you know what sound a frog makes?",
           "zhHans": null,
           "source": "generated"
         }
@@ -6299,7 +6299,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “from” in our story.",
+          "en": "Listen and repeat: from.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6341,7 +6341,7 @@
       },
       "examples": [
         {
-          "en": "Would you like some fruit for lunch?",
+          "en": "This fruit tastes sweet and yummy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6383,7 +6383,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “fun” out loud?",
+          "en": "We use the word “fun” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6509,7 +6509,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “get” out loud?",
+          "en": "We use the word “get” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6593,7 +6593,7 @@
       },
       "examples": [
         {
-          "en": "Ask the girl if you need help.",
+          "en": "A girl works at our school.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6635,7 +6635,7 @@
       },
       "examples": [
         {
-          "en": "I give with my friends after class.",
+          "en": "Can you give slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -6677,7 +6677,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we glasses before breakfast.",
+          "en": "I glasses with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6719,7 +6719,7 @@
       },
       "examples": [
         {
-          "en": "Can you gloves slowly, please?",
+          "en": "Every morning we gloves before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -6943,7 +6943,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “grandma” in our story.",
+          "en": "Can you spell “grandma” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -6985,7 +6985,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word grandpa in it.",
+          "en": "We use the word “grandpa” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7069,7 +7069,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “grass” out loud?",
+          "en": "We use the word “grass” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7118,7 +7118,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “great” in our story.",
+          "en": "Listen and repeat: great.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7167,7 +7167,7 @@
       },
       "examples": [
         {
-          "en": "The green kite flew high above us.",
+          "en": "My favourite colour is green.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7209,7 +7209,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word ground in it.",
+          "en": "Listen and repeat: ground.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7251,7 +7251,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we grow before breakfast.",
+          "en": "I grow with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7419,7 +7419,7 @@
       },
       "examples": [
         {
-          "en": "The doctor looked at my hand.",
+          "en": "Touch your hand with one finger.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7461,7 +7461,7 @@
       },
       "examples": [
         {
-          "en": "That was a happy story, wasn't it?",
+          "en": "The room feels happy and cosy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7503,7 +7503,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “hat” out loud?",
+          "en": "We use the word “hat” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7552,7 +7552,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word have in it.",
+          "en": "Listen and repeat: have.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7594,7 +7594,7 @@
       },
       "examples": [
         {
-          "en": "He is my friend.",
+          "en": "He likes music.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7636,7 +7636,7 @@
       },
       "examples": [
         {
-          "en": "The doctor looked at my head.",
+          "en": "We draw a face with eyes and a head.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7678,7 +7678,7 @@
       },
       "examples": [
         {
-          "en": "Can you hear slowly, please?",
+          "en": "I hear with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -7804,7 +7804,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: helment.",
+          "en": "Can you spell “helment” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -7979,7 +7979,7 @@
       },
       "examples": [
         {
-          "en": "We saw a hippo at the zoo yesterday.",
+          "en": "Do you know what sound a hippo makes?",
           "zhHans": null,
           "source": "generated"
         }
@@ -8154,7 +8154,7 @@
       },
       "examples": [
         {
-          "en": "The little horse ran across the grass.",
+          "en": "Do you know what sound a horse makes?",
           "zhHans": null,
           "source": "generated"
         }
@@ -8196,7 +8196,7 @@
       },
       "examples": [
         {
-          "en": "We walked to the house after school.",
+          "en": "The house is quiet and clean.",
           "zhHans": null,
           "source": "generated"
         }
@@ -8287,7 +8287,7 @@
       },
       "examples": [
         {
-          "en": "That was a hungry story, wasn't it?",
+          "en": "Today the weather is hungry.",
           "zhHans": null,
           "source": "generated"
         }
@@ -8553,7 +8553,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word is in it.",
+          "en": "Can you spell “is” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -8763,7 +8763,7 @@
       },
       "examples": [
         {
-          "en": "Can you jump slowly, please?",
+          "en": "Every morning we jump before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -8854,7 +8854,7 @@
       },
       "examples": [
         {
-          "en": "I kick with my friends after class.",
+          "en": "Every morning we kick before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -8903,7 +8903,7 @@
       },
       "examples": [
         {
-          "en": "Meet me near the kitchen at noon.",
+          "en": "We walked to the kitchen after school.",
           "zhHans": null,
           "source": "generated"
         }
@@ -8945,7 +8945,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: kite.",
+          "en": "We use the word “kite” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -8987,7 +8987,7 @@
       },
       "examples": [
         {
-          "en": "I know with my friends after class.",
+          "en": "Every morning we know before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9029,7 +9029,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “later” in our story.",
+          "en": "Can you spell “later” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -9071,7 +9071,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: leaf.",
+          "en": "Can you spell “leaf” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -9155,7 +9155,7 @@
       },
       "examples": [
         {
-          "en": "Touch your leg with one finger.",
+          "en": "We draw a face with eyes and a leg.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9239,7 +9239,7 @@
       },
       "examples": [
         {
-          "en": "Would you like some lettuce for lunch?",
+          "en": "This lettuce tastes sweet and yummy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9281,7 +9281,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we like before breakfast.",
+          "en": "I like with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9330,7 +9330,7 @@
       },
       "examples": [
         {
-          "en": "Do you know what sound a lion makes?",
+          "en": "The little lion ran across the grass.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9372,7 +9372,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: lips.",
+          "en": "We use the word “lips” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9414,7 +9414,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “list” in our story.",
+          "en": "The sentence has the word list in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9456,7 +9456,7 @@
       },
       "examples": [
         {
-          "en": "Can you listen slowly, please?",
+          "en": "Every morning we listen before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9498,7 +9498,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “little” out loud?",
+          "en": "We use the word “little” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9540,7 +9540,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we live before breakfast.",
+          "en": "Can you live slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -9582,7 +9582,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “log” in our story.",
+          "en": "Listen and repeat: log.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9624,7 +9624,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “lollipop” in our story.",
+          "en": "The sentence has the word lollipop in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9666,7 +9666,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word London in it.",
+          "en": "We use the word “London” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -9708,7 +9708,7 @@
       },
       "examples": [
         {
-          "en": "The room feels long and cosy.",
+          "en": "That was a long story, wasn't it?",
           "zhHans": null,
           "source": "generated"
         }
@@ -10023,7 +10023,7 @@
       },
       "examples": [
         {
-          "en": "Today the weather is lucky.",
+          "en": "The room feels lucky and cosy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10072,7 +10072,7 @@
       },
       "examples": [
         {
-          "en": "Mum bought fresh lunch at the market.",
+          "en": "This lunch tastes sweet and yummy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10121,7 +10121,7 @@
       },
       "examples": [
         {
-          "en": "Can you make slowly, please?",
+          "en": "Every morning we make before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10170,7 +10170,7 @@
       },
       "examples": [
         {
-          "en": "Ask the man if you need help.",
+          "en": "The man smiled and waved at us.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10212,7 +10212,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “many” in our story.",
+          "en": "Can you spell “many” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -10254,7 +10254,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “maths” out loud?",
+          "en": "We use the word “maths” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10296,7 +10296,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word me in it.",
+          "en": "Listen and repeat: me.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10338,7 +10338,7 @@
       },
       "examples": [
         {
-          "en": "Would you like some meat for lunch?",
+          "en": "Mum bought fresh meat at the market.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10380,7 +10380,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “medium” in our story.",
+          "en": "Listen and repeat: medium.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10513,7 +10513,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “mine” out loud?",
+          "en": "Listen and repeat: mine.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10681,7 +10681,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “monster” out loud?",
+          "en": "Listen and repeat: monster.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10723,7 +10723,7 @@
       },
       "examples": [
         {
-          "en": "month is my favourite day of the week.",
+          "en": "We start the lesson at month.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10765,7 +10765,7 @@
       },
       "examples": [
         {
-          "en": "Meet me near the mountain at noon.",
+          "en": "We walked to the mountain after school.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10893,12 +10893,12 @@
       },
       "pronunciation": {
         "phonics": "M-r",
-        "ipa": "/ˈmɪstə(r)/",
+        "ipa": "/ˈmɪstɚ/",
         "source": "cache_or_generated"
       },
       "examples": [
         {
-          "en": "Listen and repeat: Mr.",
+          "en": "We use the word “Mr” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -10982,7 +10982,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word mushroom in it.",
+          "en": "Listen and repeat: mushroom.",
           "zhHans": null,
           "source": "generated"
         }
@@ -11024,7 +11024,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: music.",
+          "en": "Can you spell “music” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -11066,7 +11066,7 @@
       },
       "examples": [
         {
-          "en": "This is my book.",
+          "en": "My bag is blue.",
           "zhHans": null,
           "source": "generated"
         }
@@ -11192,7 +11192,7 @@
       },
       "examples": [
         {
-          "en": "That was a new story, wasn't it?",
+          "en": "The room feels new and cosy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -11241,7 +11241,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: next.",
+          "en": "The sentence has the word next in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -11416,7 +11416,7 @@
       },
       "examples": [
         {
-          "en": "This noodle tastes sweet and yummy.",
+          "en": "Would you like some noodle for lunch?",
           "zhHans": null,
           "source": "generated"
         }
@@ -11458,7 +11458,7 @@
       },
       "examples": [
         {
-          "en": "Touch your nose with one finger.",
+          "en": "We draw a face with eyes and a nose.",
           "zhHans": null,
           "source": "generated"
         }
@@ -11507,7 +11507,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word not in it.",
+          "en": "Listen and repeat: not.",
           "zhHans": null,
           "source": "generated"
         }
@@ -11591,7 +11591,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “number” out loud?",
+          "en": "The sentence has the word number in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -11633,7 +11633,7 @@
       },
       "examples": [
         {
-          "en": "Ask the nurse if you need help.",
+          "en": "A nurse works at our school.",
           "zhHans": null,
           "source": "generated"
         }
@@ -11670,7 +11670,7 @@
       },
       "pronunciation": {
         "phonics": "o-'-cl-o-ck",
-        "ipa": "/əˈklɒk/",
+        "ipa": "/əˈklɑːk/",
         "source": "cache_or_generated"
       },
       "examples": [
@@ -11712,12 +11712,12 @@
       },
       "pronunciation": {
         "phonics": "O-K",
-        "ipa": "/ˌəʊˈkeɪ/",
+        "ipa": "/ˌoʊˈkeɪ/",
         "source": "cache_or_generated"
       },
       "examples": [
         {
-          "en": "Listen and repeat: OK.",
+          "en": "Can you spell “OK” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -11759,7 +11759,7 @@
       },
       "examples": [
         {
-          "en": "Today the weather is old.",
+          "en": "That was a old story, wasn't it?",
           "zhHans": null,
           "source": "generated"
         }
@@ -11801,7 +11801,7 @@
       },
       "examples": [
         {
-          "en": "She has one pencils in her case.",
+          "en": "There are one birds on the tree.",
           "zhHans": null,
           "source": "generated"
         }
@@ -11843,7 +11843,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we open before breakfast.",
+          "en": "I open with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -11885,7 +11885,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word other in it.",
+          "en": "Can you spell “other” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -11927,7 +11927,7 @@
       },
       "examples": [
         {
-          "en": "This is our book.",
+          "en": "Our bag is blue.",
           "zhHans": null,
           "source": "generated"
         }
@@ -11969,7 +11969,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: paint.",
+          "en": "Can you spell “paint” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -12011,7 +12011,7 @@
       },
       "examples": [
         {
-          "en": "I painting with my friends after class.",
+          "en": "Can you painting slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -12221,7 +12221,7 @@
       },
       "examples": [
         {
-          "en": "Meet me near the park at noon.",
+          "en": "The park is quiet and clean.",
           "zhHans": null,
           "source": "generated"
         }
@@ -12263,7 +12263,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “part” in our story.",
+          "en": "Can you spell “part” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -12305,7 +12305,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “PE” in our story.",
+          "en": "Listen and repeat: PE.",
           "zhHans": null,
           "source": "generated"
         }
@@ -12389,7 +12389,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: pen.",
+          "en": "The sentence has the word pen in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -12431,7 +12431,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “pencil” in our story.",
+          "en": "Listen and repeat: pencil.",
           "zhHans": null,
           "source": "generated"
         }
@@ -12515,7 +12515,7 @@
       },
       "examples": [
         {
-          "en": "The people smiled and waved at us.",
+          "en": "A people works at our school.",
           "zhHans": null,
           "source": "generated"
         }
@@ -12557,7 +12557,7 @@
       },
       "examples": [
         {
-          "en": "The little pet ran across the grass.",
+          "en": "Do you know what sound a pet makes?",
           "zhHans": null,
           "source": "generated"
         }
@@ -12655,7 +12655,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “picture” in our story.",
+          "en": "The sentence has the word picture in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -12697,7 +12697,7 @@
       },
       "examples": [
         {
-          "en": "Look — a big plane is coming!",
+          "en": "The plane stopped at the station.",
           "zhHans": null,
           "source": "generated"
         }
@@ -12739,7 +12739,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “plant” in our story.",
+          "en": "Listen and repeat: plant.",
           "zhHans": null,
           "source": "generated"
         }
@@ -12963,7 +12963,7 @@
       },
       "examples": [
         {
-          "en": "Do you know what sound a puppy makes?",
+          "en": "The little puppy ran across the grass.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13005,7 +13005,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “purse” out loud?",
+          "en": "The sentence has the word purse in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13180,7 +13180,7 @@
       },
       "examples": [
         {
-          "en": "A queen works at our school.",
+          "en": "Ask the queen if you need help.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13222,7 +13222,7 @@
       },
       "examples": [
         {
-          "en": "The little rabbit ran across the grass.",
+          "en": "We saw a rabbit at the zoo yesterday.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13313,7 +13313,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: raincoat.",
+          "en": "We use the word “raincoat” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13355,7 +13355,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “rainy” out loud?",
+          "en": "Listen and repeat: rainy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13397,7 +13397,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “rat” in our story.",
+          "en": "Can you spell “rat” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -13439,7 +13439,7 @@
       },
       "examples": [
         {
-          "en": "Can you read slowly, please?",
+          "en": "I read with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13481,7 +13481,7 @@
       },
       "examples": [
         {
-          "en": "The red kite flew high above us.",
+          "en": "She painted the sky red.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13523,7 +13523,7 @@
       },
       "examples": [
         {
-          "en": "This rice tastes sweet and yummy.",
+          "en": "Would you like some rice for lunch?",
           "zhHans": null,
           "source": "generated"
         }
@@ -13565,7 +13565,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: robot.",
+          "en": "Can you spell “robot” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -13607,7 +13607,7 @@
       },
       "examples": [
         {
-          "en": "I rock with my friends after class.",
+          "en": "Can you rock slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -13656,7 +13656,7 @@
       },
       "examples": [
         {
-          "en": "The room is quiet and clean.",
+          "en": "We walked to the room after school.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13705,7 +13705,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we run before breakfast.",
+          "en": "I run with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13747,7 +13747,7 @@
       },
       "examples": [
         {
-          "en": "Today the weather is sad.",
+          "en": "The room feels sad and cosy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13796,7 +13796,7 @@
       },
       "examples": [
         {
-          "en": "That was a safe story, wasn't it?",
+          "en": "Today the weather is safe.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13887,7 +13887,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: sand.",
+          "en": "The sentence has the word sand in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -13929,7 +13929,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “sandals” out loud?",
+          "en": "We use the word “sandals” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -14062,7 +14062,7 @@
       },
       "examples": [
         {
-          "en": "Today the weather is scary.",
+          "en": "That was a scary story, wasn't it?",
           "zhHans": null,
           "source": "generated"
         }
@@ -14104,7 +14104,7 @@
       },
       "examples": [
         {
-          "en": "Meet me near the school at noon.",
+          "en": "We walked to the school after school.",
           "zhHans": null,
           "source": "generated"
         }
@@ -14188,7 +14188,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word season in it.",
+          "en": "Can you spell “season” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -14230,7 +14230,7 @@
       },
       "examples": [
         {
-          "en": "I see with my friends after class.",
+          "en": "Can you see slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -14279,7 +14279,7 @@
       },
       "examples": [
         {
-          "en": "I seed with my friends after class.",
+          "en": "Every morning we seed before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -14405,7 +14405,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we share before breakfast.",
+          "en": "Can you share slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -14489,7 +14489,7 @@
       },
       "examples": [
         {
-          "en": "The little sheep ran across the grass.",
+          "en": "We saw a sheep at the zoo yesterday.",
           "zhHans": null,
           "source": "generated"
         }
@@ -14531,7 +14531,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: shirt.",
+          "en": "The sentence has the word shirt in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -14573,7 +14573,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “shoe” in our story.",
+          "en": "Listen and repeat: shoe.",
           "zhHans": null,
           "source": "generated"
         }
@@ -14657,7 +14657,7 @@
       },
       "examples": [
         {
-          "en": "Today the weather is short.",
+          "en": "The room feels short and cosy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -14706,7 +14706,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “shorts” out loud?",
+          "en": "Listen and repeat: shorts.",
           "zhHans": null,
           "source": "generated"
         }
@@ -14748,7 +14748,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we shout before breakfast.",
+          "en": "Can you shout slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -14790,7 +14790,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: show.",
+          "en": "The sentence has the word show in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -15049,7 +15049,7 @@
       },
       "examples": [
         {
-          "en": "She has six pencils in her case.",
+          "en": "I can count up to six.",
           "zhHans": null,
           "source": "generated"
         }
@@ -15182,7 +15182,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: sky.",
+          "en": "The sentence has the word sky in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -15224,7 +15224,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we sleep before breakfast.",
+          "en": "Can you sleep slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -15266,7 +15266,7 @@
       },
       "examples": [
         {
-          "en": "Today the weather is slow.",
+          "en": "That was a slow story, wasn't it?",
           "zhHans": null,
           "source": "generated"
         }
@@ -15364,7 +15364,7 @@
       },
       "examples": [
         {
-          "en": "I smell with my friends after class.",
+          "en": "Can you smell slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -15406,7 +15406,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: snap.",
+          "en": "Can you spell “snap” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -15448,7 +15448,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: snow.",
+          "en": "Can you spell “snow” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -15497,7 +15497,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word snowman in it.",
+          "en": "Can you spell “snowman” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -15539,7 +15539,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “snowy” in our story.",
+          "en": "Listen and repeat: snowy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -15581,7 +15581,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “so” out loud?",
+          "en": "We use the word “so” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -15623,7 +15623,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “soccer” out loud?",
+          "en": "We use the word “soccer” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -15665,7 +15665,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “socks” in our story.",
+          "en": "Can you spell “socks” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -15791,7 +15791,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: song.",
+          "en": "The sentence has the word song in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -15833,7 +15833,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: sorry.",
+          "en": "We use the word “sorry” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -15882,7 +15882,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: sound.",
+          "en": "We use the word “sound” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -15966,7 +15966,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we splash before breakfast.",
+          "en": "Can you splash slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -16008,7 +16008,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we spring before breakfast.",
+          "en": "Can you spring slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -16050,7 +16050,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “square” out loud?",
+          "en": "Listen and repeat: square.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16134,7 +16134,7 @@
       },
       "examples": [
         {
-          "en": "Can you stand slowly, please?",
+          "en": "I stand with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16218,7 +16218,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: sticky.",
+          "en": "The sentence has the word sticky in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16260,7 +16260,7 @@
       },
       "examples": [
         {
-          "en": "I sting with my friends after class.",
+          "en": "Every morning we sting before breakfast.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16302,7 +16302,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we stop before breakfast.",
+          "en": "I stop with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16344,7 +16344,7 @@
       },
       "examples": [
         {
-          "en": "Meet me near the store at noon.",
+          "en": "We walked to the store after school.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16386,7 +16386,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “story” in our story.",
+          "en": "Listen and repeat: story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16470,7 +16470,7 @@
       },
       "examples": [
         {
-          "en": "A student works at our school.",
+          "en": "The student smiled and waved at us.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16512,7 +16512,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “summer” out loud?",
+          "en": "We use the word “summer” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16554,7 +16554,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word sun in it.",
+          "en": "We use the word “sun” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16603,7 +16603,7 @@
       },
       "examples": [
         {
-          "en": "See you on Sunday morning.",
+          "en": "Sunday is my favourite day of the week.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16771,7 +16771,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we swim before breakfast.",
+          "en": "I swim with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16904,7 +16904,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we talk before breakfast.",
+          "en": "I talk with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -16946,7 +16946,7 @@
       },
       "examples": [
         {
-          "en": "The room feels tall and cosy.",
+          "en": "That was a tall story, wasn't it?",
           "zhHans": null,
           "source": "generated"
         }
@@ -16988,7 +16988,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we teach before breakfast.",
+          "en": "I teach with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -17072,7 +17072,7 @@
       },
       "examples": [
         {
-          "en": "We draw a face with eyes and a teeth.",
+          "en": "The doctor looked at my teeth.",
           "zhHans": null,
           "source": "generated"
         }
@@ -17114,7 +17114,7 @@
       },
       "examples": [
         {
-          "en": "I tell with my friends after class.",
+          "en": "Can you tell slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -17205,7 +17205,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “tennis” in our story.",
+          "en": "Listen and repeat: tennis.",
           "zhHans": null,
           "source": "generated"
         }
@@ -17296,7 +17296,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “that” out loud?",
+          "en": "Listen and repeat: that.",
           "zhHans": null,
           "source": "generated"
         }
@@ -17345,7 +17345,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “them” in our story.",
+          "en": "Can you spell “them” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -17429,7 +17429,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: things.",
+          "en": "Can you spell “things” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -17471,7 +17471,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “this” in our story.",
+          "en": "Listen and repeat: this.",
           "zhHans": null,
           "source": "generated"
         }
@@ -17520,7 +17520,7 @@
       },
       "examples": [
         {
-          "en": "I can count up to three.",
+          "en": "She has three pencils in her case.",
           "zhHans": null,
           "source": "generated"
         }
@@ -17695,7 +17695,7 @@
       },
       "examples": [
         {
-          "en": "We start the lesson at time.",
+          "en": "time is my favourite day of the week.",
           "zhHans": null,
           "source": "generated"
         }
@@ -17737,7 +17737,7 @@
       },
       "examples": [
         {
-          "en": "Today the weather is tired.",
+          "en": "That was a tired story, wasn't it?",
           "zhHans": null,
           "source": "generated"
         }
@@ -17828,7 +17828,7 @@
       },
       "examples": [
         {
-          "en": "Would you like some tomato for lunch?",
+          "en": "This tomato tastes sweet and yummy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -17870,7 +17870,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word too in it.",
+          "en": "Listen and repeat: too.",
           "zhHans": null,
           "source": "generated"
         }
@@ -17912,7 +17912,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word top in it.",
+          "en": "Listen and repeat: top.",
           "zhHans": null,
           "source": "generated"
         }
@@ -17954,7 +17954,7 @@
       },
       "examples": [
         {
-          "en": "Touch your touch with one finger.",
+          "en": "The doctor looked at my touch.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18003,7 +18003,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word toy in it.",
+          "en": "We use the word “toy” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18045,7 +18045,7 @@
       },
       "examples": [
         {
-          "en": "Look — a big train is coming!",
+          "en": "We travelled by train on holiday.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18129,7 +18129,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word tree in it.",
+          "en": "Listen and repeat: tree.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18171,7 +18171,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: triangle.",
+          "en": "We use the word “triangle” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18213,7 +18213,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “trip” in our story.",
+          "en": "Can you spell “trip” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -18255,7 +18255,7 @@
       },
       "examples": [
         {
-          "en": "That was a true story, wasn't it?",
+          "en": "The room feels true and cosy.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18297,7 +18297,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word truth in it.",
+          "en": "We use the word “truth” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18339,7 +18339,7 @@
       },
       "examples": [
         {
-          "en": "Can you try slowly, please?",
+          "en": "I try with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18381,7 +18381,7 @@
       },
       "examples": [
         {
-          "en": "Tuesday is my favourite day of the week.",
+          "en": "We start the lesson at Tuesday.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18423,7 +18423,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “turn” out loud?",
+          "en": "The sentence has the word turn in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18507,7 +18507,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “twin” in our story.",
+          "en": "Can you spell “twin” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -18549,7 +18549,7 @@
       },
       "examples": [
         {
-          "en": "She has two pencils in her case.",
+          "en": "I can count up to two.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18591,7 +18591,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “umbrella” in our story.",
+          "en": "Listen and repeat: umbrella.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18640,7 +18640,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we understand before breakfast.",
+          "en": "Can you understand slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -18682,7 +18682,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “up” out loud?",
+          "en": "Listen and repeat: up.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18724,7 +18724,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word us in it.",
+          "en": "Can you spell “us” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -18766,7 +18766,7 @@
       },
       "examples": [
         {
-          "en": "Can you use slowly, please?",
+          "en": "I use with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18808,7 +18808,7 @@
       },
       "examples": [
         {
-          "en": "The van stopped at the station.",
+          "en": "Look — a big van is coming!",
           "zhHans": null,
           "source": "generated"
         }
@@ -18857,7 +18857,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: very.",
+          "en": "We use the word “very” in our story.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18899,7 +18899,7 @@
       },
       "examples": [
         {
-          "en": "Can you wait slowly, please?",
+          "en": "I wait with my friends after class.",
           "zhHans": null,
           "source": "generated"
         }
@@ -18990,7 +18990,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “wall” out loud?",
+          "en": "The sentence has the word wall in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -19165,7 +19165,7 @@
       },
       "examples": [
         {
-          "en": "We use the word “watch” in our story.",
+          "en": "Listen and repeat: watch.",
           "zhHans": null,
           "source": "generated"
         }
@@ -19207,7 +19207,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “water” out loud?",
+          "en": "Listen and repeat: water.",
           "zhHans": null,
           "source": "generated"
         }
@@ -19375,7 +19375,7 @@
       },
       "examples": [
         {
-          "en": "We start the lesson at Wednesday.",
+          "en": "Wednesday is my favourite day of the week.",
           "zhHans": null,
           "source": "generated"
         }
@@ -19417,7 +19417,7 @@
       },
       "examples": [
         {
-          "en": "See you on week morning.",
+          "en": "We start the lesson at week.",
           "zhHans": null,
           "source": "generated"
         }
@@ -19585,7 +19585,7 @@
       },
       "examples": [
         {
-          "en": "The sentence has the word which in it.",
+          "en": "Listen and repeat: which.",
           "zhHans": null,
           "source": "generated"
         }
@@ -19627,7 +19627,7 @@
       },
       "examples": [
         {
-          "en": "She painted the sky white.",
+          "en": "My favourite colour is white.",
           "zhHans": null,
           "source": "generated"
         }
@@ -19795,7 +19795,7 @@
       },
       "examples": [
         {
-          "en": "Do you know what sound a wolf makes?",
+          "en": "We saw a wolf at the zoo yesterday.",
           "zhHans": null,
           "source": "generated"
         }
@@ -19879,7 +19879,7 @@
       },
       "examples": [
         {
-          "en": "Can you spell “worry” out loud?",
+          "en": "The sentence has the word worry in it.",
           "zhHans": null,
           "source": "generated"
         }
@@ -19963,7 +19963,7 @@
       },
       "examples": [
         {
-          "en": "year is my favourite day of the week.",
+          "en": "See you on year morning.",
           "zhHans": null,
           "source": "generated"
         }
@@ -20047,7 +20047,7 @@
       },
       "examples": [
         {
-          "en": "Every morning we yes before breakfast.",
+          "en": "Can you yes slowly, please?",
           "zhHans": null,
           "source": "generated"
         }
@@ -20089,7 +20089,7 @@
       },
       "examples": [
         {
-          "en": "Listen and repeat: yet.",
+          "en": "Can you spell “yet” out loud?",
           "zhHans": null,
           "source": "generated"
         }
@@ -20173,7 +20173,7 @@
       },
       "examples": [
         {
-          "en": "This is your book.",
+          "en": "Your bag is blue.",
           "zhHans": null,
           "source": "generated"
         }
@@ -20215,7 +20215,7 @@
       },
       "examples": [
         {
-          "en": "This yummy tastes sweet and yummy.",
+          "en": "Would you like some yummy for lunch?",
           "zhHans": null,
           "source": "generated"
         }
@@ -20257,7 +20257,7 @@
       },
       "examples": [
         {
-          "en": "The little zoo ran across the grass.",
+          "en": "Do you know what sound a zoo makes?",
           "zhHans": null,
           "source": "generated"
         }

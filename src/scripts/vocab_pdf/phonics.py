@@ -30,6 +30,8 @@ MANUAL_IPA: dict[str, str] = {
     "o'clock": "/əˈklɑːk/",
     "Chinese": "/ˌtʃaɪˈniːz/",
     "maths": "/mæθs/",
+    # CMU AH0 → ə in second syllable; learner / 教材常写 ɪ（与 Wiktionary US 一致）
+    "alligator": "/ˈælɪɡeɪtər/",
 }
 
 _IPA_CACHE: dict[str, str] = {}

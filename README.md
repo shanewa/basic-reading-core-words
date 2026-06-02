@@ -46,7 +46,7 @@ This repository provides two core workflows:
 
 - Python 3.12 recommended
 - make recommended (WSL2/Linux/macOS)
-- On Windows, you can run the Python commands directly without make
+- **Windows + Python only in WSL2:** open a WSL shell, `cd` to this repo (prefer a Linux path such as `~/...` under your home—not only `/mnt/c/...`—for much faster I/O), then run the `python` / `make` commands below. From PowerShell you can run one-offs with `wsl -e bash -lc 'cd /path/to/basic-reading-core-words && python -m pip install -r requirements.txt'`.
 
 ## Quick Start (Web App)
 
@@ -96,9 +96,9 @@ make web                  # Build wordbanks, then run web app
 
 make test-network         # Test online translation/dictionary connectivity
 
-make BOOK=新交际一二年级        # Build selected book PDF (incremental)
-make BOOK=新交际一二年级 rebuild
-make BOOK=新交际一二年级 clean
+make BOOK=新交际一二年级和基础阅读        # Build selected book PDF (incremental)
+make BOOK=新交际一二年级和基础阅读 rebuild
+make BOOK=新交际一二年级和基础阅读 clean
 ```
 
 ## Configuration
@@ -172,7 +172,7 @@ Main tables:
 
 ## Add a New Vocabulary Book
 
-1. Copy books/新交际一二年级 to a new subfolder.
+1. Copy books/新交际一二年级和基础阅读 to a new subfolder.
 2. Add your source files (for example, *.md).
 3. Update that folder's book.json.
 4. Update VOCAB in that folder's Makefile.

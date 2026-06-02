@@ -51,7 +51,7 @@ Each book exports one file: `wordbank.web.json`.
   "schemaVersion": 1,
   "book": {
     "id": "xin-jiao-ji-1-2",
-    "name": "新交际一二年级",
+    "name": "新交际一二年级和基础阅读",
     "outputPdf": "一年级词汇_二年级词汇_基础阅读400词汇.pdf",
     "seed": 42,
     "sourceFiles": []

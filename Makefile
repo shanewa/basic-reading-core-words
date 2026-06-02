@@ -1,8 +1,8 @@
-# 默认构建第一本书；或: make -C books/新交际一二年级
+# 默认构建第一本书；或: make -C books/新交际一二年级和基础阅读
 
 REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 PYTHON    ?= python3
-BOOK      ?= 新交际一二年级
+BOOK      ?= 新交际一二年级和基础阅读
 
 # Load proxy.env (HTTP_PROXY / HTTPS_PROXY) for make test-network and book builds
 ifneq ($(wildcard $(REPO_ROOT)/proxy.env),)
