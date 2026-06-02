@@ -1,4 +1,6 @@
 # src/scripts/generate_vocab_pdf.py
 reportlab>=4.0,<5
+# src/scripts/extract_ket_pdf_to_md.py (KET PDF -> KET词汇.md)
+pypdf>=4.0,<6
 eng-to-ipa>=0.0.2
 flask>=3.0,<4

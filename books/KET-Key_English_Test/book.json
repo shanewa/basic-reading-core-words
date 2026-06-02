@@ -1,0 +1,14 @@
+{
+  "name": "KET / Key English Test 词汇",
+  "output": "auto",
+  "seed": 42,
+  "translate_missing": false,
+  "fetch_ipa": false,
+  "sources": [
+    {
+      "path": "KET词汇.md",
+      "parser": "word_list",
+      "label": "KET"
+    }
+  ]
+}
