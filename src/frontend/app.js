@@ -669,8 +669,21 @@ async function loadAndRenderWordbankOverview() {
     wordbankOverviewData = data;
     const p = data.progress || {};
     const bookName = (data.book && data.book.name) || data.bookDir || "";
-    summaryEl.textContent = `《${bookName}》共 ${p.totalWords ?? 0} 词 · 已学入库 ${p.learnedWords ?? 0} · 未学 ${p.newWords ?? 0} · 今日完成 ${p.todayReviewed ?? 0} · 到期 ${p.dueWords ?? 0} · 日期 ${data.today || ""}`;
-    const dailyTarget = Number(data.dailyTarget) || Number(state.settings?.daily_target) || 20;
+    const dailyTarget = Math.max(
+      1,
+      Number(data.dailyTarget) || Number(state.settings?.daily_target) || 20,
+    );
+    const newWords = Math.max(0, Number(p.newWords) || 0);
+    const estDaysClearNew = newWords > 0 ? Math.ceil(newWords / dailyTarget) : 0;
+    const estSuffix =
+      newWords > 0
+        ? ` · 按每日目标约 ${estDaysClearNew} 天清未学`
+        : " · 未学词已清零";
+    summaryEl.textContent = `《${bookName}》共 ${p.totalWords ?? 0} 词 · 已学入库 ${p.learnedWords ?? 0} · 未学 ${newWords} · 今日完成 ${p.todayReviewed ?? 0} · 到期 ${p.dueWords ?? 0} · 日期 ${data.today || ""}${estSuffix}`;
+    summaryEl.title =
+      newWords > 0
+        ? "「清未学」按当前每日目标估算：未学词数 ÷ 每日目标，向上取整；实际还会穿插到期复习，日历天数通常更长。"
+        : "";
     renderWordbankOverallProgressBlock(p, dailyTarget);
     applyWordbankFilter();
   } catch (err) {

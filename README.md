@@ -166,7 +166,7 @@ Main tables:
 - GET /api/book/pdf
 - POST /api/reset
 
-`progress` objects (from `/api/progress`, `/api/session`, and `/api/wordbank/overview`) include: `totalWords`, `learnedWords`, `newWords`, `dueWords`, `todayReviewed`, `todayAttempts` (submit rows today), `todayCorrect`, `todayAccuracy`. Overview also returns `dailyTarget` for the daily-target bar.
+`progress` objects (from `/api/progress`, `/api/session`, and `/api/wordbank/overview`) include: `totalWords`, `learnedWords`, `newWords`, `dueWords`, `todayReviewed`, `todayAttempts` (submit rows today), `todayCorrect`, `todayAccuracy`. Overview also returns `dailyTarget` for the daily-target bar. The wordbank overview page appends an estimate **days to clear “未学”** as `ceil(newWords / dailyTarget)` (tooltip explains that due-word reviews are not subtracted from that quota).
 
 `GET /api/book/pdf` builds the selected book PDF in **offline** mode (no translation/IPA network calls) and returns it as a download — same pipeline as `make pdf` in the book directory.
 
