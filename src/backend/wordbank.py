@@ -135,6 +135,43 @@ def build_wordbank_for_book(book_dir: Path, *, offline: bool = True, fetch_ipa: 
     return out_path
 
 
+_LEGACY_BOOK_DIR_RENAMES: dict[str, str] = {
+    "新交际一二年级": "新交际一二年级和基础阅读",
+}
+
+
+def resolve_book_directory(
+    books_dir: Path,
+    book_dir_name: str,
+    *,
+    known_books: list[dict] | None = None,
+) -> str | None:
+    """Return a ``book_dir`` that exists on disk (``book.json`` present).
+
+    If the stored name is missing (e.g. folder was renamed), try known legacy
+    mappings, then fall back to the first book from ``known_books`` / scan.
+    """
+    books = known_books if known_books is not None else list_books(books_dir)
+    if not books:
+        return None
+
+    def is_valid(n: str) -> bool:
+        if not n.strip():
+            return False
+        p = books_dir / n.strip()
+        return p.is_dir() and (p / "book.json").is_file()
+
+    name = (book_dir_name or "").strip()
+    if not name:
+        return books[0]["bookDir"]
+    if is_valid(name):
+        return name.strip()
+    alt = _LEGACY_BOOK_DIR_RENAMES.get(name)
+    if alt and is_valid(alt):
+        return alt
+    return books[0]["bookDir"]
+
+
 def list_books(books_dir: Path) -> list[dict]:
     result = []
     for d in sorted(books_dir.iterdir()):

@@ -53,7 +53,7 @@ async function api(url, opts = {}) {
   });
   const data = await res.json();
   if (!res.ok) {
-    throw new Error(data.error || `Request failed: ${res.status}`);
+    throw new Error(data.error || `请求失败（${res.status}）`);
   }
   return data;
 }
@@ -156,16 +156,16 @@ function toggleSettingsPanel(forceOpen = null) {
 
 function renderSourceLine(q) {
   if (!q || !q.sourceText) return "";
-  return `<p class="source-line">出处 Source: ${q.sourceText}</p>`;
+  return `<p class="source-line">出处：${q.sourceText}</p>`;
 }
 
 function renderIpaLine(q) {
   if (!q) return "";
   const parts = [];
-  if (q.ipaText) parts.push(`音标 IPA: ${q.ipaText}`);
-  if (q.phonicsText) parts.push(`自然拼读 Phonics: ${q.phonicsText}`);
+  if (q.ipaText) parts.push(`音标：${q.ipaText}`);
+  if (q.phonicsText) parts.push(`自然拼读：${q.phonicsText}`);
   if (!parts.length) return "";
-  return `<p class="ipa-line">${parts.join("  ·  ")}</p>`;
+  return `<p class="ipa-line">${parts.join("　")}</p>`;
 }
 
 // --- Speech (TTS) ---------------------------------------------------------
@@ -184,7 +184,7 @@ function speakerButtonHtml(text) {
   const safe = escapeHtml(text);
   return (
     '<button type="button" class="icon-btn speaker-btn" ' +
-    `data-speak="${safe}" title="朗读 Speak" aria-label="朗读 Speak">` +
+    `data-speak="${safe}" title="朗读" aria-label="朗读">` +
     '<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">' +
     '<path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/>' +
     '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor"/>' +
@@ -248,7 +248,7 @@ function actuallySpeak(text) {
 function speakText(text) {
   if (!text) return;
   if (!("speechSynthesis" in window)) {
-    setFeedback("浏览器不支持朗读 Speech not supported", false);
+    setFeedback("浏览器不支持朗读", false);
     return;
   }
   console.log(`[wg] speakText invoked: "${text}"`);
@@ -288,7 +288,7 @@ function renderMeaningQuestion(q) {
     .map((o) => `<button class="option-btn" data-value="${o.text}">${o.text}</button>`)
     .join("");
   box.innerHTML = `
-    <p class="q-sub">Choose meaning</p>
+    <p class="q-sub">选出正确的中文释义</p>
     <p class="q-prompt with-speaker">${q.prompt}${speakerButtonHtml(q.headword || q.prompt)}</p>
     ${renderIpaLine(q)}
     ${renderSourceLine(q)}
@@ -419,14 +419,14 @@ function renderImageQuestion(q) {
     .map(
       (o) => `
       <div class="img-option" data-id="${o.id}">
-        <img src="${o.imageUrl}" alt="option image" loading="lazy" />
+        <img src="${o.imageUrl}" alt="选项配图" loading="lazy" />
       </div>
     `
     )
     .join("");
 
   box.innerHTML = `
-    <p class="q-sub">Select two related images</p>
+    <p class="q-sub">选出两张与词义相关的图片</p>
     <p class="q-prompt with-speaker">${q.prompt}${speakerButtonHtml(q.headword || q.prompt)}</p>
     ${renderIpaLine(q)}
     ${renderSourceLine(q)}
@@ -490,7 +490,7 @@ function updateFavoriteButton() {
     "aria-pressed",
     state.favorited ? "true" : "false"
   );
-  btn.title = state.favorited ? "取消收藏 Unfavorite" : "收藏 Favorite";
+  btn.title = state.favorited ? "取消收藏" : "收藏";
 }
 
 function toggleFavoritesPanel(forceOpen = null) {
@@ -532,12 +532,12 @@ async function downloadWordbankPdf() {
   if (!btn) return;
   const prev = btn.textContent;
   btn.disabled = true;
-  btn.textContent = "生成中… Building…";
+  btn.textContent = "生成中…";
   try {
     const res = await fetch("/api/book/pdf", { method: "GET", cache: "no-store" });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || res.statusText || "Download failed");
+      throw new Error(err.error || res.statusText || "下载失败");
     }
     const cd = res.headers.get("Content-Disposition") || "";
     const utf8Hint = res.headers.get("X-Download-Filename-UTF8");
@@ -600,58 +600,54 @@ function renderWordbankOverallProgressBlock(progress, dailyTarget) {
   const pctDueAmongLearned = learned ? Math.round((due / learned) * 1000) / 10 : 0;
   const barDueAmongLearned = learned ? Math.min(100, (due / learned) * 100) : 0;
 
-  const tLearned =
-    "已写入学习档案（SM-2）的词数占全书比例。Share of book words that already have study state.";
-  const tToday =
-    "今日已完成的「不同词」数量除以每日目标（与首页徽章一致）。Distinct words completed correctly today vs daily target.";
-  const tDueAmong =
-    "在已学词中，今天已到期的比例。Among learned words, share that are due for review today.";
-  const tAcc =
-    "今日每次提交的对错统计（含同一题重试）。Submit-level accuracy for today.";
+  const tLearned = "已写入学习档案（SM-2）的词数占全书比例。";
+  const tToday = "今日已完成的「不同词」数量除以每日目标（与首页徽章一致）。";
+  const tDueAmong = "在已学词中，今天已到期的比例。";
+  const tAcc = "今日每次提交的对错统计（含同一题重试）。";
 
-  const dueMeta = learned ? `${due} / ${learned} (${pctDueAmongLearned}%)` : "—";
+  const dueMeta = learned ? `${due} / ${learned}（${pctDueAmongLearned}%）` : "—";
   const dueBarHtml = learned
     ? `<div class="wp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(
         barDueAmongLearned
-      )}" aria-label="Due among learned ${pctDueAmongLearned}%"><div class="wp-fill wp-fill--due" style="width:${barDueAmongLearned}%"></div></div>`
-    : '<div class="wp-sub muted">尚无已学记录 · No learned words yet</div>';
+      )}" aria-label="已学词中今日到期比例 ${pctDueAmongLearned}%"><div class="wp-fill wp-fill--due" style="width:${barDueAmongLearned}%"></div></div>`
+    : '<div class="wp-sub muted">尚无已学记录</div>';
 
   const accBarHtml =
     attempts > 0
-      ? `<div class="wp-bar wp-bar--thin" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${accPct}" aria-label="Accuracy ${accPct}%"><div class="wp-fill wp-fill--acc" style="width:${accPct}%"></div></div>`
-      : '<div class="wp-sub muted">今日尚无答题记录 · No attempts today</div>';
+      ? `<div class="wp-bar wp-bar--thin" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${accPct}" aria-label="今日正确率 ${accPct}%"><div class="wp-fill wp-fill--acc" style="width:${accPct}%"></div></div>`
+      : '<div class="wp-sub muted">今日尚无答题记录</div>';
 
   el.innerHTML =
-    '<h3 class="wordbank-progress-title">整体进度 Overall</h3>' +
+    '<h3 class="wordbank-progress-title">整体进度</h3>' +
     `<div class="wp-row">
       <div class="wp-head">
-        <span class="wp-label" title="${tLearned}">学习档案 Book learned</span>
-        <span class="wp-meta">${learned} / ${total} <span class="wp-pct">(${pctLearned}%)</span></span>
+        <span class="wp-label" title="${tLearned}">学习档案</span>
+        <span class="wp-meta">${learned} / ${total} <span class="wp-pct">（${pctLearned}%）</span></span>
       </div>
       <div class="wp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(
         barLearned
-      )}" aria-label="Book learned ${pctLearned}%"><div class="wp-fill wp-fill--learned" style="width:${barLearned}%"></div></div>
-      <div class="wp-sub muted">未接触 ${newWords} 词 · Not started: ${newWords}</div>
+      )}" aria-label="全书已学比例 ${pctLearned}%"><div class="wp-fill wp-fill--learned" style="width:${barLearned}%"></div></div>
+      <div class="wp-sub muted">未接触 ${newWords} 词</div>
     </div>` +
     `<div class="wp-row">
       <div class="wp-head">
-        <span class="wp-label" title="${tToday}">今日目标 Daily target</span>
-        <span class="wp-meta">${todayDone} / ${target} <span class="wp-pct">(${pctToday}%)</span></span>
+        <span class="wp-label" title="${tToday}">今日目标</span>
+        <span class="wp-meta">${todayDone} / ${target} <span class="wp-pct">（${pctToday}%）</span></span>
       </div>
       <div class="wp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(
         barToday
-      )}" aria-label="Daily target ${pctToday}%"><div class="wp-fill wp-fill--today" style="width:${barToday}%"></div></div>
+      )}" aria-label="今日目标完成度 ${pctToday}%"><div class="wp-fill wp-fill--today" style="width:${barToday}%"></div></div>
     </div>` +
     `<div class="wp-row">
       <div class="wp-head">
-        <span class="wp-label" title="${tDueAmong}">已学中的到期 Due among learned</span>
+        <span class="wp-label" title="${tDueAmong}">已学词中的到期</span>
         <span class="wp-meta">${dueMeta}</span>
       </div>
       ${dueBarHtml}
     </div>` +
     `<div class="wp-row wp-row--acc">
       <div class="wp-head">
-        <span class="wp-label" title="${tAcc}">今日作答 Today submits</span>
+        <span class="wp-label" title="${tAcc}">今日作答</span>
         <span class="wp-meta">${attempts} 次 · ${correctSubs} 对 · 正确率 ${accPct}%</span>
       </div>
       ${accBarHtml}
@@ -666,14 +662,14 @@ async function loadAndRenderWordbankOverview() {
   if (!body || !summaryEl) return;
   const colspan = 14;
   hideWordbankProgressBlock();
-  body.innerHTML = `<tr><td class="muted" colspan="${colspan}">加载中… Loading…</td></tr>`;
+  body.innerHTML = `<tr><td class="muted" colspan="${colspan}">加载中…</td></tr>`;
   summaryEl.textContent = "";
   try {
     const data = await api("/api/wordbank/overview");
     wordbankOverviewData = data;
     const p = data.progress || {};
     const bookName = (data.book && data.book.name) || data.bookDir || "";
-    summaryEl.textContent = `《${bookName}》共 ${p.totalWords ?? 0} 词 · 已学入库 ${p.learnedWords ?? 0} · 未学 ${p.newWords ?? 0} · 今日完成 ${p.todayReviewed ?? 0} · 到期 ${p.dueWords ?? 0} · Today ${data.today || ""}`;
+    summaryEl.textContent = `《${bookName}》共 ${p.totalWords ?? 0} 词 · 已学入库 ${p.learnedWords ?? 0} · 未学 ${p.newWords ?? 0} · 今日完成 ${p.todayReviewed ?? 0} · 到期 ${p.dueWords ?? 0} · 日期 ${data.today || ""}`;
     const dailyTarget = Number(data.dailyTarget) || Number(state.settings?.daily_target) || 20;
     renderWordbankOverallProgressBlock(p, dailyTarget);
     applyWordbankFilter();
@@ -704,7 +700,7 @@ function renderWordbankOverviewRows(items) {
   const colspan = 14;
   body.innerHTML = "";
   if (!items.length) {
-    body.innerHTML = `<tr><td class="muted" colspan="${colspan}">无匹配 / No matches</td></tr>`;
+    body.innerHTML = `<tr><td class="muted" colspan="${colspan}">无匹配词条</td></tr>`;
     return;
   }
   for (const it of items) {
@@ -716,7 +712,7 @@ function renderWordbankOverviewRows(items) {
       it.headword,
       it.zhHans || "—",
       it.favorited ? "★" : "—",
-      it.due ? "Y" : "—",
+      it.due ? "是" : "否",
       `${it.reviewAttempts}/${it.reviewCorrectAttempts}`,
       String(it.repetitions),
       String(it.intervalDays),
@@ -740,7 +736,7 @@ async function loadAndRenderFavorites() {
   const listEl = $("favoritesList");
   const emptyEl = $("favoritesEmpty");
   if (!listEl) return;
-  listEl.innerHTML = '<li class="muted">加载中... Loading…</li>';
+  listEl.innerHTML = '<li class="muted">加载中…</li>';
   emptyEl.classList.add("hidden");
   try {
     const data = await api("/api/favorites");
@@ -766,10 +762,10 @@ function renderFavoritesList(items) {
 
     const info = document.createElement("div");
     info.className = "fav-info";
-    info.title = "去做这个词的题 Go to this word";
+    info.title = "点击去做该词的题目";
     const head = document.createElement("div");
     head.className = "fav-head" + (item.missing ? " fav-missing" : "");
-    head.textContent = item.headword + (item.missing ? "  (已不在当前书) (no longer in book)" : "");
+    head.textContent = item.headword + (item.missing ? "（已不在当前词汇本）" : "");
     const zh = document.createElement("div");
     zh.className = "fav-zh";
     zh.textContent = item.zhHans || "";
@@ -784,8 +780,8 @@ function renderFavoritesList(items) {
 
     const removeBtn = document.createElement("button");
     removeBtn.className = "icon-btn favorite-btn is-favorited";
-    removeBtn.title = "取消收藏 Remove";
-    removeBtn.setAttribute("aria-label", "取消收藏 Remove");
+    removeBtn.title = "取消收藏";
+    removeBtn.setAttribute("aria-label", "取消收藏");
     removeBtn.innerHTML =
       '<svg class="star-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">' +
       '<path class="star-path" d="M12 2.5l2.95 6.36 7.05.74-5.3 4.86 1.57 7.04L12 17.9l-6.27 3.6 1.57-7.04L2 9.6l7.05-.74L12 2.5z" />' +
@@ -864,7 +860,7 @@ function renderQuestion(payload) {
     const canContinue = !!payload.canContinue;
     $("questionBox").innerHTML = `
       <p class="q-prompt">今天学习已完成，太棒了！</p>
-      ${canContinue ? '<button id="continueLearningBtn" class="primary-btn">继续学习 Continue</button>' : ""}
+      ${canContinue ? '<button id="continueLearningBtn" class="primary-btn">继续学习</button>' : ""}
     `;
     if (canContinue) {
       const btn = $("continueLearningBtn");
@@ -926,7 +922,7 @@ async function loadSession(opts = {}) {
 async function loadPreviousSession() {
   console.log("[wg] loadPreviousSession called", { historyLen: state.history.length });
   if (state.history.length < 2) {
-    setFeedback("没有更早的题目了 No earlier question", false);
+    setFeedback("没有更早的题目了", false);
     return;
   }
   // Pop current and previous; renderQuestion will re-push the previous one.
@@ -994,9 +990,9 @@ function applyTitleAndAvatar() {
   const titleEl = $("title");
   const name = (s.child_name || "").trim();
   if (titleEl) {
-    titleEl.textContent = name ? `${name}'s Word Garden` : "Word Garden";
+    titleEl.textContent = name ? `${name}的词汇园` : "词汇园";
   }
-  document.title = name ? `${name}'s Word Garden` : "Word Garden";
+  document.title = name ? `${name}的词汇园` : "词汇园";
 
   const img = $("avatarImg");
   if (img) {
@@ -1060,6 +1056,7 @@ async function saveSettings() {
       fetch_ipa: $("fetchIpa") ? $("fetchIpa").checked : false,
       typing_mode: $("typingMode").value,
       child_name: ($("childName").value || "").trim(),
+      ui_language: "zh",
     };
     const data = await api("/api/settings", {
       method: "POST",
@@ -1077,7 +1074,7 @@ async function saveSettings() {
 async function uploadAvatar() {
   const input = $("avatarInput");
   if (!input || !input.files || !input.files[0]) {
-    setFeedback("请先选择图片 Please pick an image first", false);
+    setFeedback("请先选择图片", false);
     return;
   }
   const file = input.files[0];
@@ -1090,12 +1087,12 @@ async function uploadAvatar() {
     fd.append("file", file);
     const res = await fetch("/api/avatar", { method: "POST", body: fd, cache: "no-store" });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || `Upload failed: ${res.status}`);
+    if (!res.ok) throw new Error(data.error || `上传失败（${res.status}）`);
     // Refresh settings (avatar_ext was updated) and apply.
     const sRes = await api("/api/settings");
     state.settings = sRes.settings;
     applyTitleAndAvatar();
-    setFeedback("头像已更新 Avatar updated", true);
+    setFeedback("头像已更新", true);
     input.value = "";
   } catch (err) {
     setFeedback(err.message, false);
@@ -1108,7 +1105,7 @@ async function removeAvatar() {
     const sRes = await api("/api/settings");
     state.settings = sRes.settings;
     applyTitleAndAvatar();
-    setFeedback("已移除头像 Avatar removed", true);
+    setFeedback("已移除头像", true);
   } catch (err) {
     setFeedback(err.message, false);
   }
@@ -1127,7 +1124,7 @@ async function rebuildWordbank() {
 }
 
 async function resetProgress() {
-  if (!confirm("确认重置当前book学习进度？")) return;
+  if (!confirm("确认重置当前词汇本的学习进度？")) return;
   try {
     state.continueLearning = false;
     state.history = [];
@@ -1191,16 +1188,6 @@ async function init() {
     $("resetProgressBtn").addEventListener("click", resetProgress);
     $("settingsToggleBtn").addEventListener("click", () => toggleSettingsPanel());
     $("settingsCloseBtn").addEventListener("click", () => toggleSettingsPanel(false));
-
-    $("langBtn").addEventListener("click", async () => {
-      const next = state.settings.ui_language === "zh" ? "en" : "zh";
-      const data = await api("/api/settings", {
-        method: "POST",
-        body: JSON.stringify({ ui_language: next }),
-      });
-      state.settings = data.settings;
-      setFeedback(next === "zh" ? "切换到中文" : "Switched to English", true);
-    });
 
     await loadSession();
   } catch (err) {

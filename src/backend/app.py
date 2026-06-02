@@ -24,7 +24,7 @@ from src.backend.quiz import (
 )
 from src.backend.scheduler import SM2State, update_sm2
 from src.backend.storage import StudyStorage
-from src.backend.wordbank import build_wordbank_for_book, list_books, load_wordbank
+from src.backend.wordbank import build_wordbank_for_book, list_books, load_wordbank, resolve_book_directory
 
 CFG = load_config()
 STORAGE = StudyStorage(CFG.db_path)
@@ -77,8 +77,11 @@ def _safe_pdf_download_filename(book_json_dir: Path, book_dir_fallback: str) -> 
 def _ensure_default_settings() -> dict:
     settings = STORAGE.get_settings()
     books = list_books(CFG.books_dir)
-    if not settings.get("book_dir") and books:
-        settings = STORAGE.upsert_settings({"book_dir": books[0]["bookDir"]})
+    bd = (settings.get("book_dir") or "").strip()
+    if books:
+        resolved = resolve_book_directory(CFG.books_dir, bd, known_books=books)
+        if resolved and (not bd or resolved != bd):
+            settings = STORAGE.upsert_settings({"book_dir": resolved})
     if int(settings.get("daily_target", 0) or 0) <= 0:
         settings = STORAGE.upsert_settings({"daily_target": CFG.daily_target_default})
     if not CFG.image_mode_enabled and settings.get("mode_image"):

@@ -13,7 +13,7 @@ The app supports:
   - Meaning choice: see English, choose Chinese meaning.
   - Image choice: see English, choose two related images from three images.
   - Typing completion: type the English word or phrase.
-- Bilingual UI (Chinese/English switch).
+- 中文界面（面向国内用户）。
 - Wordbank overview: side panel listing every word in the selected book with study stats (SM-2 fields, review counts) and a filter; tap a row to jump to that word in practice; download printable PDF (offline build) from the same panel.
 
 ## Architecture

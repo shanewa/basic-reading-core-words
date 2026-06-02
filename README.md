@@ -25,7 +25,7 @@ This repository provides two core workflows:
   - Meaning choice (EN -> ZH)
   - Image choice (pick 2 out of 3)
   - Typing completion
-- Bilingual UI support (Chinese/English)
+- 面向国内用户的中文界面
 - Persistent local progress tracking in SQLite
 
 ## Repository Layout

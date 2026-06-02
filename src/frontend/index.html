@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Word Garden</title>
+    <title>词汇园</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/styles.css?v=20260602d" />
+    <link rel="stylesheet" href="/styles.css?v=20260603a" />
   </head>
   <body>
     <div class="bg-orb orb-a"></div>
@@ -15,28 +15,27 @@
 
     <header class="topbar">
       <div class="title-wrap">
-        <img id="avatarImg" class="avatar-img hidden" alt="头像 Avatar" />
-        <h1 id="title">Word Garden</h1>
+        <img id="avatarImg" class="avatar-img hidden" alt="头像" />
+        <h1 id="title">词汇园</h1>
       </div>
-      <div class="progress-mini" id="progressMini" aria-label="Learning progress summary">
-        <span class="pm-item"><b id="pmReviewed">0</b><small>Today</small></span>
-        <span class="pm-item"><b id="pmDue">0</b><small>Due</small></span>
-        <span class="pm-item"><b id="pmAcc">0%</b><small>Accuracy</small></span>
+      <div class="progress-mini" id="progressMini" aria-label="学习进度摘要">
+        <span class="pm-item"><b id="pmReviewed">0</b><small>今日已练</small></span>
+        <span class="pm-item"><b id="pmDue">0</b><small>待复习</small></span>
+        <span class="pm-item"><b id="pmAcc">0%</b><small>今日正确率</small></span>
       </div>
       <div class="top-actions">
-        <button id="langBtn" class="ghost-btn">中文 / EN</button>
-        <button id="favoritesToggleBtn" class="ghost-btn">收藏夹 Favorites</button>
-        <button id="wordbankOverviewBtn" class="ghost-btn">词库总表 Word list</button>
-        <button id="settingsToggleBtn" class="ghost-btn">Settings</button>
+        <button id="favoritesToggleBtn" class="ghost-btn">收藏夹</button>
+        <button id="wordbankOverviewBtn" class="ghost-btn">词库总表</button>
+        <button id="settingsToggleBtn" class="ghost-btn">设置</button>
       </div>
     </header>
 
     <main class="layout">
       <section class="card" id="learnCard">
         <div class="section-head">
-          <h2 id="learnTitle">学习 Learn</h2>
+          <h2 id="learnTitle">学习</h2>
           <div class="section-head-right">
-            <button id="favoriteBtn" class="icon-btn favorite-btn" aria-label="收藏 Favorite" title="收藏 Favorite" disabled>
+            <button id="favoriteBtn" class="icon-btn favorite-btn" aria-label="收藏" title="收藏" disabled>
               <svg id="favoriteIcon" class="star-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
                 <path class="star-path" d="M12 2.5l2.95 6.36 7.05.74-5.3 4.86 1.57 7.04L12 17.9l-6.27 3.6 1.57-7.04L2 9.6l7.05-.74L12 2.5z" />
               </svg>
@@ -53,9 +52,9 @@
         </div>
 
         <div class="actions">
-          <button id="prevBtn" class="secondary-btn" disabled>上一题 Prev</button>
-          <button id="submitBtn" class="primary-btn">提交 Submit</button>
-          <button id="nextBtn" class="secondary-btn">下一题 Next</button>
+          <button id="prevBtn" class="secondary-btn" disabled>上一题</button>
+          <button id="submitBtn" class="primary-btn">提交</button>
+          <button id="nextBtn" class="secondary-btn">下一题</button>
         </div>
         <p id="feedback" class="feedback"></p>
       </section>
@@ -63,47 +62,47 @@
 
     <aside id="settingsPanel" class="settings-panel hidden" aria-hidden="true">
       <div class="settings-head">
-        <h2 id="settingsTitle">设置 Settings</h2>
-        <button id="settingsCloseBtn" class="ghost-btn">Close</button>
+        <h2 id="settingsTitle">设置</h2>
+        <button id="settingsCloseBtn" class="ghost-btn">关闭</button>
       </div>
 
       <label>
-        孩子姓名 Child Name
-        <input id="childName" type="text" maxlength="60" placeholder="例如：小明 / Alice" />
+        孩子姓名
+        <input id="childName" type="text" maxlength="60" placeholder="例如：小明" />
       </label>
 
       <label>
-        头像 Avatar
+        头像
         <input id="avatarInput" type="file" accept="image/png,image/jpeg,image/gif,image/webp" />
       </label>
       <div class="actions compact">
-        <button id="avatarUploadBtn" type="button" class="secondary-btn">上传头像 Upload</button>
-        <button id="avatarRemoveBtn" type="button" class="ghost-btn">移除 Remove</button>
+        <button id="avatarUploadBtn" type="button" class="secondary-btn">上传头像</button>
+        <button id="avatarRemoveBtn" type="button" class="ghost-btn">移除头像</button>
       </div>
 
       <label>
-        Book
+        词汇本
         <select id="bookSelect"></select>
       </label>
 
       <label>
-        Daily Target
+        每日目标（词数）
         <input id="dailyTarget" type="number" min="1" max="100" />
       </label>
 
       <div class="mode-grid">
-        <label><input type="checkbox" id="modeMeaning" /> Meaning</label>
-        <label><input type="checkbox" id="modeImage" /> Image</label>
-        <label><input type="checkbox" id="modeTyping" /> Typing</label>
+        <label><input type="checkbox" id="modeMeaning" /> 词义选择</label>
+        <label><input type="checkbox" id="modeImage" /> 看图选词</label>
+        <label><input type="checkbox" id="modeTyping" /> 打字拼写</label>
       </div>
 
       <label class="checkbox-row">
         <input type="checkbox" id="fetchIpa" />
-        <span>在线音标（美式词典）Online IPA (US dictionary)<small> — 重建词库时需联网；关闭则仅用离线 CMU。</small></span>
+        <span>在线音标（美式词典）<small> — 重建词库时需联网；关闭则仅用离线音标库。</small></span>
       </label>
 
       <label>
-        Typing Style
+        打字题型
         <select id="typingMode">
           <option value="missing_one_vowel">上部分省略</option>
           <option value="missing_multi_vowels" selected>缺失部分自然拼读（默认）</option>
@@ -117,64 +116,64 @@
       </label>
 
       <div class="actions compact">
-        <button id="saveSettingsBtn" class="primary-btn">保存 Save</button>
-        <button id="rebuildBtn" class="secondary-btn">Rebuild Wordbank</button>
+        <button id="saveSettingsBtn" class="primary-btn">保存</button>
+        <button id="rebuildBtn" class="secondary-btn">重建词库</button>
       </div>
 
       <div class="actions compact">
-        <button id="resetProgressBtn" class="danger-btn">重置进度 Reset</button>
+        <button id="resetProgressBtn" class="danger-btn">重置进度</button>
       </div>
     </aside>
 
     <aside id="favoritesPanel" class="settings-panel hidden" aria-hidden="true">
       <div class="settings-head">
-        <h2>收藏夹 Favorites</h2>
-        <button id="favoritesCloseBtn" class="ghost-btn">Close</button>
+        <h2>收藏夹</h2>
+        <button id="favoritesCloseBtn" class="ghost-btn">关闭</button>
       </div>
-      <p id="favoritesEmpty" class="muted hidden">还没有收藏任何单词。点击题卡右上角的星标添加收藏。<br/>No favorites yet — tap the star on a question to add one.</p>
+      <p id="favoritesEmpty" class="muted hidden">还没有收藏任何单词。点击题目右上角的星标即可添加收藏。</p>
       <ul id="favoritesList" class="favorites-list"></ul>
     </aside>
 
     <aside id="wordbankOverviewPanel" class="settings-panel wordbank-panel hidden" aria-hidden="true">
       <div class="settings-head wordbank-settings-head">
-        <h2>词库总表 Word list</h2>
+        <h2>词库总表</h2>
         <div class="wordbank-head-actions">
           <button
             type="button"
             id="wordbankPdfBtn"
             class="secondary-btn"
-            title="离线生成当前书的可打印 PDF 并下载（与该书目录下 make pdf 相同流程）。Build offline PDF like make pdf in the book folder."
+            title="离线生成当前词汇本的可打印 PDF 并下载（与在该书目录用命令行生成 PDF 的流程相同）。"
           >
-            下载 PDF Download
+            下载 PDF
           </button>
-          <button type="button" id="wordbankOverviewCloseBtn" class="ghost-btn">Close</button>
+          <button type="button" id="wordbankOverviewCloseBtn" class="ghost-btn">关闭</button>
         </div>
       </div>
       <p id="wordbankOverviewSummary" class="wordbank-summary"></p>
-      <div id="wordbankProgressBlock" class="wordbank-progress hidden" aria-label="Overall learning progress"></div>
-      <p class="wordbank-hint muted">点击表格一行可跳到该词学习。Tap a row to study that word.</p>
+      <div id="wordbankProgressBlock" class="wordbank-progress hidden" aria-label="整体学习进度"></div>
+      <p class="wordbank-hint muted">点击表格中的某一行，可跳到该词进行学习。</p>
       <label class="wordbank-filter">
-        <span>筛选 Filter</span>
-        <input id="wordbankFilterInput" type="search" placeholder="单词或中文 English or Chinese" autocomplete="off" />
+        <span>筛选</span>
+        <input id="wordbankFilterInput" type="search" placeholder="输入英文或中文筛选" autocomplete="off" />
       </label>
       <div class="wordbank-table-wrap">
-        <table class="wordbank-table" aria-label="Wordbank overview">
+        <table class="wordbank-table" aria-label="词库总表">
           <thead>
             <tr>
-              <th scope="col" title="词库中的顺序号（与 wordbank.web.json 中词条顺序一致）。Index in this book (same order as the wordbank file).">#</th>
-              <th scope="col" title="英文词或短语（显示用词条）。English word or phrase.">单词 Word</th>
-              <th scope="col" title="中文释义（简体）。Chinese meaning (Simplified).">中文</th>
-              <th scope="col" title="是否已收藏。Whether this word is in favorites.">★</th>
-              <th scope="col" title="今天是否到期需复习：计划复习日 ≤ 今天。Due today: next review date is on or before today.">到期 Due</th>
-              <th scope="col" title="历史答题提交总次数 / 其中答对次数（含答错后重试，来自答题日志）。Total submits / correct submits from review log (includes retries).">做题/作对 Submits/OK</th>
-              <th scope="col" title="SM-2 复习「档次」：成功掌握后的重复计数（越大表示复习轮次越深）。SM-2 repetition count after successful reviews.">档次 Rep</th>
-              <th scope="col" title="当前 SM-2 间隔：距下次复习的天数。Current interval in days until the next scheduled review.">间隔 d</th>
-              <th scope="col" title="计划下次复习日期（YYYY-MM-DD）。Next scheduled review date.">下次复习 Next</th>
-              <th scope="col" title="最近一次答对并写入学习档案的日期。Last date a correct answer updated study state.">上次 Last</th>
-              <th scope="col" title="遗忘次数：复习中评为「困难」等导致间隔被重置的累计（SM-2 lapses）。Lapses: hard reviews that reset the interval in SM-2.">遗忘 Lap</th>
-              <th scope="col" title="连续答对并完成（写入档案）的次数。Streak of successful completed reviews.">连对 Str</th>
-              <th scope="col" title="学习档案中累计「成功完成一次复习」的次数（与 SM-2 状态同步）。Total successful graded reviews stored in SM-2 state.">复习计 Rev#</th>
-              <th scope="col" title="易度因子 Ease Factor（SuperMemo SM-2）：初始约 2.5；越高通常表示记忆越牢、下次间隔越长；过低则间隔缩短。SM-2 ease factor (~2.5 default); higher → longer intervals, lower → shorter.">EF</th>
+              <th scope="col" title="词库中的顺序号（与 wordbank.web.json 中词条顺序一致）">#</th>
+              <th scope="col" title="英文词或短语（显示用词条）">单词</th>
+              <th scope="col" title="中文释义（简体）">中文</th>
+              <th scope="col" title="是否已收藏">★</th>
+              <th scope="col" title="今天是否到期需复习：计划复习日 ≤ 今天">到期</th>
+              <th scope="col" title="历史答题提交总次数 / 其中答对次数（含答错后重试）">做题/作对</th>
+              <th scope="col" title="SM-2 复习「档次」：成功掌握后的重复计数">档次</th>
+              <th scope="col" title="当前 SM-2 间隔：距下次复习的天数">间隔（天）</th>
+              <th scope="col" title="计划下次复习日期（YYYY-MM-DD）">下次复习</th>
+              <th scope="col" title="最近一次答对并写入学习档案的日期">上次复习</th>
+              <th scope="col" title="遗忘次数：复习中评为「困难」等导致间隔被重置的累计">遗忘</th>
+              <th scope="col" title="连续答对并完成（写入档案）的次数">连对</th>
+              <th scope="col" title="学习档案中累计「成功完成一次复习」的次数">复习次数</th>
+              <th scope="col" title="易度因子 Ease Factor（SuperMemo SM-2）：初始约 2.5；越高通常表示记忆越牢">EF</th>
             </tr>
           </thead>
           <tbody id="wordbankOverviewBody"></tbody>
@@ -183,6 +182,6 @@
     </aside>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="/app.js?v=20260602d"></script>
+    <script src="/app.js?v=20260603a"></script>
   </body>
 </html>
