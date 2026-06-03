@@ -27,6 +27,8 @@ The app supports:
   - Exported web wordbank JSON per book: `books/<book>/wordbank.web.json`.
   - Study state persistence in sqlite: `src/data/study.db`.
 
+**Study DB data safety:** Tables are created with `CREATE TABLE IF NOT EXISTS` only; refactors must not `DROP TABLE` or delete `study.db` to “reset” schema. Progress keys are `(book_dir, word_id)` (`book_dir` = folder under `books/`). If progress seemed to vanish after adding another book, the typical cause was **resolving `book_dir` to the lexicographically first book** while SM-2 rows still used the old folder name — not an empty file. Startup prefers the book with the most existing `word_state` rows when `book_dir` is empty or invalid, and **migrates** SQLite rows when a stale `book_dir` is corrected. If you **renamed** a book folder, add `src/data/book_dir_renames.json` (see repo `book_dir_renames.example.json`) mapping old → new folder names so rows migrate. Rebuilding `wordbank.web.json` can still change `word_id` if headwords or slug rules change.
+
 ### Reused Existing Modules
 
 Reuse existing parsing and enrichment pipeline from `src/scripts/vocab_pdf`:

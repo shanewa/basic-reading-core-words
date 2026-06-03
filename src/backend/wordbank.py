@@ -140,6 +140,12 @@ _LEGACY_BOOK_DIR_RENAMES: dict[str, str] = {
 }
 
 
+def legacy_book_dir_renames_target(stored: str) -> str | None:
+    """If ``stored`` is a known old ``book_dir`` slug, return the canonical folder name."""
+    key = (stored or "").strip()
+    return _LEGACY_BOOK_DIR_RENAMES.get(key)
+
+
 def resolve_book_directory(
     books_dir: Path,
     book_dir_name: str,

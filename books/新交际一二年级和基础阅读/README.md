@@ -56,4 +56,5 @@
 - `translations.json` —— 中文翻译数据
 - `ipa.json` —— 国际音标数据
 - `wordbank.web.json` —— Web 端词库配置
+- 若你**重命名**了本目录在 `books/` 下的文件夹名，请把仓库根目录的 `book_dir_renames.example.json` 复制为 `src/data/book_dir_renames.json`，写入 `{"旧文件夹名": "新文件夹名"}` 后重启应用，以便把 SQLite 里的学习记录迁到新目录键上（见仓库 `README.md` / `DESIGN.md`）。
 - 词汇统计脚本：`src/scripts/vocab_stats.py`（对本目录执行 `python src/scripts/vocab_stats.py books/新交际一二年级和基础阅读/`）；KET 词表目录可用 `python src/scripts/vocab_stats.py books/KET-Key_English_Test/ --write-readme` 更新该书的统计说明。

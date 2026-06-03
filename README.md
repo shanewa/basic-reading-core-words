@@ -108,7 +108,8 @@ make BOOK=新交际一二年级和基础阅读 clean
 - APP_HOST (default: 127.0.0.1)
 - APP_PORT (default: 5000)
 - APP_DEBUG (default: 0)
-- STUDY_DB_PATH (default: src/data/study.db)
+- STUDY_DB_PATH (default: src/data/study.db) — stores SM-2 progress (gitignored). Refactors must not delete or replace this file; progress is keyed by vocabulary folder name + word id (see DESIGN.md).
+- If you **rename** a book folder under `books/`, copy `book_dir_renames.example.json` to `src/data/book_dir_renames.json` (same directory as the DB) with a mapping from the **old** folder name to the **new** one, then restart the app once so SQLite rows migrate.
 - DAILY_TARGET_DEFAULT (default: 20)
 - IMAGE_MODE_ENABLED (default: 1)
 - IMAGE_PROVIDER (default: loremflickr)

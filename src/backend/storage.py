@@ -353,7 +353,92 @@ class StudyStorage:
             ).fetchall()
         return [r["word_id"] for r in rows]
 
+    def count_word_states_by_book_dir(self) -> list[tuple[str, int]]:
+        """For each book_dir, how many SM-2 rows exist (descending by count)."""
+        with self.conn() as conn:
+            rows = conn.execute(
+                """
+                SELECT book_dir, COUNT(*) AS c
+                FROM word_state
+                GROUP BY book_dir
+                ORDER BY c DESC
+                """
+            ).fetchall()
+        return [(str(r["book_dir"]), int(r["c"])) for r in rows]
+
+    def migrate_book_dir(self, old: str, new: str) -> tuple[int, int, int]:
+        """Move all study rows from a stale folder name ``old`` to ``new``.
+
+        Used when the vocabulary book directory was renamed or ``book_dir`` in
+        settings was auto-corrected. Never drops rows except PK conflicts on
+        ``word_state`` / ``favorites``, where the incoming (old) row wins by
+        deleting the duplicate stub on ``new`` first.
+
+        Returns counts ``(word_state_updated, review_log_updated, favorites_updated)``.
+        """
+        if not old or not new or old == new:
+            return (0, 0, 0)
+        with self.conn() as conn:
+            conn.execute(
+                """
+                DELETE FROM word_state
+                WHERE book_dir = ?
+                  AND word_id IN (SELECT word_id FROM word_state WHERE book_dir = ?)
+                """,
+                (new, old),
+            )
+            cur = conn.execute(
+                "UPDATE word_state SET book_dir = ? WHERE book_dir = ?",
+                (new, old),
+            )
+            ws_n = cur.rowcount or 0
+            conn.execute(
+                """
+                DELETE FROM favorites
+                WHERE book_dir = ?
+                  AND word_id IN (SELECT word_id FROM favorites WHERE book_dir = ?)
+                """,
+                (new, old),
+            )
+            cur = conn.execute(
+                "UPDATE favorites SET book_dir = ? WHERE book_dir = ?",
+                (new, old),
+            )
+            fav_n = cur.rowcount or 0
+            cur = conn.execute(
+                "UPDATE review_log SET book_dir = ? WHERE book_dir = ?",
+                (new, old),
+            )
+            log_n = cur.rowcount or 0
+        return (ws_n, log_n, fav_n)
+
+    def apply_book_dir_renames_file(self, books_dir: Path) -> None:
+        """Apply ``src/data/book_dir_renames.json`` if present: ``{"old_dir": "new_dir"}``.
+
+        Use when you renamed a folder under ``books/`` so SQLite rows keyed by the
+        old name are moved to the new folder name. File is gitignored with other
+        ``src/data/*`` contents; see ``book_dir_renames.example.json`` in repo root.
+        """
+        path = self.db_path.parent / "book_dir_renames.json"
+        if not path.is_file():
+            return
+        try:
+            raw = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, TypeError):
+            return
+        if not isinstance(raw, dict):
+            return
+        for old, new in raw.items():
+            old_s, new_s = str(old).strip(), str(new).strip()
+            if not old_s or not new_s or old_s == new_s:
+                continue
+            np = books_dir / new_s
+            if not (np.is_dir() and (np / "book.json").is_file()):
+                continue
+            self.migrate_book_dir(old_s, new_s)
+
     def reset_book_progress(self, book_dir: str) -> None:
         with self.conn() as conn:
             conn.execute("DELETE FROM word_state WHERE book_dir=?", (book_dir,))
             conn.execute("DELETE FROM review_log WHERE book_dir=?", (book_dir,))
+            conn.execute("DELETE FROM favorites WHERE book_dir=?", (book_dir,))

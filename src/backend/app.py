@@ -24,7 +24,13 @@ from src.backend.quiz import (
 )
 from src.backend.scheduler import SM2State, update_sm2
 from src.backend.storage import StudyStorage
-from src.backend.wordbank import build_wordbank_for_book, list_books, load_wordbank, resolve_book_directory
+from src.backend.wordbank import (
+    build_wordbank_for_book,
+    legacy_book_dir_renames_target,
+    list_books,
+    load_wordbank,
+    resolve_book_directory,
+)
 
 CFG = load_config()
 STORAGE = StudyStorage(CFG.db_path)
@@ -78,10 +84,44 @@ def _ensure_default_settings() -> dict:
     settings = STORAGE.get_settings()
     books = list_books(CFG.books_dir)
     bd = (settings.get("book_dir") or "").strip()
+
+    def _book_dir_on_disk(name: str) -> bool:
+        if not (name or "").strip():
+            return False
+        p = CFG.books_dir / name.strip()
+        return p.is_dir() and (p / "book.json").is_file()
+
     if books:
+        STORAGE.apply_book_dir_renames_file(CFG.books_dir)
+
+        ranked = STORAGE.count_word_states_by_book_dir()
+        orphan_only = bool(ranked) and not any(_book_dir_on_disk(d) for d, _ in ranked)
+
         resolved = resolve_book_directory(CFG.books_dir, bd, known_books=books)
+        progress_picked: str | None = None
+        # Do not fall back to lexicographically first book (e.g. KET before 新交际)
+        # when ``book_dir`` is empty or points at a removed folder — that made
+        # existing SM-2 rows look "gone" while they still lived under the old key.
+        if resolved and ((not bd) or not _book_dir_on_disk(bd)):
+            for book_guess, _ in ranked:
+                if _book_dir_on_disk(book_guess):
+                    resolved = book_guess
+                    progress_picked = book_guess
+                    break
+
+        legacy_res = legacy_book_dir_renames_target(bd)
+        safe_migrate = False
+        if bd and resolved and bd != resolved and not _book_dir_on_disk(bd):
+            if legacy_res == resolved:
+                safe_migrate = True
+            elif progress_picked is not None and progress_picked == resolved:
+                safe_migrate = True
+        if safe_migrate:
+            STORAGE.migrate_book_dir(bd, resolved)
+
         if resolved and (not bd or resolved != bd):
-            settings = STORAGE.upsert_settings({"book_dir": resolved})
+            if not (orphan_only and progress_picked is None):
+                settings = STORAGE.upsert_settings({"book_dir": resolved})
     if int(settings.get("daily_target", 0) or 0) <= 0:
         settings = STORAGE.upsert_settings({"daily_target": CFG.daily_target_default})
     if not CFG.image_mode_enabled and settings.get("mode_image"):
