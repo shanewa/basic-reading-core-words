@@ -86,6 +86,33 @@ make web-run
 http://127.0.0.1:5000
 ```
 
+## Docker
+
+镜像内用 **Gunicorn** 跑 `src.backend.app:app`（单 worker，减轻 SQLite 并发写压力）。学习数据写在 **`/app/src/data`**，应用 **`docker-compose.yml` 里的命名卷** 或自行 `-v` 挂载以持久化。
+
+### 构建并运行（Compose）
+
+```bash
+docker compose build
+docker compose up
+```
+
+浏览器访问 **http://localhost:8080**（映射到容器内 `5000`）。学习进度保存在 Compose 的 **`study-data`** 卷中。若要把本机已有 `src/data/` 挂进容器，可把 `docker-compose.yml` 里的 `volumes` 改成：
+
+```yaml
+    volumes:
+      - ./src/data:/app/src/data
+```
+
+### 仅 Dockerfile
+
+```bash
+docker build -t basic-reading-core-words .
+docker run --rm -p 8080:5000 -v study_data:/app/src/data basic-reading-core-words
+```
+
+环境变量与本地一致（`APP_HOST`、`APP_PORT`、`STUDY_DB_PATH` 等）。生产环境请自行加 TLS 反向代理（如 Caddy / nginx）。
+
 ## Common Commands
 
 ```bash

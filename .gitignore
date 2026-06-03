@@ -1,3 +1,5 @@
+# When adding patterns here, mirror them in .dockerignore so Docker builds
+# do not ship those paths into the image.
 *.pyc
 .venv/*
 books/*/*.pdf

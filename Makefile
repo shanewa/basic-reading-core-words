@@ -10,7 +10,7 @@ include $(REPO_ROOT)/proxy.env
 export HTTP_PROXY HTTPS_PROXY http_proxy https_proxy NO_PROXY
 endif
 
-.PHONY: all pdf clean help rebuild test-network web web-run web-build-wordbanks web-install help-web
+.PHONY: all pdf clean help rebuild test-network web web-run web-build-wordbanks web-install help-web docker-build docker-up
 all pdf clean help rebuild:
 	$(MAKE) -C books/$(BOOK) $@
 
@@ -26,6 +26,8 @@ help-web:
 	@echo "  make web-build-wordbanks -> 为 books/* 生成 wordbank.web.json"
 	@echo "  make web-run             -> 启动本地 Web 服务 (http://127.0.0.1:5000)"
 	@echo "  make web                 -> 先构建词库再启动 Web 服务"
+	@echo "  make docker-build        -> docker compose build"
+	@echo "  make docker-up           -> docker compose up (http://localhost:8080)"
 
 web-install:
 	$(PYTHON) -m pip install -r "$(REPO_ROOT)/requirements.txt"
@@ -37,5 +39,11 @@ web-run:
 	$(PYTHON) "$(REPO_ROOT)/src/backend/app.py"
 
 web: web-build-wordbanks web-run
+
+docker-build:
+	docker compose build
+
+docker-up:
+	docker compose up
 
 help: help-web

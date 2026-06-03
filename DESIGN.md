@@ -21,6 +21,7 @@ The app supports:
 ### Runtime Layers
 
 - Backend: Flask JSON API + static file serving.
+- Container: `Dockerfile` + optional `docker-compose.yml` (Gunicorn, persist `/app/src/data`).
 - Frontend: Single-page HTML/CSS/JS (no bundler).
 - Data:
   - Source vocabulary from `books/*` markdown + json.

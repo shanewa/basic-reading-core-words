@@ -1,0 +1,19 @@
+# Local run: http://localhost:5000  (host) -> container :5000
+services:
+  web:
+    build: .
+    image: basic-reading-core-words:local
+    ports:
+      - "5000:5000"
+    environment:
+      APP_HOST: "0.0.0.0"
+      APP_PORT: "5000"
+      APP_DEBUG: "0"
+      # Optional: absolute path inside container (default is /app/src/data/study.db)
+      # STUDY_DB_PATH: /app/src/data/study.db
+    volumes:
+      # Persist SM-2 progress, avatars, optional book_dir_renames.json
+      - study-data:/app/src/data
+
+volumes:
+  study-data:

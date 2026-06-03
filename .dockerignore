@@ -1,0 +1,24 @@
+# Build context: exclude the same paths as .gitignore (plus a few Docker-only
+# entries). Keep this file updated when .gitignore changes.
+# See: https://docs.docker.com/build/building/context/
+
+# --- mirror .gitignore ---
+*.pyc
+.venv/
+books/*/*.pdf
+books/*/.cache/
+.claude/
+*.db-wal
+*.db-shm
+src/data/
+proxy.env
+.cursor/
+.mailmap
+
+# --- Docker-only ---
+.git
+.github
+**/__pycache__/
+**/*.pyo
+terminals/
+agent-transcripts/
